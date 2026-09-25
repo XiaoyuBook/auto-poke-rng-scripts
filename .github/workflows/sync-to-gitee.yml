@@ -1,0 +1,64 @@
+name: Sync scripts to Gitee
+
+on:
+  workflow_run:
+    workflows: ['Validate and publish script packages']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: script-gitee-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'XiaoyuBook/auto-poke-rng-scripts' && (github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event != 'pull_request'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check sync credential
+        id: credential
+        shell: bash
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_ACCESSS_TOKEN_AUTO_POKE_RNG }}
+        run: |
+          if [ -z "$GITEE_TOKEN" ]; then
+            echo 'available=false' >> "$GITHUB_OUTPUT"
+            echo '::warning::请在脚本仓库配置 GITEE_ACCESSS_TOKEN_AUTO_POKE_RNG；本次未同步 Gitee。'
+            echo 'Gitee 同步未执行：脚本仓库尚未配置所需 Secret。' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo 'available=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Check out published main
+        if: steps.credential.outputs.available == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Sync published scripts to Gitee
+        if: steps.credential.outputs.available == 'true'
+        shell: python
+        env:
+          GITEE_TOKEN: ${{ secrets.GITEE_ACCESSS_TOKEN_AUTO_POKE_RNG }}
+        run: |
+          import base64
+          import os
+          import subprocess
+
+          token = os.environ['GITEE_TOKEN']
+          auth = base64.b64encode(('shekongsk:' + token).encode()).decode()
+          print('::add-mask::' + auth, flush=True)
+          env = dict(
+              os.environ,
+              GIT_CONFIG_COUNT='1',
+              GIT_CONFIG_KEY_0='http.https://gitee.com/.extraheader',
+              GIT_CONFIG_VALUE_0='Authorization: Basic ' + auth,
+          )
+          subprocess.run([
+              'git', 'push', 'https://gitee.com/shekongsk/auto-poke-rng-scripts.git',
+              'HEAD:refs/heads/main',
+          ], env=env, check=True)

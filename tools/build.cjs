@@ -40,7 +40,23 @@ function build(root) {
     }
     visit();
     if (!files.some(file => /\.txt$/i.test(file.path)) || files.length > 256 || files.reduce((n,f) => n + f.bytes, 0) > 50 * 1024 * 1024) throw Error('脚本包为空或过大');
-    const complete = { ...manifest, files };
+    const categories = new Map();
+    if (manifest.categories != null) {
+      if (!Array.isArray(manifest.categories) || manifest.categories.length > 30) throw Error('脚本分类无效');
+      for (const group of manifest.categories) {
+        if (!text(group.name, 50) || !Array.isArray(group.files)) throw Error('脚本分类无效');
+        for (const name of group.files) {
+          if (!files.some(file => file.path === name) || categories.has(name)) throw Error('分类文件不存在或重复：' + name);
+          categories.set(name, group.name);
+        }
+      }
+    }
+    for (const file of files) file.category = categories.get(file.path) || (/\.il$/i.test(file.path) ? '图像标签' : /\.md$/i.test(file.path) ? '使用说明' : '其他脚本');
+    const readmeFile = files.find(file => file.path === 'README.md');
+    const readme = readmeFile ? fs.readFileSync(path.join(directory, 'files/README.md'), 'utf8') : undefined;
+    if (readme && readme.length > 30000) throw Error('使用说明过大');
+    const { categories: _categories, ...metadata } = manifest;
+    const complete = { ...metadata, files, ...(readme ? { readme } : {}) };
     entries['manifest.json'] = [Buffer.from(JSON.stringify(complete, null, 2) + '\n'), { mtime: new Date(1980, 0, 1) }];
     const bytes = Buffer.from(zipSync(entries, { level: 9 }));
     if (bytes.length > 20 * 1024 * 1024) throw Error('压缩包过大');
@@ -48,9 +64,10 @@ function build(root) {
     if (fs.existsSync(target) && hash(fs.readFileSync(target)) !== hash(bytes)) throw Error('已发布版本不可覆盖，请提高版本号：' + archive);
     fs.mkdirSync(path.dirname(target), { recursive: true });
     fs.writeFileSync(target, bytes);
-    packages.push({ ...manifest, archive, bytes: bytes.length, sha256: hash(bytes) });
+    packages.push({ ...complete, archive, bytes: bytes.length, sha256: hash(bytes) });
   }
   const catalog = { schemaVersion: 1, packages };
+  if (packages.length > 100 || Buffer.byteLength(JSON.stringify(catalog)) > 2 * 1024 * 1024) throw Error('目录索引过大');
   fs.writeFileSync(path.join(root, 'catalog.json'), JSON.stringify(catalog, null, 2) + '\n');
   return catalog;
 }
