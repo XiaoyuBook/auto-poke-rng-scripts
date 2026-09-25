@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "bdsp-official",
+  "name": "BDSP 官方脚本包",
+  "version": "1.0.0",
+  "minimumAppVersion": "0.1.0",
+  "installFolder": "BDSP",
+  "game": "BDSP",
+  "authors": ["XiaoyuBook", "auto-bdsp-rng contributors"],
+  "description": "包含测种、过帧、御三家与游走撞闪、捕捉反查、ID 测种及配套图像标签。",
+  "instructions": "安装后在脚本库的 BDSP 文件夹查看脚本，在自动定点或自动 TID 页面选择需要的流程脚本。使用前按自己的游戏语言、画面尺寸和进度核对按键与标签。OCR 区域、眼睛模板及校准延迟仍使用客户端中的个人设置。脚本包不会启动游戏操作。",
+  "source": {
+    "repository": "https://github.com/XiaoyuBook/auto-bdsp-rng",
+    "revision": "494793ed467cd1a2ef376d5886d0add5924b620f",
+    "adaptedFrom": "https://github.com/XiaoyuBook/auto-poke-rng/tree/5a10dea/scripts/BDSP"
+  },
+  "license": "GPL-3.0-or-later"
+}

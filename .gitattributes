@@ -1,0 +1,4 @@
+bundles/** -text
+packages/** -text
+*.cjs text eol=lf
+*.yml text eol=lf

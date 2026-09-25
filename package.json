@@ -1,0 +1,12 @@
+{
+  "name": "auto-poke-rng-scripts",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node tools/build.cjs",
+    "test": "node --test tests/build.cjs"
+  },
+  "dependencies": {
+    "fflate": "0.8.3"
+  }
+}
