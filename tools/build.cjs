@@ -8,6 +8,28 @@ const text = (value, limit) => typeof value === 'string' && value.length > 0 && 
 function safePath(value) {
   return typeof value === 'string' && value.length <= 200 && value.split('/').every(part => part && part !== '.' && part !== '..' && !/[<>:"\\|?*\x00-\x1f]/.test(part) && !/[. ]$/.test(part) && !/^(con|prn|aux|nul|com[1-9]|lpt[1-9])(?:\.|$)/i.test(part));
 }
+const overlaps = (a, b) => { a = a.toLowerCase(); b = b.toLowerCase(); return a === b || a.startsWith(b + '/') || b.startsWith(a + '/'); };
+function referencedLabels(source) {
+  const labels = new Set();
+  for (const line of source.split(/\r?\n/)) {
+    let quote = '', escaped = false, code = '';
+    for (const char of line) {
+      if (quote) {
+        code += ' ';
+        if (escaped) escaped = false;
+        else if (char === '\\') escaped = true;
+        else if (char === quote) quote = '';
+      } else if (char === '#') break;
+      else if (char === '"' || char === "'") { quote = char; code += ' '; }
+      else code += char;
+    }
+    // PRINT/ALERT treat free text as literal; only standalone variables joined
+    // by & are expressions. Ignore quoted strings and comments everywhere.
+    if (/^\s*(PRINT|ALERT)\s/i.test(code)) code = code.replace(/^\s*(PRINT|ALERT)\s+/i, '').split('&').filter(part => /^\s*@[\p{L}\p{N}_]+\s*$/u.test(part)).join(' ');
+    for (const match of code.matchAll(/@([\p{L}\p{N}_]+)/gu)) labels.add(match[1]);
+  }
+  return labels;
+}
 function build(root) {
   const packages = [], folders = new Set();
   for (const id of fs.readdirSync(path.join(root, 'bundles')).sort()) {
@@ -18,7 +40,7 @@ function build(root) {
       || !text(manifest.name, 100) || !text(manifest.description, 3000) || !text(manifest.game, 50)
       || !Array.isArray(manifest.authors) || !manifest.authors.length || manifest.authors.length > 20 || manifest.authors.some(author => !text(author, 100))
       || (manifest.instructions != null && !text(manifest.instructions, 12000))) throw Error('包描述无效');
-    if (!safePath(manifest.installFolder) || manifest.installFolder.includes('/') || manifest.installFolder.startsWith('.') || folders.has(manifest.installFolder.toLowerCase())) throw Error('安装目录无效或重复');
+    if (!safePath(manifest.installFolder) || manifest.installFolder.split('/').some(part => part.startsWith('.')) || [...folders].some(folder => overlaps(folder, manifest.installFolder))) throw Error('安装目录无效、重复或重叠');
     folders.add(manifest.installFolder.toLowerCase());
     const files = [], entries = {}, seen = new Set();
     function visit(relative = '') {
@@ -39,6 +61,18 @@ function build(root) {
       }
     }
     visit();
+    const usedLabels = new Set();
+    for (const file of files.filter(file => /\.txt$/i.test(file.path))) {
+      for (const label of referencedLabels(entries['files/' + file.path][0].toString('utf8'))) {
+        const resource = path.posix.join(path.posix.dirname(file.path), 'ImgLabel', label + '.IL');
+        if (!files.some(item => item.path === resource)) throw Error(`${file.path} 缺少相邻图像标签：${resource}`);
+        usedLabels.add(resource);
+      }
+    }
+    for (const file of files.filter(file => /\.il$/i.test(file.path))) if (!usedLabels.has(file.path)) throw Error('包内有未使用的图像标签：' + file.path);
+    if (manifest.legacyPaths != null && (typeof manifest.legacyPaths !== 'object' || Array.isArray(manifest.legacyPaths)
+      || Object.entries(manifest.legacyPaths).some(([file, legacy]) => !files.some(item => item.path === file) || !safePath(legacy) || legacy.split('/').some(part => part.startsWith('.'))
+        || !/\.(txt|il)$/i.test(file) || path.posix.extname(file).toLowerCase() !== path.posix.extname(legacy).toLowerCase() || overlaps(manifest.installFolder, legacy)))) throw Error('旧脚本迁移清单无效');
     if (!files.some(file => /\.txt$/i.test(file.path)) || files.length > 256 || files.reduce((n,f) => n + f.bytes, 0) > 50 * 1024 * 1024) throw Error('脚本包为空或过大');
     const categories = new Map();
     if (manifest.categories != null) {
@@ -72,4 +106,4 @@ function build(root) {
   return catalog;
 }
 if (require.main === module) console.log(`Built ${build(path.resolve(__dirname, '..')).packages.length} packages`);
-module.exports = { build };
+module.exports = { build, referencedLabels };

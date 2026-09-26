@@ -60,3 +60,43 @@ test('catalog includes the same categorized file list and guide as the archive',
   fs.writeFileSync(file, JSON.stringify({ ...manifest, categories: [{ name: '测种', files: ['不存在.txt'] }] }));
   assert.throws(() => build(root), /不存在/);
 });
+
+test('nested game/function folders are allowed, overlapping packages are rejected', t => {
+  const { root, folder } = fixture(t), file = path.join(folder, 'manifest.json'), manifest = JSON.parse(fs.readFileSync(file));
+  fs.writeFileSync(file, JSON.stringify({ ...manifest, installFolder: '珍钻复刻/测种' }));
+  assert.equal(build(root).packages[0].installFolder, '珍钻复刻/测种');
+  const second = path.join(root, 'bundles/other'); fs.cpSync(folder, second, { recursive: true });
+  fs.writeFileSync(path.join(second, 'manifest.json'), JSON.stringify({ ...manifest, id: 'other', installFolder: '珍钻复刻' }));
+  assert.throws(() => build(root), /重叠/);
+});
+
+test('labels must be used and sit beside the script that references them', t => {
+  const { root, folder } = fixture(t), script = path.join(folder, 'files/测试.txt');
+  fs.writeFileSync(script, '$1 = @宝可表\n# @注释\nPRINT "@文本"\nPRINT 说明@文字\n');
+  assert.throws(() => build(root), /缺少.*宝可表/);
+  fs.mkdirSync(path.join(folder, 'files/ImgLabel'));
+  fs.writeFileSync(path.join(folder, 'files/ImgLabel/宝可表.IL'), '{"ImgBase64":"ABC","searchMethod":5}');
+  assert.equal(build(root).packages[0].files.filter(file => /\.IL$/i.test(file.path)).length, 1);
+  fs.writeFileSync(path.join(folder, 'files/ImgLabel/无关.IL'), '{"ImgBase64":"ABC","searchMethod":5}');
+  assert.throws(() => build(root), /未使用/);
+});
+
+test('the 0.0.2 split retains every original txt byte and only the four required labels per roamer', () => {
+  const root = path.resolve(__dirname, '..');
+  const original = unzipSync(fs.readFileSync(path.join(root, 'packages/bdsp-official/0.0.1.zip')));
+  const seen = new Set();
+  for (const id of fs.readdirSync(path.join(root, 'bundles'))) {
+    const folder = path.join(root, 'bundles', id), manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json')));
+    if (manifest.version !== '0.0.2') continue;
+    const scripts = fs.readdirSync(path.join(folder, 'files')).filter(file => /\.txt$/i.test(file));
+    assert.equal(scripts.length, 1);
+    const script = scripts[0]; assert.ok(!seen.has(script)); seen.add(script);
+    assert.deepEqual(fs.readFileSync(path.join(folder, 'files', script)), Buffer.from(original['files/' + script]));
+    const labels = path.join(folder, 'files/ImgLabel');
+    if (['bdsp-mesprit', 'bdsp-cresselia'].includes(id)) {
+      assert.deepEqual(fs.readdirSync(labels).sort(), ['喷雾消失了.IL', '宝可表.IL', '艾姆利多在水域.IL', '艾姆利多在202路.IL'].sort());
+      for (const file of fs.readdirSync(labels)) assert.deepEqual(fs.readFileSync(path.join(labels, file)), Buffer.from(original['files/ImgLabel/' + file]));
+    } else assert.equal(fs.existsSync(labels), false);
+  }
+  assert.ok(seen.size > 0);
+});
