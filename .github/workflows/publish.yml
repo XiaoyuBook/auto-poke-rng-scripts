@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches: [main]
-    paths: ['bundles/**', 'tools/**', 'tests/**', 'package*.json', '.github/workflows/publish.yml']
+    paths: ['bundles/**', 'categories/**', 'LICENSE.md', 'tools/**', 'tests/**', 'package*.json', '.github/workflows/publish.yml']
   workflow_dispatch:
 permissions:
   contents: read

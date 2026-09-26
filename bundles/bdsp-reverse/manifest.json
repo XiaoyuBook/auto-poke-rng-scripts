@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bdsp-reverse",
   "name": "捕捉反查",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "minimumAppVersion": "0.1.0",
   "installFolder": "珍钻复刻/捕捉反查",
   "game": "BDSP",
@@ -15,7 +15,7 @@
   "updatedAt": "2026-09-26",
   "categories": [
     {
-      "name": "捕捉与反查",
+      "name": "反查脚本",
       "files": [
         "捕捉反查脚本.txt"
       ]

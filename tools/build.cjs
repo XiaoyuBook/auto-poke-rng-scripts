@@ -32,6 +32,17 @@ function referencedLabels(source) {
 }
 function build(root) {
   const packages = [], folders = new Set();
+  const license = fs.readFileSync(path.join(root, 'LICENSE.md'));
+  if (!license.length || license.length > 100 * 1024) throw Error('仓库许可证无效');
+  const categoryReadmes = {};
+  const categoriesRoot = path.join(root, 'categories');
+  for (const name of fs.readdirSync(categoriesRoot)) {
+    const directory = path.join(categoriesRoot, name);
+    if (!safePath(name) || !fs.statSync(directory).isDirectory()) throw Error('分类目录无效');
+    const readme = fs.readFileSync(path.join(directory, 'README.md'), 'utf8');
+    if (!text(readme, 30000)) throw Error('分类说明无效：' + name);
+    categoryReadmes[name] = readme;
+  }
   for (const id of fs.readdirSync(path.join(root, 'bundles')).sort()) {
     if (!/^[a-z][a-z0-9-]{0,63}$/.test(id)) throw Error('包 ID 无效');
     const directory = path.join(root, 'bundles', id);
@@ -39,7 +50,7 @@ function build(root) {
     if (manifest.schemaVersion !== 1 || manifest.id !== id || !version(manifest.version) || !version(manifest.minimumAppVersion)
       || !text(manifest.name, 100) || !text(manifest.description, 3000) || !text(manifest.game, 50)
       || !Array.isArray(manifest.authors) || !manifest.authors.length || manifest.authors.length > 20 || manifest.authors.some(author => !text(author, 100))
-      || (manifest.instructions != null && !text(manifest.instructions, 12000))) throw Error('包描述无效');
+      || (manifest.instructions != null && !text(manifest.instructions, 12000)) || manifest.license !== 'GPL-3.0-or-later') throw Error('包描述无效');
     if (!safePath(manifest.installFolder) || manifest.installFolder.split('/').some(part => part.startsWith('.')) || [...folders].some(folder => overlaps(folder, manifest.installFolder))) throw Error('安装目录无效、重复或重叠');
     folders.add(manifest.installFolder.toLowerCase());
     const files = [], entries = {}, seen = new Set();
@@ -61,6 +72,9 @@ function build(root) {
       }
     }
     visit();
+    if (seen.has('license.md')) throw Error('包内许可证应由仓库根文件生成');
+    files.push({ path: 'LICENSE.md', bytes: license.length, sha256: hash(license) });
+    entries['files/LICENSE.md'] = [license, { mtime: new Date(1980, 0, 1) }];
     const usedLabels = new Set();
     for (const file of files.filter(file => /\.txt$/i.test(file.path))) {
       for (const label of referencedLabels(entries['files/' + file.path][0].toString('utf8'))) {
@@ -78,19 +92,16 @@ function build(root) {
     if (manifest.categories != null) {
       if (!Array.isArray(manifest.categories) || manifest.categories.length > 30) throw Error('脚本分类无效');
       for (const group of manifest.categories) {
-        if (!text(group.name, 50) || !Array.isArray(group.files)) throw Error('脚本分类无效');
+        if (!text(group.name, 50) || !categoryReadmes[group.name] || !Array.isArray(group.files)) throw Error('脚本分类无效');
         for (const name of group.files) {
           if (!files.some(file => file.path === name) || categories.has(name)) throw Error('分类文件不存在或重复：' + name);
           categories.set(name, group.name);
         }
       }
     }
-    for (const file of files) file.category = categories.get(file.path) || (/\.il$/i.test(file.path) ? '图像标签' : /\.md$/i.test(file.path) ? '使用说明' : '其他脚本');
-    const readmeFile = files.find(file => file.path === 'README.md');
-    const readme = readmeFile ? fs.readFileSync(path.join(directory, 'files/README.md'), 'utf8') : undefined;
-    if (readme && readme.length > 30000) throw Error('使用说明过大');
+    for (const file of files) file.category = categories.get(file.path) || (file.path === 'LICENSE.md' ? '许可证' : /\.il$/i.test(file.path) ? '图像标签' : /\.md$/i.test(file.path) ? '使用说明' : '其他脚本');
     const { categories: _categories, ...metadata } = manifest;
-    const complete = { ...metadata, files, ...(readme ? { readme } : {}) };
+    const complete = { ...metadata, files };
     entries['manifest.json'] = [Buffer.from(JSON.stringify(complete, null, 2) + '\n'), { mtime: new Date(1980, 0, 1) }];
     const bytes = Buffer.from(zipSync(entries, { level: 9 }));
     if (bytes.length > 20 * 1024 * 1024) throw Error('压缩包过大');
@@ -100,7 +111,7 @@ function build(root) {
     fs.writeFileSync(target, bytes);
     packages.push({ ...complete, archive, bytes: bytes.length, sha256: hash(bytes) });
   }
-  const catalog = { schemaVersion: 1, packages };
+  const catalog = { schemaVersion: 1, categoryReadmes, packages };
   if (packages.length > 100 || Buffer.byteLength(JSON.stringify(catalog)) > 2 * 1024 * 1024) throw Error('目录索引过大');
   fs.writeFileSync(path.join(root, 'catalog.json'), JSON.stringify(catalog, null, 2) + '\n');
   return catalog;

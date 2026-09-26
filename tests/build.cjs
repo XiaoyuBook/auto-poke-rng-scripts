@@ -8,7 +8,10 @@ const { build } = require('../tools/build.cjs');
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'rng-pack-build-'));
   const folder = path.join(root, 'bundles/demo'); fs.mkdirSync(path.join(folder, 'files'), { recursive: true });
-  const manifest = { schemaVersion: 1, id: 'demo', name: '示例', description: '测试', game: 'BDSP', authors: ['author'], version: '1.0.0', minimumAppVersion: '0.1.0', installFolder: 'Demo' };
+  fs.mkdirSync(path.join(root, 'categories/测种'), { recursive: true });
+  fs.writeFileSync(path.join(root, 'categories/测种/README.md'), '# 测种\n\n先核对画面。');
+  fs.writeFileSync(path.join(root, 'LICENSE.md'), 'Shared GPL-3.0-or-later license');
+  const manifest = { schemaVersion: 1, id: 'demo', name: '示例', description: '测试', game: 'BDSP', authors: ['author'], version: '1.0.0', minimumAppVersion: '0.1.0', installFolder: 'Demo', license: 'GPL-3.0-or-later' };
   fs.writeFileSync(path.join(folder, 'manifest.json'), JSON.stringify(manifest));
   fs.writeFileSync(path.join(folder, 'files/测试.txt'), 'A 1\n');
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
@@ -21,6 +24,7 @@ test('build emits a complete Unicode package and reproducible hashes', t => {
   assert.equal(Buffer.from(files['files/测试.txt']).toString(), 'A 1\n');
   const manifest = JSON.parse(Buffer.from(files['manifest.json']));
   assert.equal(manifest.files[0].bytes, 4); assert.match(manifest.files[0].sha256, /^[a-f0-9]{64}$/);
+  assert.equal(Buffer.from(files['files/LICENSE.md']).toString(), 'Shared GPL-3.0-or-later license');
 });
 test('published versions are immutable', t => {
   const { root, folder } = fixture(t); build(root);
@@ -48,15 +52,17 @@ test('published metadata and text limits satisfy the client protocol', t => {
   assert.throws(() => build(root), /过大/);
 });
 
-test('catalog includes the same categorized file list and guide as the archive', t => {
+test('catalog has one category guide and ZIP copies the shared license', t => {
   const { root, folder } = fixture(t), file = path.join(folder, 'manifest.json');
   const manifest = JSON.parse(fs.readFileSync(file));
   fs.writeFileSync(file, JSON.stringify({ ...manifest, categories: [{ name: '测种', files: ['测试.txt'] }] }));
-  fs.writeFileSync(path.join(folder, 'files/README.md'), '# 使用说明\n\n请先核对画面。');
-  const item = build(root).packages[0];
+  const catalog = build(root), item = catalog.packages[0];
+  assert.match(catalog.categoryReadmes['测种'], /先核对画面/);
   assert.equal(item.files.find(file => file.path === '测试.txt').category, '测种');
-  const packed = JSON.parse(Buffer.from(unzipSync(fs.readFileSync(path.join(root, item.archive)))['manifest.json']));
-  assert.deepEqual(item.files, packed.files); assert.equal(item.readme, packed.readme);
+  const archive = unzipSync(fs.readFileSync(path.join(root, item.archive)));
+  const packed = JSON.parse(Buffer.from(archive['manifest.json']));
+  assert.deepEqual(item.files, packed.files); assert.equal(item.readme, undefined);
+  assert.equal(Buffer.from(archive['files/LICENSE.md']).toString(), fs.readFileSync(path.join(root, 'LICENSE.md'), 'utf8'));
   fs.writeFileSync(file, JSON.stringify({ ...manifest, categories: [{ name: '测种', files: ['不存在.txt'] }] }));
   assert.throws(() => build(root), /不存在/);
 });
@@ -81,13 +87,13 @@ test('labels must be used and sit beside the script that references them', t => 
   assert.throws(() => build(root), /未使用/);
 });
 
-test('the 0.0.2 split retains every original txt byte and only the four required labels per roamer', () => {
+test('the 0.0.3 categorized catalog retains original scripts and required labels', () => {
   const root = path.resolve(__dirname, '..');
   const original = unzipSync(fs.readFileSync(path.join(root, 'packages/bdsp-official/0.0.1.zip')));
   const seen = new Set();
   for (const id of fs.readdirSync(path.join(root, 'bundles'))) {
     const folder = path.join(root, 'bundles', id), manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json')));
-    if (manifest.version !== '0.0.2') continue;
+    assert.equal(manifest.version, '0.0.3');
     const scripts = fs.readdirSync(path.join(folder, 'files')).filter(file => /\.txt$/i.test(file));
     assert.equal(scripts.length, 1);
     const script = scripts[0]; assert.ok(!seen.has(script)); seen.add(script);
@@ -98,5 +104,14 @@ test('the 0.0.2 split retains every original txt byte and only the four required
       for (const file of fs.readdirSync(labels)) assert.deepEqual(fs.readFileSync(path.join(labels, file)), Buffer.from(original['files/ImgLabel/' + file]));
     } else assert.equal(fs.existsSync(labels), false);
   }
-  assert.ok(seen.size > 0);
+  assert.equal(seen.size, 22);
+  assert.equal(fs.readdirSync(path.join(root, 'categories')).length, 6);
+  const categories = Object.fromEntries(fs.readdirSync(path.join(root, 'bundles')).map(id => {
+    const manifest = JSON.parse(fs.readFileSync(path.join(root, 'bundles', id, 'manifest.json')));
+    return [id, manifest.categories.find(group => group.files.some(file => file.endsWith('.txt')))?.name];
+  }));
+  assert.equal(categories['bdsp-name'], '撞帧脚本');
+  assert.equal(Object.values(categories).filter(category => category === '撞帧脚本').length, 9);
+  assert.ok(!Object.hasOwn(categories, 'bdsp-ocr-page'));
+  assert.ok(!Object.hasOwn(categories, 'bdsp-record'));
 });

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bdsp-pokedex-advance",
   "name": "神奥图鉴过帧",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "minimumAppVersion": "0.1.0",
   "installFolder": "珍钻复刻/神奥图鉴过帧",
   "game": "BDSP",
@@ -15,7 +15,7 @@
   "updatedAt": "2026-09-26",
   "categories": [
     {
-      "name": "推进与撞帧",
+      "name": "过帧脚本",
       "files": [
         "神奥图鉴过帧.txt"
       ]
