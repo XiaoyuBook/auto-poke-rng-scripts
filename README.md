@@ -6,7 +6,7 @@
 
 本仓库只维护根目录一份 `LICENSE.md`。构建独立 ZIP 时自动附带该文件，离线导入仍可查看授权条款。
 
-当前发布 **0.0.3 测试版**。测试阶段按 `0.0.x` 递增，正式上线时再发布 `1.0.0`。旧 `packages/bdsp-official/0.0.1.zip` 和已退出目录的脚本包压缩文件保留原始字节供恢复，不再列入新索引。早期试验中误用的 `1.0.0`、`1.0.1` 原文件可从 Git 历史恢复，不作为正式发布。
+当前发布 **0.0.4 测试版**。测试阶段按 `0.0.x` 递增，正式上线时再发布 `1.0.0`。旧 `packages/bdsp-official/0.0.1.zip` 和已退出目录的脚本包压缩文件保留原始字节供恢复，不再列入新索引。早期试验中误用的 `1.0.0`、`1.0.1` 原文件可从 Git 历史恢复，不作为正式发布。
 
 已有 `BDSP/` 大包的用户直接按需安装独立包：客户端预览从旧目录迁移的文件，默认保留个人修改和删除，源文件留作备份，自动流程旧路径对应到新包。新包使用独立 ID，不需要删除原安装记录，也不会覆盖尚未迁移的其他脚本或个人标签。请使用支持独立包的新版客户端。
 
@@ -41,7 +41,7 @@ bundles/bdsp-mesprit/manifest.json       红圣菇包信息与起始条件
 bundles/bdsp-mesprit/files/红圣菇.txt     原版脚本
 bundles/bdsp-mesprit/files/ImgLabel/     4 个必需标签
 bundles/bdsp-seed/files/BDSP测种.txt     无需标签的独立测种包
-packages/bdsp-mesprit/0.0.3.zip         可安装的测试包
+packages/bdsp-mesprit/0.0.4.zip         可安装的测试包
 catalog.json                           客户端目录索引
 ```
 

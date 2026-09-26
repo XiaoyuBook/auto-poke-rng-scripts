@@ -1,7 +1,7 @@
 {
   "name": "auto-poke-rng-scripts",
   "private": true,
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "build": "node tools/build.cjs",
     "test": "node --test tests/build.cjs"

@@ -67,6 +67,22 @@ test('catalog has one category guide and ZIP copies the shared license', t => {
   assert.throws(() => build(root), /不存在/);
 });
 
+test('license line endings produce the same published archive on every checkout', t => {
+  const { root } = fixture(t), file = path.join(root, 'LICENSE.md');
+  fs.writeFileSync(file, 'line one\nline two\n');
+  const first = build(root);
+  fs.writeFileSync(file, 'line one\r\nline two\r\n');
+  assert.deepEqual(build(root), first);
+  const archive = unzipSync(fs.readFileSync(path.join(root, first.packages[0].archive)));
+  assert.equal(Buffer.from(archive['files/LICENSE.md']).toString(), 'line one\r\nline two\r\n');
+});
+
+test('category guides use consistent line endings in the catalog', t => {
+  const { root } = fixture(t), file = path.join(root, 'categories/测种/README.md');
+  fs.writeFileSync(file, '# 测种\r\n\r\n先核对画面。');
+  assert.equal(build(root).categoryReadmes['测种'], '# 测种\n\n先核对画面。');
+});
+
 test('nested game/function folders are allowed, overlapping packages are rejected', t => {
   const { root, folder } = fixture(t), file = path.join(folder, 'manifest.json'), manifest = JSON.parse(fs.readFileSync(file));
   fs.writeFileSync(file, JSON.stringify({ ...manifest, installFolder: '珍钻复刻/测种' }));
@@ -87,13 +103,13 @@ test('labels must be used and sit beside the script that references them', t => 
   assert.throws(() => build(root), /未使用/);
 });
 
-test('the 0.0.3 categorized catalog retains original scripts and required labels', () => {
+test('the 0.0.4 categorized catalog retains original scripts and required labels', () => {
   const root = path.resolve(__dirname, '..');
   const original = unzipSync(fs.readFileSync(path.join(root, 'packages/bdsp-official/0.0.1.zip')));
   const seen = new Set();
   for (const id of fs.readdirSync(path.join(root, 'bundles'))) {
     const folder = path.join(root, 'bundles', id), manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json')));
-    assert.equal(manifest.version, '0.0.3');
+    assert.equal(manifest.version, '0.0.4');
     const scripts = fs.readdirSync(path.join(folder, 'files')).filter(file => /\.txt$/i.test(file));
     assert.equal(scripts.length, 1);
     const script = scripts[0]; assert.ok(!seen.has(script)); seen.add(script);

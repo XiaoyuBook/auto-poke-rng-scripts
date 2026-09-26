@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bdsp-starter-hit",
   "name": "御三家撞帧",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "minimumAppVersion": "0.1.0",
   "installFolder": "珍钻复刻/御三家撞帧",
   "game": "BDSP",

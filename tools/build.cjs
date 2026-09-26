@@ -32,14 +32,15 @@ function referencedLabels(source) {
 }
 function build(root) {
   const packages = [], folders = new Set();
-  const license = fs.readFileSync(path.join(root, 'LICENSE.md'));
+  // Keep archive bytes stable across Windows and Linux Git checkouts.
+  const license = Buffer.from(fs.readFileSync(path.join(root, 'LICENSE.md'), 'utf8').replace(/\r\n|\r|\n/g, '\r\n'));
   if (!license.length || license.length > 100 * 1024) throw Error('仓库许可证无效');
   const categoryReadmes = {};
   const categoriesRoot = path.join(root, 'categories');
   for (const name of fs.readdirSync(categoriesRoot)) {
     const directory = path.join(categoriesRoot, name);
     if (!safePath(name) || !fs.statSync(directory).isDirectory()) throw Error('分类目录无效');
-    const readme = fs.readFileSync(path.join(directory, 'README.md'), 'utf8');
+    const readme = fs.readFileSync(path.join(directory, 'README.md'), 'utf8').replace(/\r\n|\r/g, '\n');
     if (!text(readme, 30000)) throw Error('分类说明无效：' + name);
     categoryReadmes[name] = readme;
   }

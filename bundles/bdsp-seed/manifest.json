@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bdsp-seed",
   "name": "测种",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "minimumAppVersion": "0.1.0",
   "installFolder": "珍钻复刻/测种",
   "game": "BDSP",
