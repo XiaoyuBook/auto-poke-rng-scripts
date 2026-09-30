@@ -17,7 +17,7 @@ function auditFrlg(root) {
     .filter(entry => entry.isFile()).map(entry => path.relative(root, path.join(entry.parentPath, entry.name)).replaceAll('\\', '/'))
     .filter(file => !file.startsWith('lib/seed_backup/')).sort();
   const labels = fs.readdirSync(path.join(root, 'ImgLabel')).filter(file => file.endsWith('.IL')).sort();
-  if (libs.length + entries.length !== 33 || fingerprint(root, [...entries, ...libs]) !== 'eb18777c634b7c5ab10c0f5a930fe29d65b1fdca7d18edb10b461c733dd30bbb') throw Error('火叶脚本指纹不匹配');
+  if (libs.length + entries.length !== 33 || fingerprint(root, [...entries, ...libs]) !== 'b4bef3a3fe178bb37eb6b66adada6bd1113a8f81d4efb8248143b1a62062f2e7') throw Error('火叶脚本指纹不匹配');
   if (labels.length !== 1154 || fingerprint(path.join(root, 'ImgLabel'), labels) !== '4d99ab33920f8812dea403b4ab0680b40aabf1c4eb370e1a6678a193898429ac') throw Error('火叶标签指纹不匹配');
   for (const [name, expected] of Object.entries({
     'frlg_battle.traineddata': '7abcaef4936727b33717656b38fd5b5027823e1cafec21abb06cc8ef1f7ff758',

@@ -993,7 +993,7 @@
       "schemaVersion": 1,
       "id": "frlg-automation",
       "name": "野生／静态自动流程",
-      "version": "0.0.1",
+      "version": "0.0.2",
       "minimumAppVersion": "0.1.0",
       "installFolder": "火红叶绿/自动流程",
       "game": "FRLG",
@@ -1003,14 +1003,18 @@
       ],
       "description": "火叶原版 2.0 正式／时间轴入口、共享库、1154 个识别标签及 OCR 模型。由自动流程根据当前方案生成独立工程，使用本应用公共执行器运行。",
       "instructions": "在火叶首页选择存档，进入自动流程搜索后运行。使用 1920×1080 原始游戏画面；游戏运行起点、道具顺序和队伍配置以原版入口的运行要求为准。普通目标队伍放五只宝可梦，第六位留空；波克比留第五、六位；野生草丛／冲浪队首带甜甜香气。道具第一页第一格放神奇糖果；重要道具依次放 Teachy TV、自行车，钓鱼时第三项放对应钓竿；捕获流程球袋第一格放大师球，出闪后继续抓捕时第二格放所用球种。麻痹、点到为止、游走和道具模式的附加要求见运行日志。原版支持的野生和静态路线分别保留原版逻辑；碎岩和狩猎区冲浪只允许搜索。离线编译与资源校验不等于实机验收。",
-      "updatedAt": "2026-09-30",
+      "updatedAt": "2026-10-01",
       "resourceLayout": "easycon-project",
       "source": {
         "repository": "https://github.com/axechaso/frlg-auto-rng",
         "revision": "5a5383ff226059cbf85f0b531c9de283f7b76c45",
         "release": "v0.9.4.1",
         "archiveSha256": "8c881854eb22e364897f9a5aa37ce510fe57c746d84349962af6e8b36701aef2",
-        "scriptsSha256": "eb18777c634b7c5ab10c0f5a930fe29d65b1fdca7d18edb10b461c733dd30bbb",
+        "upstreamScriptsSha256": "eb18777c634b7c5ab10c0f5a930fe29d65b1fdca7d18edb10b461c733dd30bbb",
+        "scriptsSha256": "b4bef3a3fe178bb37eb6b66adada6bd1113a8f81d4efb8248143b1a62062f2e7",
+        "patches": [
+          "frlg-start-menu-navigation"
+        ],
         "labelsSha256": "4d99ab33920f8812dea403b4ab0680b40aabf1c4eb370e1a6678a193898429ac"
       },
       "license": "NOASSERTION",
@@ -7941,20 +7945,20 @@
         },
         {
           "path": "NS火叶全自动一键乱数2.0-时间轴.ecs",
-          "bytes": 439433,
-          "sha256": "335a6c22d1d9329a482d93df8584ccb6232e313ba3e69aacf3a9a0c1cfbd1994",
+          "bytes": 439764,
+          "sha256": "d8041304d952385f6f33de7769b27a897b1def6e4a4bd3d5d506876c771786e3",
           "category": "其他脚本"
         },
         {
           "path": "NS火叶全自动一键乱数2.0.ecs",
-          "bytes": 435869,
-          "sha256": "5fe3320754f8d68c88fdd821e7d0f982f8d5a12bc5647a7ffdfb91662e6c7983",
+          "bytes": 436200,
+          "sha256": "7e6b9b5013447bab9794ab9894bbf367c89b7741770cbfbe0837ab9bd802ea5a",
           "category": "其他脚本"
         },
         {
           "path": "SOURCE.md",
-          "bytes": 1136,
-          "sha256": "cb74c4e5042a83a82cb2f38127934d67deedb1b96a5e9a12a4fb6e1e21ba9a10",
+          "bytes": 1575,
+          "sha256": "85ca5509a81a53448c52afd32c60f51641918dcfa89d55d20514ed22c17b80ef",
           "category": "使用说明"
         },
         {
@@ -8162,9 +8166,9 @@
           "category": "许可证"
         }
       ],
-      "archive": "packages/frlg-automation/0.0.1.zip",
-      "bytes": 19145795,
-      "sha256": "f0af80c1a2eb4c36fb9dad81f388dfc528b43653ed75aeba3bfbb08ad11cbf29"
+      "archive": "packages/frlg-automation/0.0.2.zip",
+      "bytes": 19146268,
+      "sha256": "ac6bc78c30e5f302121ce0619d87294007be21cc9f4cf9576b65879b2ffb65f8"
     }
   ]
 }
