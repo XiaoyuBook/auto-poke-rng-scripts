@@ -1,0 +1,121 @@
+﻿# ==================================================
+# lib/20_显示_文本.ecs
+#
+# 函数：
+#   性别文本($性别)
+#   性格文本($性格)
+#   反查算法文本
+# ==================================================
+
+FUNC 性别文本($性别: INT): STRING
+    IF $性别 == 0
+        RETURN "雄 / Male"
+    ELIF $性别 == 1
+        RETURN "雌 / Female"
+    ELIF $性别 == 2
+        RETURN "无性别 / Genderless"
+    ENDIF
+
+    RETURN "未知 / Unknown"
+ENDFUNC
+
+
+FUNC 性格文本($性格: INT): STRING
+    IF $性格 == 0
+        RETURN "勤奋 / Hardy"
+    ELIF $性格 == 1
+        RETURN "怕寂寞 / Lonely"
+    ELIF $性格 == 2
+        RETURN "勇敢 / Brave"
+    ELIF $性格 == 3
+        RETURN "固执 / Adamant"
+    ELIF $性格 == 4
+        RETURN "顽皮 / Naughty"
+    ELIF $性格 == 5
+        RETURN "大胆 / Bold"
+    ELIF $性格 == 6
+        RETURN "坦率 / Docile"
+    ELIF $性格 == 7
+        RETURN "悠闲 / Relaxed"
+    ELIF $性格 == 8
+        RETURN "淘气 / Impish"
+    ELIF $性格 == 9
+        RETURN "乐天 / Lax"
+    ELIF $性格 == 10
+        RETURN "胆小 / Timid"
+    ELIF $性格 == 11
+        RETURN "急躁 / Hasty"
+    ELIF $性格 == 12
+        RETURN "认真 / Serious"
+    ELIF $性格 == 13
+        RETURN "爽朗 / Jolly"
+    ELIF $性格 == 14
+        RETURN "天真 / Naive"
+    ELIF $性格 == 15
+        RETURN "内敛 / Modest"
+    ELIF $性格 == 16
+        RETURN "慢吞吞 / Mild"
+    ELIF $性格 == 17
+        RETURN "冷静 / Quiet"
+    ELIF $性格 == 18
+        RETURN "害羞 / Bashful"
+    ELIF $性格 == 19
+        RETURN "马虎 / Rash"
+    ELIF $性格 == 20
+        RETURN "温和 / Calm"
+    ELIF $性格 == 21
+        RETURN "温顺 / Gentle"
+    ELIF $性格 == 22
+        RETURN "自大 / Sassy"
+    ELIF $性格 == 23
+        RETURN "慎重 / Careful"
+    ELIF $性格 == 24
+        RETURN "浮躁 / Quirky"
+    ENDIF
+
+    RETURN "未知 / Unknown"
+ENDFUNC
+
+# ==================================================
+# 反查算法文本
+# ==================================================
+
+FUNC 反查算法文本($算法: INT): STRING
+    IF $算法 == 1
+        RETURN "Static1"
+    ELIF $算法 == 2
+        RETURN "Static2"
+    ELIF $算法 == 4
+        RETURN "Static4"
+    ELIF $算法 == 101
+        RETURN "Wild1"
+    ELIF $算法 == 102
+        RETURN "Wild2"
+    ELIF $算法 == 104
+        RETURN "Wild4"
+    ELIF $算法 == 199
+        RETURN "全部野生方法 / Wild1+Wild2+Wild4"
+    ENDIF
+
+    RETURN "未知算法"
+ENDFUNC
+
+FUNC 雌性比例文本($性别阈值: INT): STRING
+    IF $性别阈值 == 255
+        RETURN "无性别"
+    ELIF $性别阈值 == 254
+        RETURN "100"
+    ELIF $性别阈值 == 191
+        RETURN "75"
+    ELIF $性别阈值 == 127
+        RETURN "50"
+    ELIF $性别阈值 == 63
+        RETURN "25"
+    ELIF $性别阈值 == 31
+        RETURN "12.5"
+    ELIF $性别阈值 == 0
+        RETURN "0"
+    ENDIF
+
+    RETURN "未知"
+ENDFUNC

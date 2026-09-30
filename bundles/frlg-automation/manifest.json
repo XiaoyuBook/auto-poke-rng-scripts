@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "frlg-automation",
+  "name": "野生／静态自动流程",
+  "version": "0.0.1",
+  "minimumAppVersion": "0.1.0",
+  "installFolder": "火红叶绿/自动流程",
+  "game": "FRLG",
+  "authors": ["原版 NS火叶全自动一键乱数2.0 作者", "axechaso/frlg-auto-rng 贡献者"],
+  "description": "火叶原版 2.0 正式／时间轴入口、共享库、1154 个识别标签及 OCR 模型。由自动流程根据当前方案生成独立工程，使用本应用公共执行器运行。",
+  "instructions": "在火叶首页选择存档，进入自动流程搜索后运行。使用 1920×1080 原始游戏画面；游戏运行起点、道具顺序和队伍配置以原版入口的运行要求为准。普通目标队伍放五只宝可梦，第六位留空；波克比留第五、六位；野生草丛／冲浪队首带甜甜香气。道具第一页第一格放神奇糖果；重要道具依次放 Teachy TV、自行车，钓鱼时第三项放对应钓竿；捕获流程球袋第一格放大师球，出闪后继续抓捕时第二格放所用球种。麻痹、点到为止、游走和道具模式的附加要求见运行日志。原版支持的野生和静态路线分别保留原版逻辑；碎岩和狩猎区冲浪只允许搜索。离线编译与资源校验不等于实机验收。",
+  "updatedAt": "2026-09-30",
+  "resourceLayout": "easycon-project",
+  "source": {
+    "repository": "https://github.com/axechaso/frlg-auto-rng",
+    "revision": "5a5383ff226059cbf85f0b531c9de283f7b76c45",
+    "release": "v0.9.4.1",
+    "archiveSha256": "8c881854eb22e364897f9a5aa37ce510fe57c746d84349962af6e8b36701aef2",
+    "scriptsSha256": "eb18777c634b7c5ab10c0f5a930fe29d65b1fdca7d18edb10b461c733dd30bbb",
+    "labelsSha256": "4d99ab33920f8812dea403b4ab0680b40aabf1c4eb370e1a6678a193898429ac"
+  },
+  "license": "NOASSERTION"
+}

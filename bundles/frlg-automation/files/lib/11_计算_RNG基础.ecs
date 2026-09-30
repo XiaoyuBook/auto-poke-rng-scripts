@@ -1,0 +1,158 @@
+# ==================================================
+# lib/11_计算_RNG基础.ecs
+#
+# Gen3 LCRNG:
+#   seed = seed * 0x41C64E6D + 0x6073
+#   RAND = seed高16位
+#
+# seed用 HI / LO 两个16位数表示。
+# ==================================================
+
+FUNC RNG下一LO($hi: INT, $lo: INT): INT
+    $乘低 = $lo * 20077 + 24691
+    RETURN $乘低 % 65536
+ENDFUNC
+
+
+FUNC RNG下一HI($hi: INT, $lo: INT): INT
+    $乘低 = $lo * 20077 + 24691
+    $进位 = $乘低 / 65536
+
+    $部分1 = ($hi * 20077) % 65536
+    $部分2 = ($lo * 16838) % 65536
+
+    RETURN ($部分1 + $部分2 + $进位) % 65536
+ENDFUNC
+
+
+FUNC RNG前进N_HI($hi: INT, $lo: INT, $n: INT): INT
+    $临时HI = $hi
+    $临时LO = $lo
+
+    IF $n <= 0
+        RETURN $临时HI
+    ENDIF
+
+    FOR $i = 1 TO $n
+        $新HI = RNG下一HI($临时HI, $临时LO)
+        $新LO = RNG下一LO($临时HI, $临时LO)
+
+        $临时HI = $新HI
+        $临时LO = $新LO
+    NEXT
+
+    RETURN $临时HI
+ENDFUNC
+
+
+FUNC RNG前进N_LO($hi: INT, $lo: INT, $n: INT): INT
+    $临时HI = $hi
+    $临时LO = $lo
+
+    IF $n <= 0
+        RETURN $临时LO
+    ENDIF
+
+    FOR $i = 1 TO $n
+        $新HI = RNG下一HI($临时HI, $临时LO)
+        $新LO = RNG下一LO($临时HI, $临时LO)
+
+        $临时HI = $新HI
+        $临时LO = $新LO
+    NEXT
+
+    RETURN $临时LO
+ENDFUNC
+
+
+# Static1：
+# 起点seed经过消耗帧后：
+#   RNG1 -> PIDLO
+#   RNG2 -> PIDHI
+#   RNG3 -> IV1
+#   RNG4 -> IV2
+
+FUNC Static_PIDLO($hi: INT, $lo: INT): INT
+    RETURN RNG前进N_HI($hi, $lo, 1)
+ENDFUNC
+
+
+FUNC Static_PIDHI($hi: INT, $lo: INT): INT
+    RETURN RNG前进N_HI($hi, $lo, 2)
+ENDFUNC
+
+
+FUNC Static_IV1($hi: INT, $lo: INT): INT
+    RETURN RNG前进N_HI($hi, $lo, 3)
+ENDFUNC
+
+
+FUNC Static_IV2($hi: INT, $lo: INT): INT
+    RETURN RNG前进N_HI($hi, $lo, 4)
+ENDFUNC
+
+
+FUNC Static_性格($pidhi: INT, $pidlo: INT): INT
+    # PID % 25
+    # PID = PIDHI * 65536 + PIDLO
+    # 65536 % 25 = 11
+    RETURN (($pidhi % 25) * 11 + ($pidlo % 25)) % 25
+ENDFUNC
+
+
+FUNC Static_未知图腾形态($pidhi: INT, $pidlo: INT): INT
+    $未知图腾PID形态值 = (($pidhi >> 2) & 192)
+    $未知图腾PID形态值 = $未知图腾PID形态值 + (($pidhi & 3) * 16)
+    $未知图腾PID形态值 = $未知图腾PID形态值 + (($pidlo >> 6) & 12)
+    $未知图腾PID形态值 = $未知图腾PID形态值 + ($pidlo & 3)
+    RETURN $未知图腾PID形态值 % 28
+ENDFUNC
+
+
+FUNC Static_性别($pidlo: INT, $性别阈值: INT): INT
+    $性别码 = $pidlo % 256
+
+    IF $性别阈值 == 255
+        RETURN 2
+    ELIF $性别阈值 == 254
+        RETURN 1
+    ELIF $性别阈值 == 0
+        RETURN 0
+    ENDIF
+
+    IF $性别码 < $性别阈值
+        RETURN 1
+    ENDIF
+
+    RETURN 0
+ENDFUNC
+
+
+FUNC Static_HPIV($iv1: INT): INT
+    RETURN $iv1 & 31
+ENDFUNC
+
+
+FUNC Static_ATKIV($iv1: INT): INT
+    RETURN ($iv1 >> 5) & 31
+ENDFUNC
+
+
+FUNC Static_DEFIV($iv1: INT): INT
+    RETURN ($iv1 >> 10) & 31
+ENDFUNC
+
+
+FUNC Static_SPEIV($iv2: INT): INT
+    RETURN $iv2 & 31
+ENDFUNC
+
+
+FUNC Static_SPAIV($iv2: INT): INT
+    RETURN ($iv2 >> 5) & 31
+ENDFUNC
+
+
+FUNC Static_SPDIV($iv2: INT): INT
+    RETURN ($iv2 >> 10) & 31
+ENDFUNC

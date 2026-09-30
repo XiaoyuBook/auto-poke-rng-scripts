@@ -1,0 +1,316 @@
+﻿# ============================================================
+# lib/06_数据_宝可梦性别阈值.ecs
+#
+# 功能：
+#   按图鉴编号返回性别阈值。
+# ============================================================
+
+FUNC 取性别阈值($目标全国图鉴编号: INT): INT
+    IF $目标全国图鉴编号 == 1
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 4
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 7
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 10
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 11
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 13
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 14
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 16
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 17
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 19
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 20
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 21
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 22
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 23
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 24
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 25
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 27
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 28
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 29
+        RETURN 254
+    ELIF $目标全国图鉴编号 == 30
+        RETURN 254
+    ELIF $目标全国图鉴编号 == 32
+        RETURN 0
+    ELIF $目标全国图鉴编号 == 33
+        RETURN 0
+    ELIF $目标全国图鉴编号 == 35
+        RETURN 191
+    ELIF $目标全国图鉴编号 == 37
+        RETURN 191
+    ELIF $目标全国图鉴编号 == 39
+        RETURN 191
+    ELIF $目标全国图鉴编号 == 41
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 42
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 43
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 44
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 46
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 47
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 48
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 49
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 50
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 51
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 52
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 53
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 54
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 55
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 56
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 57
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 58
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 60
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 61
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 63
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 64
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 66
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 67
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 69
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 70
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 72
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 73
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 74
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 75
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 77
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 78
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 79
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 80
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 81
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 82
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 84
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 86
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 87
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 88
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 89
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 90
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 92
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 93
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 95
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 96
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 97
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 98
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 99
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 100
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 101
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 102
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 104
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 105
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 106
+        RETURN 0
+    ELIF $目标全国图鉴编号 == 107
+        RETURN 0
+    ELIF $目标全国图鉴编号 == 109
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 110
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 111
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 113
+        RETURN 254
+    ELIF $目标全国图鉴编号 == 114
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 115
+        RETURN 254
+    ELIF $目标全国图鉴编号 == 116
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 117
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 118
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 119
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 120
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 123
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 125
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 126
+        RETURN 63
+    ELIF $目标全国图鉴编号 == 127
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 128
+        RETURN 0
+    ELIF $目标全国图鉴编号 == 129
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 130
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 131
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 132
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 133
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 137
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 138
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 140
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 142
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 143
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 144
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 145
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 146
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 147
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 148
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 150
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 161
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 165
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 167
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 175
+        RETURN 31
+    ELIF $目标全国图鉴编号 == 177
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 179
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 183
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 187
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 190
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 193
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 194
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 198
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 200
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 201
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 202
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 204
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 206
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 211
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 213
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 214
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 215
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 216
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 218
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 219
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 220
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 223
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 225
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 226
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 227
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 228
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 231
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 234
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 235
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 243
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 244
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 245
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 246
+        RETURN 127
+    ELIF $目标全国图鉴编号 == 249
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 250
+        RETURN 255
+    ELIF $目标全国图鉴编号 == 386
+        RETURN 255
+    ENDIF
+
+    RETURN -1
+ENDFUNC

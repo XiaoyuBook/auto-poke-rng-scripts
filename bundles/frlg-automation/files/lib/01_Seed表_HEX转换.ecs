@@ -1,0 +1,110 @@
+﻿# ==================================================
+# lib/01_Seed表_HEX转换.ecs
+# HEX字符串转十进制整数
+#
+# 支持：
+#   "70FE"
+#   "70fe"
+#   "0x70FE"
+#   "0X70FE"
+#
+# 无效时返回 -1
+# ==================================================
+
+FUNC HEX字符值($c: STRING): INT
+    IF $c == "0"
+        RETURN 0
+    ELIF $c == "1"
+        RETURN 1
+    ELIF $c == "2"
+        RETURN 2
+    ELIF $c == "3"
+        RETURN 3
+    ELIF $c == "4"
+        RETURN 4
+    ELIF $c == "5"
+        RETURN 5
+    ELIF $c == "6"
+        RETURN 6
+    ELIF $c == "7"
+        RETURN 7
+    ELIF $c == "8"
+        RETURN 8
+    ELIF $c == "9"
+        RETURN 9
+    ELIF $c == "A"
+        RETURN 10
+    ELIF $c == "a"
+        RETURN 10
+    ELIF $c == "B"
+        RETURN 11
+    ELIF $c == "b"
+        RETURN 11
+    ELIF $c == "C"
+        RETURN 12
+    ELIF $c == "c"
+        RETURN 12
+    ELIF $c == "D"
+        RETURN 13
+    ELIF $c == "d"
+        RETURN 13
+    ELIF $c == "E"
+        RETURN 14
+    ELIF $c == "e"
+        RETURN 14
+    ELIF $c == "F"
+        RETURN 15
+    ELIF $c == "f"
+        RETURN 15
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+
+FUNC HEX转十进制($s: STRING): INT
+    $len = LEN($s)
+    $pos = 0
+    $end = 0
+    $val = 0
+    $digit = 0
+
+    IF $len <= 0
+        RETURN -1
+    ENDIF
+
+    # 支持 0x / 0X 前缀
+    IF $len >= 2
+        IF $s[0] == "0"
+            IF $s[1] == "x"
+                $pos = 2
+            ELIF $s[1] == "X"
+                $pos = 2
+            ENDIF
+        ENDIF
+    ENDIF
+
+    IF $pos >= $len
+        RETURN -1
+    ENDIF
+
+    # EasyCon 的 FOR..TO 包含终点，所以最后一位是 LEN - 1
+    $end = $len - 1
+
+    FOR $pos = $pos TO $end
+        $digit = HEX字符值($s[$pos])
+
+        IF $digit < 0
+            RETURN -1
+        ENDIF
+
+        $val = $val * 16 + $digit
+
+        # 16位 seed 范围保护
+        IF $val > 65535
+            RETURN -1
+        ENDIF
+    NEXT
+
+    RETURN $val
+ENDFUNC

@@ -1,0 +1,800 @@
+# ============================================================
+# lib/28_反查_孵蛋.ecs
+#
+# FRLG 蛋反查核心（参考本地 TenLines / PokeFinder EggGenerator3）。
+#
+# Seed关系模式：
+#   0 = Held 与 Pickup 使用同一个初始 Seed（当前正式支持）
+#   1 = Held 与 Pickup 使用不同初始 Seed（计算接口预留）
+#
+# 设计：
+# - 不建立蛋数据库；先生成 Held 候选（帧 + PID低半），再逐个 Pickup
+#   帧生成 PID高半、原始IV和三项遗传，最后用孵化观察值筛选。
+# - 两套 Seed、帧范围、offset 始终独立传入。模式0会强制两Seed相同，
+#   因此未来开放模式1时无需重写生成器。
+# - IV顺序统一为 HP / ATK / DEF / SPA / SPD / SPE。
+# - 孵蛋方法沿用 TenLines：11=Normal，12=Split，13=Alternate，14=Mixed。
+# - 相性仅接受 20 / 50 / 70。
+# - 结果只保存前 N 项，但总命中数会完整统计；N由执行入口传入。
+# ============================================================
+
+$孵蛋反查_双亲已设置 = 0
+$孵蛋反查_观察已设置 = 0
+$孵蛋反查_最后状态 = 0
+$孵蛋反查_最大窗口宽度 = 20000
+
+# 双亲IV（0=A，1=B）
+$孵蛋反查_A_HP = 0
+$孵蛋反查_A_ATK = 0
+$孵蛋反查_A_DEF = 0
+$孵蛋反查_A_SPA = 0
+$孵蛋反查_A_SPD = 0
+$孵蛋反查_A_SPE = 0
+$孵蛋反查_B_HP = 0
+$孵蛋反查_B_ATK = 0
+$孵蛋反查_B_DEF = 0
+$孵蛋反查_B_SPA = 0
+$孵蛋反查_B_SPD = 0
+$孵蛋反查_B_SPE = 0
+
+# 观察筛选；-1 表示该项不限
+$孵蛋反查_蛋种族 = 0
+$孵蛋反查_观察性格 = -1
+$孵蛋反查_观察性别 = -1
+$孵蛋反查_观察特性 = -1
+$孵蛋反查_观察闪光 = -1
+$孵蛋反查_TID = 0
+$孵蛋反查_SID = 0
+$孵蛋反查_HP最小 = 0
+$孵蛋反查_HP最大 = 31
+$孵蛋反查_ATK最小 = 0
+$孵蛋反查_ATK最大 = 31
+$孵蛋反查_DEF最小 = 0
+$孵蛋反查_DEF最大 = 31
+$孵蛋反查_SPA最小 = 0
+$孵蛋反查_SPA最大 = 31
+$孵蛋反查_SPD最小 = 0
+$孵蛋反查_SPD最大 = 31
+$孵蛋反查_SPE最小 = 0
+$孵蛋反查_SPE最大 = 31
+
+# Held中间候选
+$孵蛋反查_Held帧表 = []
+$孵蛋反查_HeldPID低表 = []
+$孵蛋反查_Held候选数 = 0
+
+# 最终结果
+$孵蛋反查_结果Held帧表 = []
+$孵蛋反查_结果Pickup帧表 = []
+$孵蛋反查_结果PID高表 = []
+$孵蛋反查_结果PID低表 = []
+$孵蛋反查_结果HP表 = []
+$孵蛋反查_结果ATK表 = []
+$孵蛋反查_结果DEF表 = []
+$孵蛋反查_结果SPA表 = []
+$孵蛋反查_结果SPD表 = []
+$孵蛋反查_结果SPE表 = []
+$孵蛋反查_结果遗传HP表 = []
+$孵蛋反查_结果遗传ATK表 = []
+$孵蛋反查_结果遗传DEF表 = []
+$孵蛋反查_结果遗传SPA表 = []
+$孵蛋反查_结果遗传SPD表 = []
+$孵蛋反查_结果遗传SPE表 = []
+$孵蛋反查_总命中数 = 0
+$孵蛋反查_已保存结果数 = 0
+$孵蛋反查_结果保存上限 = 0
+
+# RNG工作区
+$孵蛋反查_工作HI = 0
+$孵蛋反查_工作LO = 0
+$孵蛋反查_新HI = 0
+$孵蛋反查_新LO = 0
+$孵蛋反查_随机16 = 0
+
+# 当前Held/Pickup与蛋数据
+$孵蛋反查_当前Held帧 = 0
+$孵蛋反查_当前Pickup帧 = 0
+$孵蛋反查_当前PID高 = 0
+$孵蛋反查_当前PID低 = 0
+$孵蛋反查_当前HP = 0
+$孵蛋反查_当前ATK = 0
+$孵蛋反查_当前DEF = 0
+$孵蛋反查_当前SPA = 0
+$孵蛋反查_当前SPD = 0
+$孵蛋反查_当前SPE = 0
+$孵蛋反查_当前性格 = 0
+$孵蛋反查_当前性别 = 0
+$孵蛋反查_当前特性 = 0
+$孵蛋反查_当前闪光 = 0
+$孵蛋反查_当前实际种族 = 0
+$孵蛋反查_当前性别阈值 = 0
+
+# 遗传来源：0=未遗传，1=双亲A，2=双亲B
+$孵蛋反查_遗传HP = 0
+$孵蛋反查_遗传ATK = 0
+$孵蛋反查_遗传DEF = 0
+$孵蛋反查_遗传SPA = 0
+$孵蛋反查_遗传SPD = 0
+$孵蛋反查_遗传SPE = 0
+
+# FRLG遗传选择工作区
+$孵蛋反查_可选0 = 0
+$孵蛋反查_可选1 = 1
+$孵蛋反查_可选2 = 2
+$孵蛋反查_可选3 = 3
+$孵蛋反查_可选4 = 4
+$孵蛋反查_可选5 = 5
+$孵蛋反查_遗传随机0 = 0
+$孵蛋反查_遗传随机1 = 0
+$孵蛋反查_遗传随机2 = 0
+$孵蛋反查_亲代随机0 = 0
+$孵蛋反查_亲代随机1 = 0
+$孵蛋反查_亲代随机2 = 0
+$孵蛋反查_选择项 = 0
+$孵蛋反查_实际能力项 = 0
+
+
+# ============================================================
+# 输入配置
+# ============================================================
+
+FUNC 孵蛋反查_设置双亲($AHP: INT, $AATK: INT, $ADEF: INT, $ASPA: INT, $ASPD: INT, $ASPE: INT, $BHP: INT, $BATK: INT, $BDEF: INT, $BSPA: INT, $BSPD: INT, $BSPE: INT): INT
+    $孵蛋反查_双亲已设置 = 0
+    IF $AHP < 0 or $AHP > 31 or $AATK < 0 or $AATK > 31 or $ADEF < 0 or $ADEF > 31
+        RETURN 0
+    ENDIF
+    IF $ASPA < 0 or $ASPA > 31 or $ASPD < 0 or $ASPD > 31 or $ASPE < 0 or $ASPE > 31
+        RETURN 0
+    ENDIF
+    IF $BHP < 0 or $BHP > 31 or $BATK < 0 or $BATK > 31 or $BDEF < 0 or $BDEF > 31
+        RETURN 0
+    ENDIF
+    IF $BSPA < 0 or $BSPA > 31 or $BSPD < 0 or $BSPD > 31 or $BSPE < 0 or $BSPE > 31
+        RETURN 0
+    ENDIF
+
+    $孵蛋反查_A_HP = $AHP
+    $孵蛋反查_A_ATK = $AATK
+    $孵蛋反查_A_DEF = $ADEF
+    $孵蛋反查_A_SPA = $ASPA
+    $孵蛋反查_A_SPD = $ASPD
+    $孵蛋反查_A_SPE = $ASPE
+    $孵蛋反查_B_HP = $BHP
+    $孵蛋反查_B_ATK = $BATK
+    $孵蛋反查_B_DEF = $BDEF
+    $孵蛋反查_B_SPA = $BSPA
+    $孵蛋反查_B_SPD = $BSPD
+    $孵蛋反查_B_SPE = $BSPE
+    $孵蛋反查_双亲已设置 = 1
+    RETURN 1
+ENDFUNC
+
+
+FUNC 孵蛋反查_设置观察($蛋种族: INT, $性格: INT, $性别: INT, $特性: INT, $闪光: INT, $TID: INT, $SID: INT, $HP最小: INT, $HP最大: INT, $ATK最小: INT, $ATK最大: INT, $DEF最小: INT, $DEF最大: INT, $SPA最小: INT, $SPA最大: INT, $SPD最小: INT, $SPD最大: INT, $SPE最小: INT, $SPE最大: INT): INT
+    $孵蛋反查_观察已设置 = 0
+    IF $蛋种族 <= 0
+        RETURN 0
+    ENDIF
+    IF $性格 < -1 or $性格 > 24
+        RETURN 0
+    ENDIF
+    IF $性别 < -1 or $性别 > 2
+        RETURN 0
+    ENDIF
+    IF $特性 < -1 or $特性 > 1
+        RETURN 0
+    ENDIF
+    IF $闪光 < -1 or $闪光 > 1
+        RETURN 0
+    ENDIF
+    IF $TID < 0 or $TID > 65535 or $SID < 0 or $SID > 65535
+        RETURN 0
+    ENDIF
+    IF $HP最小 < 0 or $HP最大 > 31 or $HP最小 > $HP最大
+        RETURN 0
+    ENDIF
+    IF $ATK最小 < 0 or $ATK最大 > 31 or $ATK最小 > $ATK最大
+        RETURN 0
+    ENDIF
+    IF $DEF最小 < 0 or $DEF最大 > 31 or $DEF最小 > $DEF最大
+        RETURN 0
+    ENDIF
+    IF $SPA最小 < 0 or $SPA最大 > 31 or $SPA最小 > $SPA最大
+        RETURN 0
+    ENDIF
+    IF $SPD最小 < 0 or $SPD最大 > 31 or $SPD最小 > $SPD最大
+        RETURN 0
+    ENDIF
+    IF $SPE最小 < 0 or $SPE最大 > 31 or $SPE最小 > $SPE最大
+        RETURN 0
+    ENDIF
+
+    $孵蛋反查_蛋种族 = $蛋种族
+    $孵蛋反查_观察性格 = $性格
+    $孵蛋反查_观察性别 = $性别
+    $孵蛋反查_观察特性 = $特性
+    $孵蛋反查_观察闪光 = $闪光
+    $孵蛋反查_TID = $TID
+    $孵蛋反查_SID = $SID
+    $孵蛋反查_HP最小 = $HP最小
+    $孵蛋反查_HP最大 = $HP最大
+    $孵蛋反查_ATK最小 = $ATK最小
+    $孵蛋反查_ATK最大 = $ATK最大
+    $孵蛋反查_DEF最小 = $DEF最小
+    $孵蛋反查_DEF最大 = $DEF最大
+    $孵蛋反查_SPA最小 = $SPA最小
+    $孵蛋反查_SPA最大 = $SPA最大
+    $孵蛋反查_SPD最小 = $SPD最小
+    $孵蛋反查_SPD最大 = $SPD最大
+    $孵蛋反查_SPE最小 = $SPE最小
+    $孵蛋反查_SPE最大 = $SPE最大
+    $孵蛋反查_观察已设置 = 1
+    RETURN 1
+ENDFUNC
+
+
+# 仅IV入口，供逐级吃糖、尚未取得性格/性别时做阶段性候选扫描。
+FUNC 孵蛋反查_设置观察IV($蛋种族: INT, $HP最小: INT, $HP最大: INT, $ATK最小: INT, $ATK最大: INT, $DEF最小: INT, $DEF最大: INT, $SPA最小: INT, $SPA最大: INT, $SPD最小: INT, $SPD最大: INT, $SPE最小: INT, $SPE最大: INT): INT
+    RETURN 孵蛋反查_设置观察($蛋种族, -1, -1, -1, -1, 0, 0, $HP最小, $HP最大, $ATK最小, $ATK最大, $DEF最小, $DEF最大, $SPA最小, $SPA最大, $SPD最小, $SPD最大, $SPE最小, $SPE最大)
+ENDFUNC
+
+
+# 正式个体反查入口：六项IV范围 + 性格 + 性别。
+# 特性与PID均不要求；特性固定为-1，避免为低收益信息增加一套识图。
+FUNC 孵蛋反查_设置个体观察($蛋种族: INT, $性格: INT, $性别: INT, $HP最小: INT, $HP最大: INT, $ATK最小: INT, $ATK最大: INT, $DEF最小: INT, $DEF最大: INT, $SPA最小: INT, $SPA最大: INT, $SPD最小: INT, $SPD最大: INT, $SPE最小: INT, $SPE最大: INT): INT
+    RETURN 孵蛋反查_设置观察($蛋种族, $性格, $性别, -1, -1, 0, 0, $HP最小, $HP最大, $ATK最小, $ATK最大, $DEF最小, $DEF最大, $SPA最小, $SPA最大, $SPD最小, $SPD最大, $SPE最小, $SPE最大)
+ENDFUNC
+
+
+# ============================================================
+# RNG与遗传生成
+# ============================================================
+
+FUNC 孵蛋反查_异或16($a: INT, $b: INT): INT
+    RETURN ($a | $b) - ($a & $b)
+ENDFUNC
+
+
+FUNC 孵蛋反查_RNG前进一步(): INT
+    $孵蛋反查_新HI = RNG下一HI($孵蛋反查_工作HI, $孵蛋反查_工作LO)
+    $孵蛋反查_新LO = RNG下一LO($孵蛋反查_工作HI, $孵蛋反查_工作LO)
+    $孵蛋反查_工作HI = $孵蛋反查_新HI
+    $孵蛋反查_工作LO = $孵蛋反查_新LO
+    $孵蛋反查_随机16 = $孵蛋反查_新HI
+    RETURN $孵蛋反查_随机16
+ENDFUNC
+
+
+FUNC 孵蛋反查_RNG推进($步数: INT)
+    IF $步数 <= 0
+        RETURN
+    ENDIF
+    FOR $孵蛋反查_推进索引 = 1 TO $步数
+        $孵蛋反查_随机16 = 孵蛋反查_RNG前进一步()
+    NEXT
+ENDFUNC
+
+
+FUNC 孵蛋反查_取双亲IV($亲代: INT, $能力项: INT): INT
+    IF $亲代 == 0
+        IF $能力项 == 0
+            RETURN $孵蛋反查_A_HP
+        ELIF $能力项 == 1
+            RETURN $孵蛋反查_A_ATK
+        ELIF $能力项 == 2
+            RETURN $孵蛋反查_A_DEF
+        ELIF $能力项 == 3
+            RETURN $孵蛋反查_A_SPA
+        ELIF $能力项 == 4
+            RETURN $孵蛋反查_A_SPD
+        ELSE
+            RETURN $孵蛋反查_A_SPE
+        ENDIF
+    ENDIF
+
+    IF $能力项 == 0
+        RETURN $孵蛋反查_B_HP
+    ELIF $能力项 == 1
+        RETURN $孵蛋反查_B_ATK
+    ELIF $能力项 == 2
+        RETURN $孵蛋反查_B_DEF
+    ELIF $能力项 == 3
+        RETURN $孵蛋反查_B_SPA
+    ELIF $能力项 == 4
+        RETURN $孵蛋反查_B_SPD
+    ENDIF
+    RETURN $孵蛋反查_B_SPE
+ENDFUNC
+
+
+FUNC 孵蛋反查_取可选项($索引: INT): INT
+    IF $索引 == 0
+        RETURN $孵蛋反查_可选0
+    ELIF $索引 == 1
+        RETURN $孵蛋反查_可选1
+    ELIF $索引 == 2
+        RETURN $孵蛋反查_可选2
+    ELIF $索引 == 3
+        RETURN $孵蛋反查_可选3
+    ELIF $索引 == 4
+        RETURN $孵蛋反查_可选4
+    ENDIF
+    RETURN $孵蛋反查_可选5
+ENDFUNC
+
+
+# 完全复刻 PokeFinder setInheritance<false> 的 avoid(stat, size)。
+# 注意它用“选中的值 stat”作为删除起点，而不是抽取位置；这是RS/FRLG行为的一部分。
+FUNC 孵蛋反查_删除可选项($删除起点: INT, $有效大小: INT): INT
+    IF $删除起点 <= 0 and $有效大小 > 0
+        $孵蛋反查_可选0 = $孵蛋反查_可选1
+    ENDIF
+    IF $删除起点 <= 1 and $有效大小 > 1
+        $孵蛋反查_可选1 = $孵蛋反查_可选2
+    ENDIF
+    IF $删除起点 <= 2 and $有效大小 > 2
+        $孵蛋反查_可选2 = $孵蛋反查_可选3
+    ENDIF
+    IF $删除起点 <= 3 and $有效大小 > 3
+        $孵蛋反查_可选3 = $孵蛋反查_可选4
+    ENDIF
+    IF $删除起点 <= 4 and $有效大小 > 4
+        $孵蛋反查_可选4 = $孵蛋反查_可选5
+    ENDIF
+    RETURN 1
+ENDFUNC
+
+
+FUNC 孵蛋反查_能力顺序映射($选择项: INT): INT
+    # PokeFinder order = HP, ATK, DEF, SPE, SPA, SPD
+    IF $选择项 == 0
+        RETURN 0
+    ELIF $选择项 == 1
+        RETURN 1
+    ELIF $选择项 == 2
+        RETURN 2
+    ELIF $选择项 == 3
+        RETURN 5
+    ELIF $选择项 == 4
+        RETURN 3
+    ENDIF
+    RETURN 4
+ENDFUNC
+
+
+FUNC 孵蛋反查_应用一项遗传($能力项: INT, $亲代: INT): INT
+    $孵蛋反查_遗传IV = 孵蛋反查_取双亲IV($亲代, $能力项)
+    $孵蛋反查_遗传来源 = $亲代 + 1
+    IF $能力项 == 0
+        $孵蛋反查_当前HP = $孵蛋反查_遗传IV
+        $孵蛋反查_遗传HP = $孵蛋反查_遗传来源
+    ELIF $能力项 == 1
+        $孵蛋反查_当前ATK = $孵蛋反查_遗传IV
+        $孵蛋反查_遗传ATK = $孵蛋反查_遗传来源
+    ELIF $能力项 == 2
+        $孵蛋反查_当前DEF = $孵蛋反查_遗传IV
+        $孵蛋反查_遗传DEF = $孵蛋反查_遗传来源
+    ELIF $能力项 == 3
+        $孵蛋反查_当前SPA = $孵蛋反查_遗传IV
+        $孵蛋反查_遗传SPA = $孵蛋反查_遗传来源
+    ELIF $能力项 == 4
+        $孵蛋反查_当前SPD = $孵蛋反查_遗传IV
+        $孵蛋反查_遗传SPD = $孵蛋反查_遗传来源
+    ELSE
+        $孵蛋反查_当前SPE = $孵蛋反查_遗传IV
+        $孵蛋反查_遗传SPE = $孵蛋反查_遗传来源
+    ENDIF
+    RETURN 1
+ENDFUNC
+
+
+FUNC 孵蛋反查_应用FRLG遗传
+    $孵蛋反查_可选0 = 0
+    $孵蛋反查_可选1 = 1
+    $孵蛋反查_可选2 = 2
+    $孵蛋反查_可选3 = 3
+    $孵蛋反查_可选4 = 4
+    $孵蛋反查_可选5 = 5
+    $孵蛋反查_遗传HP = 0
+    $孵蛋反查_遗传ATK = 0
+    $孵蛋反查_遗传DEF = 0
+    $孵蛋反查_遗传SPA = 0
+    $孵蛋反查_遗传SPD = 0
+    $孵蛋反查_遗传SPE = 0
+
+    $孵蛋反查_选择项 = 孵蛋反查_取可选项($孵蛋反查_遗传随机0)
+    $孵蛋反查_实际能力项 = 孵蛋反查_能力顺序映射($孵蛋反查_选择项)
+    $孵蛋反查_调用结果 = 孵蛋反查_应用一项遗传($孵蛋反查_实际能力项, $孵蛋反查_亲代随机0)
+    $孵蛋反查_调用结果 = 孵蛋反查_删除可选项($孵蛋反查_选择项, 5)
+
+    $孵蛋反查_选择项 = 孵蛋反查_取可选项($孵蛋反查_遗传随机1)
+    $孵蛋反查_实际能力项 = 孵蛋反查_能力顺序映射($孵蛋反查_选择项)
+    $孵蛋反查_调用结果 = 孵蛋反查_应用一项遗传($孵蛋反查_实际能力项, $孵蛋反查_亲代随机1)
+    $孵蛋反查_调用结果 = 孵蛋反查_删除可选项($孵蛋反查_选择项, 4)
+
+    $孵蛋反查_选择项 = 孵蛋反查_取可选项($孵蛋反查_遗传随机2)
+    $孵蛋反查_实际能力项 = 孵蛋反查_能力顺序映射($孵蛋反查_选择项)
+    $孵蛋反查_调用结果 = 孵蛋反查_应用一项遗传($孵蛋反查_实际能力项, $孵蛋反查_亲代随机2)
+ENDFUNC
+
+
+# ============================================================
+# 候选筛选与保存
+# ============================================================
+
+FUNC 孵蛋反查_计算实际性别($PID低: INT): INT
+    $孵蛋反查_当前实际种族 = $孵蛋反查_蛋种族
+    # PokeFinder对尼多兰/甜甜萤用PID低半bit15切换对应雄性种族。
+    IF $孵蛋反查_蛋种族 == 29 and ($PID低 & 32768) != 0
+        $孵蛋反查_当前实际种族 = 32
+    ELIF $孵蛋反查_蛋种族 == 314 and ($PID低 & 32768) != 0
+        $孵蛋反查_当前实际种族 = 313
+    ENDIF
+    $孵蛋反查_当前性别阈值 = 取性别阈值($孵蛋反查_当前实际种族)
+    IF $孵蛋反查_当前性别阈值 < 0
+        RETURN -1
+    ENDIF
+    RETURN Static_性别($PID低, $孵蛋反查_当前性别阈值)
+ENDFUNC
+
+
+FUNC 孵蛋反查_当前IV匹配(): INT
+    IF $孵蛋反查_当前HP < $孵蛋反查_HP最小 or $孵蛋反查_当前HP > $孵蛋反查_HP最大
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_当前ATK < $孵蛋反查_ATK最小 or $孵蛋反查_当前ATK > $孵蛋反查_ATK最大
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_当前DEF < $孵蛋反查_DEF最小 or $孵蛋反查_当前DEF > $孵蛋反查_DEF最大
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_当前SPA < $孵蛋反查_SPA最小 or $孵蛋反查_当前SPA > $孵蛋反查_SPA最大
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_当前SPD < $孵蛋反查_SPD最小 or $孵蛋反查_当前SPD > $孵蛋反查_SPD最大
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_当前SPE < $孵蛋反查_SPE最小 or $孵蛋反查_当前SPE > $孵蛋反查_SPE最大
+        RETURN 0
+    ENDIF
+    RETURN 1
+ENDFUNC
+
+
+FUNC 孵蛋反查_当前结果匹配(): INT
+    $孵蛋反查_当前性格 = Static_性格($孵蛋反查_当前PID高, $孵蛋反查_当前PID低)
+    $孵蛋反查_当前特性 = $孵蛋反查_当前PID低 & 1
+    $孵蛋反查_当前性别 = 孵蛋反查_计算实际性别($孵蛋反查_当前PID低)
+    IF $孵蛋反查_当前性别 < 0
+        RETURN 0
+    ENDIF
+
+    $孵蛋反查_闪光异或 = 孵蛋反查_异或16($孵蛋反查_TID, $孵蛋反查_SID)
+    $孵蛋反查_闪光异或 = 孵蛋反查_异或16($孵蛋反查_闪光异或, $孵蛋反查_当前PID高)
+    $孵蛋反查_闪光异或 = 孵蛋反查_异或16($孵蛋反查_闪光异或, $孵蛋反查_当前PID低)
+    $孵蛋反查_当前闪光 = 0
+    IF $孵蛋反查_闪光异或 < 8
+        $孵蛋反查_当前闪光 = 1
+    ENDIF
+
+    IF $孵蛋反查_观察性格 >= 0 and $孵蛋反查_当前性格 != $孵蛋反查_观察性格
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_观察性别 >= 0 and $孵蛋反查_当前性别 != $孵蛋反查_观察性别
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_观察特性 >= 0 and $孵蛋反查_当前特性 != $孵蛋反查_观察特性
+        RETURN 0
+    ENDIF
+    IF $孵蛋反查_观察闪光 >= 0 and $孵蛋反查_当前闪光 != $孵蛋反查_观察闪光
+        RETURN 0
+    ENDIF
+    RETURN 1
+ENDFUNC
+
+
+FUNC 孵蛋反查_保存当前结果
+    $孵蛋反查_总命中数 = $孵蛋反查_总命中数 + 1
+    IF $孵蛋反查_已保存结果数 >= $孵蛋反查_结果保存上限
+        RETURN
+    ENDIF
+    $孵蛋反查_结果Held帧表 = APPEND($孵蛋反查_结果Held帧表, $孵蛋反查_当前Held帧)
+    $孵蛋反查_结果Pickup帧表 = APPEND($孵蛋反查_结果Pickup帧表, $孵蛋反查_当前Pickup帧)
+    $孵蛋反查_结果PID高表 = APPEND($孵蛋反查_结果PID高表, $孵蛋反查_当前PID高)
+    $孵蛋反查_结果PID低表 = APPEND($孵蛋反查_结果PID低表, $孵蛋反查_当前PID低)
+    $孵蛋反查_结果HP表 = APPEND($孵蛋反查_结果HP表, $孵蛋反查_当前HP)
+    $孵蛋反查_结果ATK表 = APPEND($孵蛋反查_结果ATK表, $孵蛋反查_当前ATK)
+    $孵蛋反查_结果DEF表 = APPEND($孵蛋反查_结果DEF表, $孵蛋反查_当前DEF)
+    $孵蛋反查_结果SPA表 = APPEND($孵蛋反查_结果SPA表, $孵蛋反查_当前SPA)
+    $孵蛋反查_结果SPD表 = APPEND($孵蛋反查_结果SPD表, $孵蛋反查_当前SPD)
+    $孵蛋反查_结果SPE表 = APPEND($孵蛋反查_结果SPE表, $孵蛋反查_当前SPE)
+    $孵蛋反查_结果遗传HP表 = APPEND($孵蛋反查_结果遗传HP表, $孵蛋反查_遗传HP)
+    $孵蛋反查_结果遗传ATK表 = APPEND($孵蛋反查_结果遗传ATK表, $孵蛋反查_遗传ATK)
+    $孵蛋反查_结果遗传DEF表 = APPEND($孵蛋反查_结果遗传DEF表, $孵蛋反查_遗传DEF)
+    $孵蛋反查_结果遗传SPA表 = APPEND($孵蛋反查_结果遗传SPA表, $孵蛋反查_遗传SPA)
+    $孵蛋反查_结果遗传SPD表 = APPEND($孵蛋反查_结果遗传SPD表, $孵蛋反查_遗传SPD)
+    $孵蛋反查_结果遗传SPE表 = APPEND($孵蛋反查_结果遗传SPE表, $孵蛋反查_遗传SPE)
+    $孵蛋反查_已保存结果数 = $孵蛋反查_已保存结果数 + 1
+ENDFUNC
+
+
+FUNC 孵蛋反查_重置结果
+    $孵蛋反查_Held帧表 = []
+    $孵蛋反查_HeldPID低表 = []
+    $孵蛋反查_Held候选数 = 0
+    $孵蛋反查_结果Held帧表 = []
+    $孵蛋反查_结果Pickup帧表 = []
+    $孵蛋反查_结果PID高表 = []
+    $孵蛋反查_结果PID低表 = []
+    $孵蛋反查_结果HP表 = []
+    $孵蛋反查_结果ATK表 = []
+    $孵蛋反查_结果DEF表 = []
+    $孵蛋反查_结果SPA表 = []
+    $孵蛋反查_结果SPD表 = []
+    $孵蛋反查_结果SPE表 = []
+    $孵蛋反查_结果遗传HP表 = []
+    $孵蛋反查_结果遗传ATK表 = []
+    $孵蛋反查_结果遗传DEF表 = []
+    $孵蛋反查_结果遗传SPA表 = []
+    $孵蛋反查_结果遗传SPD表 = []
+    $孵蛋反查_结果遗传SPE表 = []
+    $孵蛋反查_总命中数 = 0
+    $孵蛋反查_已保存结果数 = 0
+ENDFUNC
+
+
+# ============================================================
+# 扫描入口
+# ============================================================
+
+FUNC 孵蛋反查_执行HEX($Seed关系模式: INT, $HeldSeed文本: STRING, $PickupSeed文本: STRING, $Held最小帧: INT, $Held最大帧: INT, $Pickup最小帧: INT, $Pickup最大帧: INT, $HeldOffset: INT, $PickupOffset: INT, $方法: INT, $相性: INT, $保存上限: INT): INT
+    $孵蛋反查_HeldSeed十进制 = HEX转十进制($HeldSeed文本)
+    $孵蛋反查_PickupSeed十进制 = HEX转十进制($PickupSeed文本)
+    IF $孵蛋反查_HeldSeed十进制 < 0 or $孵蛋反查_PickupSeed十进制 < 0
+        RETURN -1
+    ENDIF
+    RETURN 孵蛋反查_执行($Seed关系模式, $孵蛋反查_HeldSeed十进制, $孵蛋反查_PickupSeed十进制, $Held最小帧, $Held最大帧, $Pickup最小帧, $Pickup最大帧, $HeldOffset, $PickupOffset, $方法, $相性, $保存上限)
+ENDFUNC
+
+
+FUNC 孵蛋反查_执行($Seed关系模式: INT, $HeldSeed: INT, $PickupSeed: INT, $Held最小帧: INT, $Held最大帧: INT, $Pickup最小帧: INT, $Pickup最大帧: INT, $HeldOffset: INT, $PickupOffset: INT, $方法: INT, $相性: INT, $保存上限: INT): INT
+    CALL 孵蛋反查_重置结果
+    $孵蛋反查_最后状态 = 0
+
+    IF $孵蛋反查_双亲已设置 == 0 or $孵蛋反查_观察已设置 == 0
+        RETURN -1
+    ENDIF
+    IF $Seed关系模式 != 0 and $Seed关系模式 != 1
+        RETURN -1
+    ENDIF
+    IF $HeldSeed < 0 or $HeldSeed > 65535 or $PickupSeed < 0 or $PickupSeed > 65535
+        RETURN -1
+    ENDIF
+    IF $Seed关系模式 == 0 and $HeldSeed != $PickupSeed
+        RETURN -1
+    ENDIF
+    IF $Held最小帧 < 0 or $Held最大帧 < $Held最小帧 or $Pickup最小帧 < 0 or $Pickup最大帧 < $Pickup最小帧
+        RETURN -1
+    ENDIF
+    IF $Held最大帧 - $Held最小帧 > $孵蛋反查_最大窗口宽度
+        RETURN -1
+    ENDIF
+    IF $Pickup最大帧 - $Pickup最小帧 > $孵蛋反查_最大窗口宽度
+        RETURN -1
+    ENDIF
+    IF $HeldOffset < 0 or $PickupOffset < 0
+        RETURN -1
+    ENDIF
+    IF $方法 < 11 or $方法 > 14
+        RETURN -1
+    ENDIF
+    IF $相性 != 20 and $相性 != 50 and $相性 != 70
+        RETURN -1
+    ENDIF
+    IF $保存上限 <= 0 or $保存上限 > 256
+        RETURN -1
+    ENDIF
+    IF 取性别阈值($孵蛋反查_蛋种族) < 0
+        RETURN -1
+    ENDIF
+
+    $孵蛋反查_结果保存上限 = $保存上限
+
+    # 1. Held：PokeFinder在每帧先做相性判定，再取PID低半。
+    $孵蛋反查_工作HI = 0
+    $孵蛋反查_工作LO = $HeldSeed
+    孵蛋反查_RNG推进($Held最小帧 + $HeldOffset)
+    $孵蛋反查_Held状态HI = $孵蛋反查_工作HI
+    $孵蛋反查_Held状态LO = $孵蛋反查_工作LO
+
+    FOR $孵蛋反查_Held扫描帧 = $Held最小帧 TO $Held最大帧
+        $孵蛋反查_工作HI = $孵蛋反查_Held状态HI
+        $孵蛋反查_工作LO = $孵蛋反查_Held状态LO
+        $孵蛋反查_相性随机 = 孵蛋反查_RNG前进一步()
+        # 外层rng每帧仅前进一次；先保存该状态，再让go继续取PID低半。
+        $孵蛋反查_Held下一状态HI = $孵蛋反查_工作HI
+        $孵蛋反查_Held下一状态LO = $孵蛋反查_工作LO
+        $孵蛋反查_PID低随机 = 孵蛋反查_RNG前进一步()
+        $孵蛋反查_当前PID低 = ($孵蛋反查_PID低随机 % 65534) + 1
+
+        IF ($孵蛋反查_相性随机 * 100) / 65535 < $相性
+            $孵蛋反查_当前特性 = $孵蛋反查_当前PID低 & 1
+            $孵蛋反查_当前性别 = 孵蛋反查_计算实际性别($孵蛋反查_当前PID低)
+            $孵蛋反查_Held预筛通过 = 1
+            IF $孵蛋反查_观察特性 >= 0 and $孵蛋反查_当前特性 != $孵蛋反查_观察特性
+                $孵蛋反查_Held预筛通过 = 0
+            ENDIF
+            IF $孵蛋反查_观察性别 >= 0 and $孵蛋反查_当前性别 != $孵蛋反查_观察性别
+                $孵蛋反查_Held预筛通过 = 0
+            ENDIF
+            IF $孵蛋反查_Held预筛通过 == 1
+                $孵蛋反查_Held帧表 = APPEND($孵蛋反查_Held帧表, $孵蛋反查_Held扫描帧)
+                $孵蛋反查_HeldPID低表 = APPEND($孵蛋反查_HeldPID低表, $孵蛋反查_当前PID低)
+                $孵蛋反查_Held候选数 = $孵蛋反查_Held候选数 + 1
+            ENDIF
+        ENDIF
+
+        $孵蛋反查_Held状态HI = $孵蛋反查_Held下一状态HI
+        $孵蛋反查_Held状态LO = $孵蛋反查_Held下一状态LO
+    NEXT
+
+    IF $孵蛋反查_Held候选数 == 0
+        $孵蛋反查_最后状态 = 1
+        RETURN 0
+    ENDIF
+
+    # 2. Pickup：生成PID高半、原始IV、三项遗传，再与Held低半交叉。
+    $孵蛋反查_工作HI = 0
+    $孵蛋反查_工作LO = $PickupSeed
+    孵蛋反查_RNG推进($Pickup最小帧 + $PickupOffset)
+    $孵蛋反查_Pickup状态HI = $孵蛋反查_工作HI
+    $孵蛋反查_Pickup状态LO = $孵蛋反查_工作LO
+
+    FOR $孵蛋反查_Pickup扫描帧 = $Pickup最小帧 TO $Pickup最大帧
+        $孵蛋反查_工作HI = $孵蛋反查_Pickup状态HI
+        $孵蛋反查_工作LO = $孵蛋反查_Pickup状态LO
+        $孵蛋反查_当前PID高 = 孵蛋反查_RNG前进一步()
+        $孵蛋反查_Pickup下一状态HI = $孵蛋反查_工作HI
+        $孵蛋反查_Pickup下一状态LO = $孵蛋反查_工作LO
+
+        # iv1 skip：Normal/Alternate=1，Split/Mixed=0。
+        IF $方法 == 11 or $方法 == 13
+            孵蛋反查_RNG推进(1)
+        ENDIF
+        $孵蛋反查_IV字1 = 孵蛋反查_RNG前进一步()
+
+        # iv2 skip：Split=1，其余=0。
+        IF $方法 == 12
+            孵蛋反查_RNG推进(1)
+        ENDIF
+        $孵蛋反查_IV字2 = 孵蛋反查_RNG前进一步()
+
+        $孵蛋反查_当前HP = $孵蛋反查_IV字1 & 31
+        $孵蛋反查_当前ATK = ($孵蛋反查_IV字1 >> 5) & 31
+        $孵蛋反查_当前DEF = ($孵蛋反查_IV字1 >> 10) & 31
+        $孵蛋反查_当前SPE = $孵蛋反查_IV字2 & 31
+        $孵蛋反查_当前SPA = ($孵蛋反查_IV字2 >> 5) & 31
+        $孵蛋反查_当前SPD = ($孵蛋反查_IV字2 >> 10) & 31
+
+        # inheritance skip：Normal/Split=1，Alternate/Mixed=2。
+        IF $方法 == 11 or $方法 == 12
+            孵蛋反查_RNG推进(1)
+        ELSE
+            孵蛋反查_RNG推进(2)
+        ENDIF
+        $孵蛋反查_遗传随机0 = 孵蛋反查_RNG前进一步() % 6
+        $孵蛋反查_遗传随机1 = 孵蛋反查_RNG前进一步() % 5
+        $孵蛋反查_遗传随机2 = 孵蛋反查_RNG前进一步() % 4
+        $孵蛋反查_亲代随机0 = 孵蛋反查_RNG前进一步() % 2
+        $孵蛋反查_亲代随机1 = 孵蛋反查_RNG前进一步() % 2
+        $孵蛋反查_亲代随机2 = 孵蛋反查_RNG前进一步() % 2
+        CALL 孵蛋反查_应用FRLG遗传
+
+        # 六项IV只由Pickup与遗传决定，先在这里过滤，避免无效帧进入Held×Pickup组合。
+        IF 孵蛋反查_当前IV匹配() == 1
+            $孵蛋反查_Held末索引 = $孵蛋反查_Held候选数 - 1
+            FOR $孵蛋反查_Held候选索引 = 0 TO $孵蛋反查_Held末索引
+                $孵蛋反查_当前Held帧 = $孵蛋反查_Held帧表[$孵蛋反查_Held候选索引]
+                $孵蛋反查_当前Pickup帧 = $孵蛋反查_Pickup扫描帧
+                $孵蛋反查_当前PID低 = $孵蛋反查_HeldPID低表[$孵蛋反查_Held候选索引]
+                IF 孵蛋反查_当前结果匹配() == 1
+                    CALL 孵蛋反查_保存当前结果
+                ENDIF
+            NEXT
+        ENDIF
+
+        $孵蛋反查_Pickup状态HI = $孵蛋反查_Pickup下一状态HI
+        $孵蛋反查_Pickup状态LO = $孵蛋反查_Pickup下一状态LO
+    NEXT
+
+    $孵蛋反查_最后状态 = 1
+    RETURN $孵蛋反查_总命中数
+ENDFUNC
+
+
+# ============================================================
+# 结果读取接口
+# ============================================================
+
+FUNC 孵蛋反查_取总命中数(): INT
+    RETURN $孵蛋反查_总命中数
+ENDFUNC
+
+FUNC 孵蛋反查_取已保存结果数(): INT
+    RETURN $孵蛋反查_已保存结果数
+ENDFUNC
+
+FUNC 孵蛋反查_候选是否唯一(): INT
+    IF $孵蛋反查_总命中数 == 1
+        RETURN 1
+    ENDIF
+    RETURN 0
+ENDFUNC
+
+FUNC 孵蛋反查_取结果Held帧($索引: INT): INT
+    IF $索引 < 0 or $索引 >= $孵蛋反查_已保存结果数
+        RETURN -1
+    ENDIF
+    RETURN $孵蛋反查_结果Held帧表[$索引]
+ENDFUNC
+
+FUNC 孵蛋反查_取结果Pickup帧($索引: INT): INT
+    IF $索引 < 0 or $索引 >= $孵蛋反查_已保存结果数
+        RETURN -1
+    ENDIF
+    RETURN $孵蛋反查_结果Pickup帧表[$索引]
+ENDFUNC
+
+FUNC 孵蛋反查_取结果PID高($索引: INT): INT
+    IF $索引 < 0 or $索引 >= $孵蛋反查_已保存结果数
+        RETURN -1
+    ENDIF
+    RETURN $孵蛋反查_结果PID高表[$索引]
+ENDFUNC
+
+FUNC 孵蛋反查_取结果PID低($索引: INT): INT
+    IF $索引 < 0 or $索引 >= $孵蛋反查_已保存结果数
+        RETURN -1
+    ENDIF
+    RETURN $孵蛋反查_结果PID低表[$索引]
+ENDFUNC
+
+FUNC 孵蛋反查_取结果IV($索引: INT, $能力项: INT): INT
+    IF $索引 < 0 or $索引 >= $孵蛋反查_已保存结果数
+        RETURN -1
+    ENDIF
+    IF $能力项 == 0
+        RETURN $孵蛋反查_结果HP表[$索引]
+    ELIF $能力项 == 1
+        RETURN $孵蛋反查_结果ATK表[$索引]
+    ELIF $能力项 == 2
+        RETURN $孵蛋反查_结果DEF表[$索引]
+    ELIF $能力项 == 3
+        RETURN $孵蛋反查_结果SPA表[$索引]
+    ELIF $能力项 == 4
+        RETURN $孵蛋反查_结果SPD表[$索引]
+    ELIF $能力项 == 5
+        RETURN $孵蛋反查_结果SPE表[$索引]
+    ENDIF
+    RETURN -1
+ENDFUNC
+
+FUNC 孵蛋反查_取结果遗传来源($索引: INT, $能力项: INT): INT
+    IF $索引 < 0 or $索引 >= $孵蛋反查_已保存结果数
+        RETURN -1
+    ENDIF
+    IF $能力项 == 0
+        RETURN $孵蛋反查_结果遗传HP表[$索引]
+    ELIF $能力项 == 1
+        RETURN $孵蛋反查_结果遗传ATK表[$索引]
+    ELIF $能力项 == 2
+        RETURN $孵蛋反查_结果遗传DEF表[$索引]
+    ELIF $能力项 == 3
+        RETURN $孵蛋反查_结果遗传SPA表[$索引]
+    ELIF $能力项 == 4
+        RETURN $孵蛋反查_结果遗传SPD表[$索引]
+    ELIF $能力项 == 5
+        RETURN $孵蛋反查_结果遗传SPE表[$索引]
+    ENDIF
+    RETURN -1
+ENDFUNC

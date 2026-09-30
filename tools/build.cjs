@@ -51,7 +51,7 @@ function build(root) {
     if (manifest.schemaVersion !== 1 || manifest.id !== id || !version(manifest.version) || !version(manifest.minimumAppVersion)
       || !text(manifest.name, 100) || !text(manifest.description, 3000) || !text(manifest.game, 50)
       || !Array.isArray(manifest.authors) || !manifest.authors.length || manifest.authors.length > 20 || manifest.authors.some(author => !text(author, 100))
-      || (manifest.instructions != null && !text(manifest.instructions, 12000)) || manifest.license !== 'GPL-3.0-or-later') throw Error('包描述无效');
+      || (manifest.instructions != null && !text(manifest.instructions, 12000)) || !['GPL-3.0-or-later', 'NOASSERTION'].includes(manifest.license)) throw Error('包描述无效');
     if (!safePath(manifest.installFolder) || manifest.installFolder.split('/').some(part => part.startsWith('.')) || [...folders].some(folder => overlaps(folder, manifest.installFolder))) throw Error('安装目录无效、重复或重叠');
     folders.add(manifest.installFolder.toLowerCase());
     const files = [], entries = {}, seen = new Set();
@@ -61,9 +61,9 @@ function build(root) {
         if (!safePath(name) || item.isSymbolicLink() || seen.has(name.toLowerCase())) throw Error('文件路径无效或重复：' + name);
         seen.add(name.toLowerCase());
         if (item.isDirectory()) { visit(name); continue; }
-        if (!item.isFile() || !/\.(txt|il|md)$/i.test(name)) throw Error('包内只允许 .txt 脚本、标签和说明：' + name);
+        if (!item.isFile() || !/\.(txt|ecs|il|md|json|traineddata)$/i.test(name)) throw Error('包内只允许脚本、标签、数据和说明：' + name);
         const bytes = fs.readFileSync(path.join(directory, 'files', name));
-        if (bytes.length > 12 * 1024 * 1024 || /\.txt$/i.test(name) && bytes.length > 1024 * 1024) throw Error('文件过大');
+        if (bytes.length > 12 * 1024 * 1024 || /\.(txt|ecs)$/i.test(name) && bytes.length > 1024 * 1024) throw Error('文件过大');
         if (/\.il$/i.test(name)) {
           const label = JSON.parse(bytes.toString('utf8').replace(/^\uFEFF/, ''));
           if (typeof label.ImgBase64 !== 'string' || !Number.isFinite(label.searchMethod)) throw Error('图像标签无效：' + name);
@@ -73,22 +73,25 @@ function build(root) {
       }
     }
     visit();
+    if (manifest.id === 'frlg-automation') require('./audit-frlg.cjs').auditFrlg(path.join(directory, 'files'));
     if (seen.has('license.md')) throw Error('包内许可证应由仓库根文件生成');
-    files.push({ path: 'LICENSE.md', bytes: license.length, sha256: hash(license) });
-    entries['files/LICENSE.md'] = [license, { mtime: new Date(1980, 0, 1) }];
+    const packageLicense = manifest.license === 'NOASSERTION'
+      ? Buffer.from('外部火叶脚本、标签与模型保留上游权利。本仓库不重新授权；来源及修订见 SOURCE.md。\n') : license;
+    files.push({ path: 'LICENSE.md', bytes: packageLicense.length, sha256: hash(packageLicense) });
+    entries['files/LICENSE.md'] = [packageLicense, { mtime: new Date(1980, 0, 1) }];
     const usedLabels = new Set();
-    for (const file of files.filter(file => /\.txt$/i.test(file.path))) {
+    for (const file of files.filter(file => /\.(txt|ecs)$/i.test(file.path))) {
       for (const label of referencedLabels(entries['files/' + file.path][0].toString('utf8'))) {
-        const resource = path.posix.join(path.posix.dirname(file.path), 'ImgLabel', label + '.IL');
+        const resource = path.posix.join(/\.ecs$/i.test(file.path) ? '' : path.posix.dirname(file.path), 'ImgLabel', label + '.IL');
         if (!files.some(item => item.path === resource)) throw Error(`${file.path} 缺少相邻图像标签：${resource}`);
         usedLabels.add(resource);
       }
     }
-    for (const file of files.filter(file => /\.il$/i.test(file.path))) if (!usedLabels.has(file.path)) throw Error('包内有未使用的图像标签：' + file.path);
+    for (const file of files.filter(file => /\.il$/i.test(file.path))) if (!usedLabels.has(file.path) && manifest.resourceLayout !== 'easycon-project') throw Error('包内有未使用的图像标签：' + file.path);
     if (manifest.legacyPaths != null && (typeof manifest.legacyPaths !== 'object' || Array.isArray(manifest.legacyPaths)
       || Object.entries(manifest.legacyPaths).some(([file, legacy]) => !files.some(item => item.path === file) || !safePath(legacy) || legacy.split('/').some(part => part.startsWith('.'))
         || !/\.(txt|il)$/i.test(file) || path.posix.extname(file).toLowerCase() !== path.posix.extname(legacy).toLowerCase() || overlaps(manifest.installFolder, legacy)))) throw Error('旧脚本迁移清单无效');
-    if (!files.some(file => /\.txt$/i.test(file.path)) || files.length > 256 || files.reduce((n,f) => n + f.bytes, 0) > 50 * 1024 * 1024) throw Error('脚本包为空或过大');
+    if (!files.some(file => /\.(txt|ecs)$/i.test(file.path)) || files.length > 2048 || files.reduce((n,f) => n + f.bytes, 0) > 50 * 1024 * 1024) throw Error('脚本包为空或过大');
     const categories = new Map();
     if (manifest.categories != null) {
       if (!Array.isArray(manifest.categories) || manifest.categories.length > 30) throw Error('脚本分类无效');

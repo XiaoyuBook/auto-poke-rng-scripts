@@ -1,0 +1,1451 @@
+# ==================================================
+# 01_目标名称.ecs
+#
+# 自动生成。
+# 中文/英文显示名：当前TenLines前端名称表（网站版本 2026-07-29）。
+# slug：PokéAPI pokemon-species。
+#
+# 函数：
+#   目标名称($游戏版本, $目标全国图鉴编号)
+#   目标中文名称($游戏版本, $目标全国图鉴编号)
+#   目标英文名称($游戏版本, $目标全国图鉴编号)
+#   目标宝可梦名称查图鉴编号($目标宝可梦输入名称)
+#
+# 注意：
+#   如果其它 ECS 文件里也定义了同名函数，
+#   请只保留本文件这一份，避免重复定义。
+# ==================================================
+
+FUNC 目标名称($游戏版本: INT, $目标全国图鉴编号: INT): STRING
+    IF $目标全国图鉴编号 == 1
+        RETURN "妙蛙种子 / Bulbasaur"
+    ELIF $目标全国图鉴编号 == 4
+        RETURN "小火龙 / Charmander"
+    ELIF $目标全国图鉴编号 == 7
+        RETURN "杰尼龟 / Squirtle"
+    ELIF $目标全国图鉴编号 == 10
+        RETURN "绿毛虫 / Caterpie"
+    ELIF $目标全国图鉴编号 == 11
+        RETURN "铁甲蛹 / Metapod"
+    ELIF $目标全国图鉴编号 == 13
+        RETURN "独角虫 / Weedle"
+    ELIF $目标全国图鉴编号 == 14
+        RETURN "铁壳蛹 / Kakuna"
+    ELIF $目标全国图鉴编号 == 16
+        RETURN "波波 / Pidgey"
+    ELIF $目标全国图鉴编号 == 17
+        RETURN "比比鸟 / Pidgeotto"
+    ELIF $目标全国图鉴编号 == 19
+        RETURN "小拉达 / Rattata"
+    ELIF $目标全国图鉴编号 == 20
+        RETURN "拉达 / Raticate"
+    ELIF $目标全国图鉴编号 == 21
+        RETURN "烈雀 / Spearow"
+    ELIF $目标全国图鉴编号 == 22
+        RETURN "大嘴雀 / Fearow"
+    ELIF $目标全国图鉴编号 == 23
+        RETURN "阿柏蛇 / Ekans"
+    ELIF $目标全国图鉴编号 == 24
+        RETURN "阿柏怪 / Arbok"
+    ELIF $目标全国图鉴编号 == 25
+        RETURN "皮卡丘 / Pikachu"
+    ELIF $目标全国图鉴编号 == 27
+        RETURN "穿山鼠 / Sandshrew"
+    ELIF $目标全国图鉴编号 == 28
+        RETURN "穿山王 / Sandslash"
+    ELIF $目标全国图鉴编号 == 29
+        RETURN "尼多兰 / Nidoran♀"
+    ELIF $目标全国图鉴编号 == 30
+        RETURN "尼多娜 / Nidorina"
+    ELIF $目标全国图鉴编号 == 32
+        RETURN "尼多朗 / Nidoran♂"
+    ELIF $目标全国图鉴编号 == 33
+        RETURN "尼多力诺 / Nidorino"
+    ELIF $目标全国图鉴编号 == 35
+        RETURN "皮皮 / Clefairy"
+    ELIF $目标全国图鉴编号 == 37
+        RETURN "六尾 / Vulpix"
+    ELIF $目标全国图鉴编号 == 39
+        RETURN "胖丁 / Jigglypuff"
+    ELIF $目标全国图鉴编号 == 41
+        RETURN "超音蝠 / Zubat"
+    ELIF $目标全国图鉴编号 == 42
+        RETURN "大嘴蝠 / Golbat"
+    ELIF $目标全国图鉴编号 == 43
+        RETURN "走路草 / Oddish"
+    ELIF $目标全国图鉴编号 == 44
+        RETURN "臭臭花 / Gloom"
+    ELIF $目标全国图鉴编号 == 46
+        RETURN "派拉斯 / Paras"
+    ELIF $目标全国图鉴编号 == 47
+        RETURN "派拉斯特 / Parasect"
+    ELIF $目标全国图鉴编号 == 48
+        RETURN "毛球 / Venonat"
+    ELIF $目标全国图鉴编号 == 49
+        RETURN "摩鲁蛾 / Venomoth"
+    ELIF $目标全国图鉴编号 == 50
+        RETURN "地鼠 / Diglett"
+    ELIF $目标全国图鉴编号 == 51
+        RETURN "三地鼠 / Dugtrio"
+    ELIF $目标全国图鉴编号 == 52
+        RETURN "喵喵 / Meowth"
+    ELIF $目标全国图鉴编号 == 53
+        RETURN "猫老大 / Persian"
+    ELIF $目标全国图鉴编号 == 54
+        RETURN "可达鸭 / Psyduck"
+    ELIF $目标全国图鉴编号 == 55
+        RETURN "哥达鸭 / Golduck"
+    ELIF $目标全国图鉴编号 == 56
+        RETURN "猴怪 / Mankey"
+    ELIF $目标全国图鉴编号 == 57
+        RETURN "火暴猴 / Primeape"
+    ELIF $目标全国图鉴编号 == 58
+        RETURN "卡蒂狗 / Growlithe"
+    ELIF $目标全国图鉴编号 == 60
+        RETURN "蚊香蝌蚪 / Poliwag"
+    ELIF $目标全国图鉴编号 == 61
+        RETURN "蚊香君 / Poliwhirl"
+    ELIF $目标全国图鉴编号 == 63
+        RETURN "凯西 / Abra"
+    ELIF $目标全国图鉴编号 == 64
+        RETURN "勇基拉 / Kadabra"
+    ELIF $目标全国图鉴编号 == 66
+        RETURN "腕力 / Machop"
+    ELIF $目标全国图鉴编号 == 67
+        RETURN "豪力 / Machoke"
+    ELIF $目标全国图鉴编号 == 69
+        RETURN "喇叭芽 / Bellsprout"
+    ELIF $目标全国图鉴编号 == 70
+        RETURN "口呆花 / Weepinbell"
+    ELIF $目标全国图鉴编号 == 72
+        RETURN "玛瑙水母 / Tentacool"
+    ELIF $目标全国图鉴编号 == 73
+        RETURN "毒刺水母 / Tentacruel"
+    ELIF $目标全国图鉴编号 == 74
+        RETURN "小拳石 / Geodude"
+    ELIF $目标全国图鉴编号 == 75
+        RETURN "隆隆石 / Graveler"
+    ELIF $目标全国图鉴编号 == 77
+        RETURN "小火马 / Ponyta"
+    ELIF $目标全国图鉴编号 == 78
+        RETURN "烈焰马 / Rapidash"
+    ELIF $目标全国图鉴编号 == 79
+        RETURN "呆呆兽 / Slowpoke"
+    ELIF $目标全国图鉴编号 == 80
+        RETURN "呆壳兽 / Slowbro"
+    ELIF $目标全国图鉴编号 == 81
+        RETURN "小磁怪 / Magnemite"
+    ELIF $目标全国图鉴编号 == 82
+        RETURN "三合一磁怪 / Magneton"
+    ELIF $目标全国图鉴编号 == 84
+        RETURN "嘟嘟 / Doduo"
+    ELIF $目标全国图鉴编号 == 86
+        RETURN "小海狮 / Seel"
+    ELIF $目标全国图鉴编号 == 87
+        RETURN "白海狮 / Dewgong"
+    ELIF $目标全国图鉴编号 == 88
+        RETURN "臭泥 / Grimer"
+    ELIF $目标全国图鉴编号 == 89
+        RETURN "臭臭泥 / Muk"
+    ELIF $目标全国图鉴编号 == 90
+        RETURN "大舌贝 / Shellder"
+    ELIF $目标全国图鉴编号 == 92
+        RETURN "鬼斯 / Gastly"
+    ELIF $目标全国图鉴编号 == 93
+        RETURN "鬼斯通 / Haunter"
+    ELIF $目标全国图鉴编号 == 95
+        RETURN "大岩蛇 / Onix"
+    ELIF $目标全国图鉴编号 == 96
+        RETURN "催眠貘 / Drowzee"
+    ELIF $目标全国图鉴编号 == 97
+        RETURN "引梦貘人 / Hypno"
+    ELIF $目标全国图鉴编号 == 98
+        RETURN "大钳蟹 / Krabby"
+    ELIF $目标全国图鉴编号 == 99
+        RETURN "巨钳蟹 / Kingler"
+    ELIF $目标全国图鉴编号 == 100
+        RETURN "霹雳电球 / Voltorb"
+    ELIF $目标全国图鉴编号 == 101
+        RETURN "顽皮雷弹 / Electrode"
+    ELIF $目标全国图鉴编号 == 102
+        RETURN "蛋蛋 / Exeggcute"
+    ELIF $目标全国图鉴编号 == 104
+        RETURN "卡拉卡拉 / Cubone"
+    ELIF $目标全国图鉴编号 == 105
+        RETURN "嘎啦嘎啦 / Marowak"
+    ELIF $目标全国图鉴编号 == 106
+        RETURN "飞腿郎 / Hitmonlee"
+    ELIF $目标全国图鉴编号 == 107
+        RETURN "快拳郎 / Hitmonchan"
+    ELIF $目标全国图鉴编号 == 109
+        RETURN "瓦斯弹 / Koffing"
+    ELIF $目标全国图鉴编号 == 110
+        RETURN "双弹瓦斯 / Weezing"
+    ELIF $目标全国图鉴编号 == 111
+        RETURN "独角犀牛 / Rhyhorn"
+    ELIF $目标全国图鉴编号 == 113
+        RETURN "吉利蛋 / Chansey"
+    ELIF $目标全国图鉴编号 == 114
+        RETURN "蔓藤怪 / Tangela"
+    ELIF $目标全国图鉴编号 == 115
+        RETURN "袋兽 / Kangaskhan"
+    ELIF $目标全国图鉴编号 == 116
+        RETURN "墨海马 / Horsea"
+    ELIF $目标全国图鉴编号 == 117
+        RETURN "海刺龙 / Seadra"
+    ELIF $目标全国图鉴编号 == 118
+        RETURN "角金鱼 / Goldeen"
+    ELIF $目标全国图鉴编号 == 119
+        RETURN "金鱼王 / Seaking"
+    ELIF $目标全国图鉴编号 == 120
+        RETURN "海星星 / Staryu"
+    ELIF $目标全国图鉴编号 == 123
+        RETURN "飞天螳螂 / Scyther"
+    ELIF $目标全国图鉴编号 == 125
+        RETURN "电击兽 / Electabuzz"
+    ELIF $目标全国图鉴编号 == 126
+        RETURN "鸭嘴火兽 / Magmar"
+    ELIF $目标全国图鉴编号 == 127
+        RETURN "凯罗斯 / Pinsir"
+    ELIF $目标全国图鉴编号 == 128
+        RETURN "肯泰罗 / Tauros"
+    ELIF $目标全国图鉴编号 == 129
+        RETURN "鲤鱼王 / Magikarp"
+    ELIF $目标全国图鉴编号 == 130
+        RETURN "暴鲤龙 / Gyarados"
+    ELIF $目标全国图鉴编号 == 131
+        RETURN "拉普拉斯 / Lapras"
+    ELIF $目标全国图鉴编号 == 132
+        RETURN "百变怪 / Ditto"
+    ELIF $目标全国图鉴编号 == 133
+        RETURN "伊布 / Eevee"
+    ELIF $目标全国图鉴编号 == 137
+        RETURN "多边兽 / Porygon"
+    ELIF $目标全国图鉴编号 == 138
+        RETURN "菊石兽 / Omanyte"
+    ELIF $目标全国图鉴编号 == 140
+        RETURN "化石盔 / Kabuto"
+    ELIF $目标全国图鉴编号 == 142
+        RETURN "化石翼龙 / Aerodactyl"
+    ELIF $目标全国图鉴编号 == 143
+        RETURN "卡比兽 / Snorlax"
+    ELIF $目标全国图鉴编号 == 144
+        RETURN "急冻鸟 / Articuno"
+    ELIF $目标全国图鉴编号 == 145
+        RETURN "闪电鸟 / Zapdos"
+    ELIF $目标全国图鉴编号 == 146
+        RETURN "火焰鸟 / Moltres"
+    ELIF $目标全国图鉴编号 == 147
+        RETURN "迷你龙 / Dratini"
+    ELIF $目标全国图鉴编号 == 148
+        RETURN "哈克龙 / Dragonair"
+    ELIF $目标全国图鉴编号 == 150
+        RETURN "超梦 / Mewtwo"
+    ELIF $目标全国图鉴编号 == 161
+        RETURN "尾立 / Sentret"
+    ELIF $目标全国图鉴编号 == 165
+        RETURN "芭瓢虫 / Ledyba"
+    ELIF $目标全国图鉴编号 == 167
+        RETURN "圆丝蛛 / Spinarak"
+    ELIF $目标全国图鉴编号 == 175
+        RETURN "波克比 / Togepi"
+    ELIF $目标全国图鉴编号 == 177
+        RETURN "天然雀 / Natu"
+    ELIF $目标全国图鉴编号 == 179
+        RETURN "咩利羊 / Mareep"
+    ELIF $目标全国图鉴编号 == 183
+        RETURN "玛力露 / Marill"
+    ELIF $目标全国图鉴编号 == 187
+        RETURN "毽子草 / Hoppip"
+    ELIF $目标全国图鉴编号 == 190
+        RETURN "长尾怪手 / Aipom"
+    ELIF $目标全国图鉴编号 == 193
+        RETURN "蜻蜻蜓 / Yanma"
+    ELIF $目标全国图鉴编号 == 194
+        RETURN "乌波 / Wooper"
+    ELIF $目标全国图鉴编号 == 198
+        RETURN "黑暗鸦 / Murkrow"
+    ELIF $目标全国图鉴编号 == 200
+        RETURN "梦妖 / Misdreavus"
+    ELIF $目标全国图鉴编号 == 201
+        RETURN "未知图腾 / Unown"
+    ELIF $目标全国图鉴编号 == 202
+        RETURN "果然翁 / Wobbuffet"
+    ELIF $目标全国图鉴编号 == 204
+        RETURN "榛果球 / Pineco"
+    ELIF $目标全国图鉴编号 == 206
+        RETURN "土龙弟弟 / Dunsparce"
+    ELIF $目标全国图鉴编号 == 211
+        RETURN "千针鱼 / Qwilfish"
+    ELIF $目标全国图鉴编号 == 213
+        RETURN "壶壶 / Shuckle"
+    ELIF $目标全国图鉴编号 == 214
+        RETURN "赫拉克罗斯 / Heracross"
+    ELIF $目标全国图鉴编号 == 215
+        RETURN "狃拉 / Sneasel"
+    ELIF $目标全国图鉴编号 == 216
+        RETURN "熊宝宝 / Teddiursa"
+    ELIF $目标全国图鉴编号 == 218
+        RETURN "熔岩虫 / Slugma"
+    ELIF $目标全国图鉴编号 == 219
+        RETURN "熔岩蜗牛 / Magcargo"
+    ELIF $目标全国图鉴编号 == 220
+        RETURN "小山猪 / Swinub"
+    ELIF $目标全国图鉴编号 == 223
+        RETURN "铁炮鱼 / Remoraid"
+    ELIF $目标全国图鉴编号 == 225
+        RETURN "信使鸟 / Delibird"
+    ELIF $目标全国图鉴编号 == 226
+        RETURN "巨翅飞鱼 / Mantine"
+    ELIF $目标全国图鉴编号 == 227
+        RETURN "盔甲鸟 / Skarmory"
+    ELIF $目标全国图鉴编号 == 228
+        RETURN "戴鲁比 / Houndour"
+    ELIF $目标全国图鉴编号 == 231
+        RETURN "小小象 / Phanpy"
+    ELIF $目标全国图鉴编号 == 234
+        RETURN "惊角鹿 / Stantler"
+    ELIF $目标全国图鉴编号 == 235
+        RETURN "图图犬 / Smeargle"
+    ELIF $目标全国图鉴编号 == 243
+        RETURN "雷公 / Raikou"
+    ELIF $目标全国图鉴编号 == 244
+        RETURN "炎帝 / Entei"
+    ELIF $目标全国图鉴编号 == 245
+        RETURN "水君 / Suicune"
+    ELIF $目标全国图鉴编号 == 246
+        RETURN "幼基拉斯 / Larvitar"
+    ELIF $目标全国图鉴编号 == 249
+        RETURN "洛奇亚 / Lugia"
+    ELIF $目标全国图鉴编号 == 250
+        RETURN "凤王 / Ho-Oh"
+    ELIF $目标全国图鉴编号 == 386
+        IF $游戏版本 == 1
+            RETURN "代欧奇希斯 攻击形态 / Deoxys Attack"
+        ELIF $游戏版本 == 2
+            RETURN "代欧奇希斯 防御形态 / Deoxys Defense"
+        ENDIF
+        RETURN "代欧奇希斯 / Deoxys"
+    ENDIF
+
+    RETURN "未知 / Unknown"
+ENDFUNC
+
+FUNC 目标中文名称($游戏版本: INT, $目标全国图鉴编号: INT): STRING
+    IF $目标全国图鉴编号 == 1
+        RETURN "妙蛙种子"
+    ELIF $目标全国图鉴编号 == 4
+        RETURN "小火龙"
+    ELIF $目标全国图鉴编号 == 7
+        RETURN "杰尼龟"
+    ELIF $目标全国图鉴编号 == 10
+        RETURN "绿毛虫"
+    ELIF $目标全国图鉴编号 == 11
+        RETURN "铁甲蛹"
+    ELIF $目标全国图鉴编号 == 13
+        RETURN "独角虫"
+    ELIF $目标全国图鉴编号 == 14
+        RETURN "铁壳蛹"
+    ELIF $目标全国图鉴编号 == 16
+        RETURN "波波"
+    ELIF $目标全国图鉴编号 == 17
+        RETURN "比比鸟"
+    ELIF $目标全国图鉴编号 == 19
+        RETURN "小拉达"
+    ELIF $目标全国图鉴编号 == 20
+        RETURN "拉达"
+    ELIF $目标全国图鉴编号 == 21
+        RETURN "烈雀"
+    ELIF $目标全国图鉴编号 == 22
+        RETURN "大嘴雀"
+    ELIF $目标全国图鉴编号 == 23
+        RETURN "阿柏蛇"
+    ELIF $目标全国图鉴编号 == 24
+        RETURN "阿柏怪"
+    ELIF $目标全国图鉴编号 == 25
+        RETURN "皮卡丘"
+    ELIF $目标全国图鉴编号 == 27
+        RETURN "穿山鼠"
+    ELIF $目标全国图鉴编号 == 28
+        RETURN "穿山王"
+    ELIF $目标全国图鉴编号 == 29
+        RETURN "尼多兰"
+    ELIF $目标全国图鉴编号 == 30
+        RETURN "尼多娜"
+    ELIF $目标全国图鉴编号 == 32
+        RETURN "尼多朗"
+    ELIF $目标全国图鉴编号 == 33
+        RETURN "尼多力诺"
+    ELIF $目标全国图鉴编号 == 35
+        RETURN "皮皮"
+    ELIF $目标全国图鉴编号 == 37
+        RETURN "六尾"
+    ELIF $目标全国图鉴编号 == 39
+        RETURN "胖丁"
+    ELIF $目标全国图鉴编号 == 41
+        RETURN "超音蝠"
+    ELIF $目标全国图鉴编号 == 42
+        RETURN "大嘴蝠"
+    ELIF $目标全国图鉴编号 == 43
+        RETURN "走路草"
+    ELIF $目标全国图鉴编号 == 44
+        RETURN "臭臭花"
+    ELIF $目标全国图鉴编号 == 46
+        RETURN "派拉斯"
+    ELIF $目标全国图鉴编号 == 47
+        RETURN "派拉斯特"
+    ELIF $目标全国图鉴编号 == 48
+        RETURN "毛球"
+    ELIF $目标全国图鉴编号 == 49
+        RETURN "摩鲁蛾"
+    ELIF $目标全国图鉴编号 == 50
+        RETURN "地鼠"
+    ELIF $目标全国图鉴编号 == 51
+        RETURN "三地鼠"
+    ELIF $目标全国图鉴编号 == 52
+        RETURN "喵喵"
+    ELIF $目标全国图鉴编号 == 53
+        RETURN "猫老大"
+    ELIF $目标全国图鉴编号 == 54
+        RETURN "可达鸭"
+    ELIF $目标全国图鉴编号 == 55
+        RETURN "哥达鸭"
+    ELIF $目标全国图鉴编号 == 56
+        RETURN "猴怪"
+    ELIF $目标全国图鉴编号 == 57
+        RETURN "火暴猴"
+    ELIF $目标全国图鉴编号 == 58
+        RETURN "卡蒂狗"
+    ELIF $目标全国图鉴编号 == 60
+        RETURN "蚊香蝌蚪"
+    ELIF $目标全国图鉴编号 == 61
+        RETURN "蚊香君"
+    ELIF $目标全国图鉴编号 == 63
+        RETURN "凯西"
+    ELIF $目标全国图鉴编号 == 64
+        RETURN "勇基拉"
+    ELIF $目标全国图鉴编号 == 66
+        RETURN "腕力"
+    ELIF $目标全国图鉴编号 == 67
+        RETURN "豪力"
+    ELIF $目标全国图鉴编号 == 69
+        RETURN "喇叭芽"
+    ELIF $目标全国图鉴编号 == 70
+        RETURN "口呆花"
+    ELIF $目标全国图鉴编号 == 72
+        RETURN "玛瑙水母"
+    ELIF $目标全国图鉴编号 == 73
+        RETURN "毒刺水母"
+    ELIF $目标全国图鉴编号 == 74
+        RETURN "小拳石"
+    ELIF $目标全国图鉴编号 == 75
+        RETURN "隆隆石"
+    ELIF $目标全国图鉴编号 == 77
+        RETURN "小火马"
+    ELIF $目标全国图鉴编号 == 78
+        RETURN "烈焰马"
+    ELIF $目标全国图鉴编号 == 79
+        RETURN "呆呆兽"
+    ELIF $目标全国图鉴编号 == 80
+        RETURN "呆壳兽"
+    ELIF $目标全国图鉴编号 == 81
+        RETURN "小磁怪"
+    ELIF $目标全国图鉴编号 == 82
+        RETURN "三合一磁怪"
+    ELIF $目标全国图鉴编号 == 84
+        RETURN "嘟嘟"
+    ELIF $目标全国图鉴编号 == 86
+        RETURN "小海狮"
+    ELIF $目标全国图鉴编号 == 87
+        RETURN "白海狮"
+    ELIF $目标全国图鉴编号 == 88
+        RETURN "臭泥"
+    ELIF $目标全国图鉴编号 == 89
+        RETURN "臭臭泥"
+    ELIF $目标全国图鉴编号 == 90
+        RETURN "大舌贝"
+    ELIF $目标全国图鉴编号 == 92
+        RETURN "鬼斯"
+    ELIF $目标全国图鉴编号 == 93
+        RETURN "鬼斯通"
+    ELIF $目标全国图鉴编号 == 95
+        RETURN "大岩蛇"
+    ELIF $目标全国图鉴编号 == 96
+        RETURN "催眠貘"
+    ELIF $目标全国图鉴编号 == 97
+        RETURN "引梦貘人"
+    ELIF $目标全国图鉴编号 == 98
+        RETURN "大钳蟹"
+    ELIF $目标全国图鉴编号 == 99
+        RETURN "巨钳蟹"
+    ELIF $目标全国图鉴编号 == 100
+        RETURN "霹雳电球"
+    ELIF $目标全国图鉴编号 == 101
+        RETURN "顽皮雷弹"
+    ELIF $目标全国图鉴编号 == 102
+        RETURN "蛋蛋"
+    ELIF $目标全国图鉴编号 == 104
+        RETURN "卡拉卡拉"
+    ELIF $目标全国图鉴编号 == 105
+        RETURN "嘎啦嘎啦"
+    ELIF $目标全国图鉴编号 == 106
+        RETURN "飞腿郎"
+    ELIF $目标全国图鉴编号 == 107
+        RETURN "快拳郎"
+    ELIF $目标全国图鉴编号 == 109
+        RETURN "瓦斯弹"
+    ELIF $目标全国图鉴编号 == 110
+        RETURN "双弹瓦斯"
+    ELIF $目标全国图鉴编号 == 111
+        RETURN "独角犀牛"
+    ELIF $目标全国图鉴编号 == 113
+        RETURN "吉利蛋"
+    ELIF $目标全国图鉴编号 == 114
+        RETURN "蔓藤怪"
+    ELIF $目标全国图鉴编号 == 115
+        RETURN "袋兽"
+    ELIF $目标全国图鉴编号 == 116
+        RETURN "墨海马"
+    ELIF $目标全国图鉴编号 == 117
+        RETURN "海刺龙"
+    ELIF $目标全国图鉴编号 == 118
+        RETURN "角金鱼"
+    ELIF $目标全国图鉴编号 == 119
+        RETURN "金鱼王"
+    ELIF $目标全国图鉴编号 == 120
+        RETURN "海星星"
+    ELIF $目标全国图鉴编号 == 123
+        RETURN "飞天螳螂"
+    ELIF $目标全国图鉴编号 == 125
+        RETURN "电击兽"
+    ELIF $目标全国图鉴编号 == 126
+        RETURN "鸭嘴火兽"
+    ELIF $目标全国图鉴编号 == 127
+        RETURN "凯罗斯"
+    ELIF $目标全国图鉴编号 == 128
+        RETURN "肯泰罗"
+    ELIF $目标全国图鉴编号 == 129
+        RETURN "鲤鱼王"
+    ELIF $目标全国图鉴编号 == 130
+        RETURN "暴鲤龙"
+    ELIF $目标全国图鉴编号 == 131
+        RETURN "拉普拉斯"
+    ELIF $目标全国图鉴编号 == 132
+        RETURN "百变怪"
+    ELIF $目标全国图鉴编号 == 133
+        RETURN "伊布"
+    ELIF $目标全国图鉴编号 == 137
+        RETURN "多边兽"
+    ELIF $目标全国图鉴编号 == 138
+        RETURN "菊石兽"
+    ELIF $目标全国图鉴编号 == 140
+        RETURN "化石盔"
+    ELIF $目标全国图鉴编号 == 142
+        RETURN "化石翼龙"
+    ELIF $目标全国图鉴编号 == 143
+        RETURN "卡比兽"
+    ELIF $目标全国图鉴编号 == 144
+        RETURN "急冻鸟"
+    ELIF $目标全国图鉴编号 == 145
+        RETURN "闪电鸟"
+    ELIF $目标全国图鉴编号 == 146
+        RETURN "火焰鸟"
+    ELIF $目标全国图鉴编号 == 147
+        RETURN "迷你龙"
+    ELIF $目标全国图鉴编号 == 148
+        RETURN "哈克龙"
+    ELIF $目标全国图鉴编号 == 150
+        RETURN "超梦"
+    ELIF $目标全国图鉴编号 == 161
+        RETURN "尾立"
+    ELIF $目标全国图鉴编号 == 165
+        RETURN "芭瓢虫"
+    ELIF $目标全国图鉴编号 == 167
+        RETURN "圆丝蛛"
+    ELIF $目标全国图鉴编号 == 175
+        RETURN "波克比"
+    ELIF $目标全国图鉴编号 == 177
+        RETURN "天然雀"
+    ELIF $目标全国图鉴编号 == 179
+        RETURN "咩利羊"
+    ELIF $目标全国图鉴编号 == 183
+        RETURN "玛力露"
+    ELIF $目标全国图鉴编号 == 187
+        RETURN "毽子草"
+    ELIF $目标全国图鉴编号 == 190
+        RETURN "长尾怪手"
+    ELIF $目标全国图鉴编号 == 193
+        RETURN "蜻蜻蜓"
+    ELIF $目标全国图鉴编号 == 194
+        RETURN "乌波"
+    ELIF $目标全国图鉴编号 == 198
+        RETURN "黑暗鸦"
+    ELIF $目标全国图鉴编号 == 200
+        RETURN "梦妖"
+    ELIF $目标全国图鉴编号 == 201
+        RETURN "未知图腾"
+    ELIF $目标全国图鉴编号 == 202
+        RETURN "果然翁"
+    ELIF $目标全国图鉴编号 == 204
+        RETURN "榛果球"
+    ELIF $目标全国图鉴编号 == 206
+        RETURN "土龙弟弟"
+    ELIF $目标全国图鉴编号 == 211
+        RETURN "千针鱼"
+    ELIF $目标全国图鉴编号 == 213
+        RETURN "壶壶"
+    ELIF $目标全国图鉴编号 == 214
+        RETURN "赫拉克罗斯"
+    ELIF $目标全国图鉴编号 == 215
+        RETURN "狃拉"
+    ELIF $目标全国图鉴编号 == 216
+        RETURN "熊宝宝"
+    ELIF $目标全国图鉴编号 == 218
+        RETURN "熔岩虫"
+    ELIF $目标全国图鉴编号 == 219
+        RETURN "熔岩蜗牛"
+    ELIF $目标全国图鉴编号 == 220
+        RETURN "小山猪"
+    ELIF $目标全国图鉴编号 == 223
+        RETURN "铁炮鱼"
+    ELIF $目标全国图鉴编号 == 225
+        RETURN "信使鸟"
+    ELIF $目标全国图鉴编号 == 226
+        RETURN "巨翅飞鱼"
+    ELIF $目标全国图鉴编号 == 227
+        RETURN "盔甲鸟"
+    ELIF $目标全国图鉴编号 == 228
+        RETURN "戴鲁比"
+    ELIF $目标全国图鉴编号 == 231
+        RETURN "小小象"
+    ELIF $目标全国图鉴编号 == 234
+        RETURN "惊角鹿"
+    ELIF $目标全国图鉴编号 == 235
+        RETURN "图图犬"
+    ELIF $目标全国图鉴编号 == 243
+        RETURN "雷公"
+    ELIF $目标全国图鉴编号 == 244
+        RETURN "炎帝"
+    ELIF $目标全国图鉴编号 == 245
+        RETURN "水君"
+    ELIF $目标全国图鉴编号 == 246
+        RETURN "幼基拉斯"
+    ELIF $目标全国图鉴编号 == 249
+        RETURN "洛奇亚"
+    ELIF $目标全国图鉴编号 == 250
+        RETURN "凤王"
+    ELIF $目标全国图鉴编号 == 386
+        IF $游戏版本 == 1
+            RETURN "代欧奇希斯 攻击形态"
+        ELIF $游戏版本 == 2
+            RETURN "代欧奇希斯 防御形态"
+        ENDIF
+        RETURN "代欧奇希斯"
+    ENDIF
+
+    RETURN "未知"
+ENDFUNC
+
+FUNC 目标英文名称($目标全国图鉴编号: INT): STRING
+    IF $目标全国图鉴编号 == 1
+        RETURN "BULBASAUR"
+    ELIF $目标全国图鉴编号 == 4
+        RETURN "CHARMANDER"
+    ELIF $目标全国图鉴编号 == 7
+        RETURN "SQUIRTLE"
+    ELIF $目标全国图鉴编号 == 10
+        RETURN "CATERPIE"
+    ELIF $目标全国图鉴编号 == 11
+        RETURN "METAPOD"
+    ELIF $目标全国图鉴编号 == 13
+        RETURN "WEEDLE"
+    ELIF $目标全国图鉴编号 == 14
+        RETURN "KAKUNA"
+    ELIF $目标全国图鉴编号 == 16
+        RETURN "PIDGEY"
+    ELIF $目标全国图鉴编号 == 17
+        RETURN "PIDGEOTTO"
+    ELIF $目标全国图鉴编号 == 19
+        RETURN "RATTATA"
+    ELIF $目标全国图鉴编号 == 20
+        RETURN "RATICATE"
+    ELIF $目标全国图鉴编号 == 21
+        RETURN "SPEAROW"
+    ELIF $目标全国图鉴编号 == 22
+        RETURN "FEAROW"
+    ELIF $目标全国图鉴编号 == 23
+        RETURN "EKANS"
+    ELIF $目标全国图鉴编号 == 24
+        RETURN "ARBOK"
+    ELIF $目标全国图鉴编号 == 25
+        RETURN "PIKACHU"
+    ELIF $目标全国图鉴编号 == 27
+        RETURN "SANDSHREW"
+    ELIF $目标全国图鉴编号 == 28
+        RETURN "SANDSLASH"
+    ELIF $目标全国图鉴编号 == 29
+        RETURN "NIDORAN♀"
+    ELIF $目标全国图鉴编号 == 30
+        RETURN "NIDORINA"
+    ELIF $目标全国图鉴编号 == 32
+        RETURN "NIDORAN♂"
+    ELIF $目标全国图鉴编号 == 33
+        RETURN "NIDORINO"
+    ELIF $目标全国图鉴编号 == 35
+        RETURN "CLEFAIRY"
+    ELIF $目标全国图鉴编号 == 37
+        RETURN "VULPIX"
+    ELIF $目标全国图鉴编号 == 39
+        RETURN "JIGGLYPUFF"
+    ELIF $目标全国图鉴编号 == 41
+        RETURN "ZUBAT"
+    ELIF $目标全国图鉴编号 == 42
+        RETURN "GOLBAT"
+    ELIF $目标全国图鉴编号 == 43
+        RETURN "ODDISH"
+    ELIF $目标全国图鉴编号 == 44
+        RETURN "GLOOM"
+    ELIF $目标全国图鉴编号 == 46
+        RETURN "PARAS"
+    ELIF $目标全国图鉴编号 == 47
+        RETURN "PARASECT"
+    ELIF $目标全国图鉴编号 == 48
+        RETURN "VENONAT"
+    ELIF $目标全国图鉴编号 == 49
+        RETURN "VENOMOTH"
+    ELIF $目标全国图鉴编号 == 50
+        RETURN "DIGLETT"
+    ELIF $目标全国图鉴编号 == 51
+        RETURN "DUGTRIO"
+    ELIF $目标全国图鉴编号 == 52
+        RETURN "MEOWTH"
+    ELIF $目标全国图鉴编号 == 53
+        RETURN "PERSIAN"
+    ELIF $目标全国图鉴编号 == 54
+        RETURN "PSYDUCK"
+    ELIF $目标全国图鉴编号 == 55
+        RETURN "GOLDUCK"
+    ELIF $目标全国图鉴编号 == 56
+        RETURN "MANKEY"
+    ELIF $目标全国图鉴编号 == 57
+        RETURN "PRIMEAPE"
+    ELIF $目标全国图鉴编号 == 58
+        RETURN "GROWLITHE"
+    ELIF $目标全国图鉴编号 == 60
+        RETURN "POLIWAG"
+    ELIF $目标全国图鉴编号 == 61
+        RETURN "POLIWHIRL"
+    ELIF $目标全国图鉴编号 == 63
+        RETURN "ABRA"
+    ELIF $目标全国图鉴编号 == 64
+        RETURN "KADABRA"
+    ELIF $目标全国图鉴编号 == 66
+        RETURN "MACHOP"
+    ELIF $目标全国图鉴编号 == 67
+        RETURN "MACHOKE"
+    ELIF $目标全国图鉴编号 == 69
+        RETURN "BELLSPROUT"
+    ELIF $目标全国图鉴编号 == 70
+        RETURN "WEEPINBELL"
+    ELIF $目标全国图鉴编号 == 72
+        RETURN "TENTACOOL"
+    ELIF $目标全国图鉴编号 == 73
+        RETURN "TENTACRUEL"
+    ELIF $目标全国图鉴编号 == 74
+        RETURN "GEODUDE"
+    ELIF $目标全国图鉴编号 == 75
+        RETURN "GRAVELER"
+    ELIF $目标全国图鉴编号 == 77
+        RETURN "PONYTA"
+    ELIF $目标全国图鉴编号 == 78
+        RETURN "RAPIDASH"
+    ELIF $目标全国图鉴编号 == 79
+        RETURN "SLOWPOKE"
+    ELIF $目标全国图鉴编号 == 80
+        RETURN "SLOWBRO"
+    ELIF $目标全国图鉴编号 == 81
+        RETURN "MAGNEMITE"
+    ELIF $目标全国图鉴编号 == 82
+        RETURN "MAGNETON"
+    ELIF $目标全国图鉴编号 == 84
+        RETURN "DODUO"
+    ELIF $目标全国图鉴编号 == 86
+        RETURN "SEEL"
+    ELIF $目标全国图鉴编号 == 87
+        RETURN "DEWGONG"
+    ELIF $目标全国图鉴编号 == 88
+        RETURN "GRIMER"
+    ELIF $目标全国图鉴编号 == 89
+        RETURN "MUK"
+    ELIF $目标全国图鉴编号 == 90
+        RETURN "SHELLDER"
+    ELIF $目标全国图鉴编号 == 92
+        RETURN "GASTLY"
+    ELIF $目标全国图鉴编号 == 93
+        RETURN "HAUNTER"
+    ELIF $目标全国图鉴编号 == 95
+        RETURN "ONIX"
+    ELIF $目标全国图鉴编号 == 96
+        RETURN "DROWZEE"
+    ELIF $目标全国图鉴编号 == 97
+        RETURN "HYPNO"
+    ELIF $目标全国图鉴编号 == 98
+        RETURN "KRABBY"
+    ELIF $目标全国图鉴编号 == 99
+        RETURN "KINGLER"
+    ELIF $目标全国图鉴编号 == 100
+        RETURN "VOLTORB"
+    ELIF $目标全国图鉴编号 == 101
+        RETURN "ELECTRODE"
+    ELIF $目标全国图鉴编号 == 102
+        RETURN "EXEGGCUTE"
+    ELIF $目标全国图鉴编号 == 104
+        RETURN "CUBONE"
+    ELIF $目标全国图鉴编号 == 105
+        RETURN "MAROWAK"
+    ELIF $目标全国图鉴编号 == 106
+        RETURN "HITMONLEE"
+    ELIF $目标全国图鉴编号 == 107
+        RETURN "HITMONCHAN"
+    ELIF $目标全国图鉴编号 == 109
+        RETURN "KOFFING"
+    ELIF $目标全国图鉴编号 == 110
+        RETURN "WEEZING"
+    ELIF $目标全国图鉴编号 == 111
+        RETURN "RHYHORN"
+    ELIF $目标全国图鉴编号 == 113
+        RETURN "CHANSEY"
+    ELIF $目标全国图鉴编号 == 114
+        RETURN "TANGELA"
+    ELIF $目标全国图鉴编号 == 115
+        RETURN "KANGASKHAN"
+    ELIF $目标全国图鉴编号 == 116
+        RETURN "HORSEA"
+    ELIF $目标全国图鉴编号 == 117
+        RETURN "SEADRA"
+    ELIF $目标全国图鉴编号 == 118
+        RETURN "GOLDEEN"
+    ELIF $目标全国图鉴编号 == 119
+        RETURN "SEAKING"
+    ELIF $目标全国图鉴编号 == 120
+        RETURN "STARYU"
+    ELIF $目标全国图鉴编号 == 123
+        RETURN "SCYTHER"
+    ELIF $目标全国图鉴编号 == 125
+        RETURN "ELECTABUZZ"
+    ELIF $目标全国图鉴编号 == 126
+        RETURN "MAGMAR"
+    ELIF $目标全国图鉴编号 == 127
+        RETURN "PINSIR"
+    ELIF $目标全国图鉴编号 == 128
+        RETURN "TAUROS"
+    ELIF $目标全国图鉴编号 == 129
+        RETURN "MAGIKARP"
+    ELIF $目标全国图鉴编号 == 130
+        RETURN "GYARADOS"
+    ELIF $目标全国图鉴编号 == 131
+        RETURN "LAPRAS"
+    ELIF $目标全国图鉴编号 == 132
+        RETURN "DITTO"
+    ELIF $目标全国图鉴编号 == 133
+        RETURN "EEVEE"
+    ELIF $目标全国图鉴编号 == 137
+        RETURN "PORYGON"
+    ELIF $目标全国图鉴编号 == 138
+        RETURN "OMANYTE"
+    ELIF $目标全国图鉴编号 == 140
+        RETURN "KABUTO"
+    ELIF $目标全国图鉴编号 == 142
+        RETURN "AERODACTYL"
+    ELIF $目标全国图鉴编号 == 143
+        RETURN "SNORLAX"
+    ELIF $目标全国图鉴编号 == 144
+        RETURN "ARTICUNO"
+    ELIF $目标全国图鉴编号 == 145
+        RETURN "ZAPDOS"
+    ELIF $目标全国图鉴编号 == 146
+        RETURN "MOLTRES"
+    ELIF $目标全国图鉴编号 == 147
+        RETURN "DRATINI"
+    ELIF $目标全国图鉴编号 == 148
+        RETURN "DRAGONAIR"
+    ELIF $目标全国图鉴编号 == 150
+        RETURN "MEWTWO"
+    ELIF $目标全国图鉴编号 == 161
+        RETURN "SENTRET"
+    ELIF $目标全国图鉴编号 == 165
+        RETURN "LEDYBA"
+    ELIF $目标全国图鉴编号 == 167
+        RETURN "SPINARAK"
+    ELIF $目标全国图鉴编号 == 175
+        RETURN "TOGEPI"
+    ELIF $目标全国图鉴编号 == 177
+        RETURN "NATU"
+    ELIF $目标全国图鉴编号 == 179
+        RETURN "MAREEP"
+    ELIF $目标全国图鉴编号 == 183
+        RETURN "MARILL"
+    ELIF $目标全国图鉴编号 == 187
+        RETURN "HOPPIP"
+    ELIF $目标全国图鉴编号 == 190
+        RETURN "AIPOM"
+    ELIF $目标全国图鉴编号 == 193
+        RETURN "YANMA"
+    ELIF $目标全国图鉴编号 == 194
+        RETURN "WOOPER"
+    ELIF $目标全国图鉴编号 == 198
+        RETURN "MURKROW"
+    ELIF $目标全国图鉴编号 == 200
+        RETURN "MISDREAVUS"
+    ELIF $目标全国图鉴编号 == 201
+        RETURN "UNOWN"
+    ELIF $目标全国图鉴编号 == 202
+        RETURN "WOBBUFFET"
+    ELIF $目标全国图鉴编号 == 204
+        RETURN "PINECO"
+    ELIF $目标全国图鉴编号 == 206
+        RETURN "DUNSPARCE"
+    ELIF $目标全国图鉴编号 == 211
+        RETURN "QWILFISH"
+    ELIF $目标全国图鉴编号 == 213
+        RETURN "SHUCKLE"
+    ELIF $目标全国图鉴编号 == 214
+        RETURN "HERACROSS"
+    ELIF $目标全国图鉴编号 == 215
+        RETURN "SNEASEL"
+    ELIF $目标全国图鉴编号 == 216
+        RETURN "TEDDIURSA"
+    ELIF $目标全国图鉴编号 == 218
+        RETURN "SLUGMA"
+    ELIF $目标全国图鉴编号 == 219
+        RETURN "MAGCARGO"
+    ELIF $目标全国图鉴编号 == 220
+        RETURN "SWINUB"
+    ELIF $目标全国图鉴编号 == 223
+        RETURN "REMORAID"
+    ELIF $目标全国图鉴编号 == 225
+        RETURN "DELIBIRD"
+    ELIF $目标全国图鉴编号 == 226
+        RETURN "MANTINE"
+    ELIF $目标全国图鉴编号 == 227
+        RETURN "SKARMORY"
+    ELIF $目标全国图鉴编号 == 228
+        RETURN "HOUNDOUR"
+    ELIF $目标全国图鉴编号 == 231
+        RETURN "PHANPY"
+    ELIF $目标全国图鉴编号 == 234
+        RETURN "STANTLER"
+    ELIF $目标全国图鉴编号 == 235
+        RETURN "SMEARGLE"
+    ELIF $目标全国图鉴编号 == 243
+        RETURN "RAIKOU"
+    ELIF $目标全国图鉴编号 == 244
+        RETURN "ENTEI"
+    ELIF $目标全国图鉴编号 == 245
+        RETURN "SUICUNE"
+    ELIF $目标全国图鉴编号 == 246
+        RETURN "LARVITAR"
+    ELIF $目标全国图鉴编号 == 249
+        RETURN "LUGIA"
+    ELIF $目标全国图鉴编号 == 250
+        RETURN "HO-OH"
+    ELIF $目标全国图鉴编号 == 386
+        RETURN "DEOXYS"
+    ENDIF
+
+    RETURN "UNKNOWN"
+ENDFUNC
+
+FUNC 英文名称查图鉴编号($抓捕对象名称结果: STRING): INT
+    IF $抓捕对象名称结果 == "BULBASAUR"
+        RETURN 1
+    ELIF $抓捕对象名称结果 == "CHARMANDER"
+        RETURN 4
+    ELIF $抓捕对象名称结果 == "SQUIRTLE"
+        RETURN 7
+    ELIF $抓捕对象名称结果 == "CATERPIE"
+        RETURN 10
+    ELIF $抓捕对象名称结果 == "METAPOD"
+        RETURN 11
+    ELIF $抓捕对象名称结果 == "WEEDLE"
+        RETURN 13
+    ELIF $抓捕对象名称结果 == "KAKUNA"
+        RETURN 14
+    ELIF $抓捕对象名称结果 == "PIDGEY"
+        RETURN 16
+    ELIF $抓捕对象名称结果 == "PIDGEOTTO"
+        RETURN 17
+    ELIF $抓捕对象名称结果 == "RATTATA"
+        RETURN 19
+    ELIF $抓捕对象名称结果 == "RATICATE"
+        RETURN 20
+    ELIF $抓捕对象名称结果 == "SPEAROW"
+        RETURN 21
+    ELIF $抓捕对象名称结果 == "FEAROW"
+        RETURN 22
+    ELIF $抓捕对象名称结果 == "EKANS"
+        RETURN 23
+    ELIF $抓捕对象名称结果 == "ARBOK"
+        RETURN 24
+    ELIF $抓捕对象名称结果 == "PIKACHU"
+        RETURN 25
+    ELIF $抓捕对象名称结果 == "SANDSHREW"
+        RETURN 27
+    ELIF $抓捕对象名称结果 == "SANDSLASH"
+        RETURN 28
+    ELIF $抓捕对象名称结果 == "NIDORAN♀"
+        RETURN 29
+    ELIF $抓捕对象名称结果 == "NIDORINA"
+        RETURN 30
+    ELIF $抓捕对象名称结果 == "NIDORAN♂"
+        RETURN 32
+    ELIF $抓捕对象名称结果 == "NIDORINO"
+        RETURN 33
+    ELIF $抓捕对象名称结果 == "CLEFAIRY"
+        RETURN 35
+    ELIF $抓捕对象名称结果 == "VULPIX"
+        RETURN 37
+    ELIF $抓捕对象名称结果 == "JIGGLYPUFF"
+        RETURN 39
+    ELIF $抓捕对象名称结果 == "ZUBAT"
+        RETURN 41
+    ELIF $抓捕对象名称结果 == "GOLBAT"
+        RETURN 42
+    ELIF $抓捕对象名称结果 == "ODDISH"
+        RETURN 43
+    ELIF $抓捕对象名称结果 == "GLOOM"
+        RETURN 44
+    ELIF $抓捕对象名称结果 == "PARAS"
+        RETURN 46
+    ELIF $抓捕对象名称结果 == "PARASECT"
+        RETURN 47
+    ELIF $抓捕对象名称结果 == "VENONAT"
+        RETURN 48
+    ELIF $抓捕对象名称结果 == "VENOMOTH"
+        RETURN 49
+    ELIF $抓捕对象名称结果 == "DIGLETT"
+        RETURN 50
+    ELIF $抓捕对象名称结果 == "DUGTRIO"
+        RETURN 51
+    ELIF $抓捕对象名称结果 == "MEOWTH"
+        RETURN 52
+    ELIF $抓捕对象名称结果 == "PERSIAN"
+        RETURN 53
+    ELIF $抓捕对象名称结果 == "PSYDUCK"
+        RETURN 54
+    ELIF $抓捕对象名称结果 == "GOLDUCK"
+        RETURN 55
+    ELIF $抓捕对象名称结果 == "MANKEY"
+        RETURN 56
+    ELIF $抓捕对象名称结果 == "PRIMEAPE"
+        RETURN 57
+    ELIF $抓捕对象名称结果 == "GROWLITHE"
+        RETURN 58
+    ELIF $抓捕对象名称结果 == "POLIWAG"
+        RETURN 60
+    ELIF $抓捕对象名称结果 == "POLIWHIRL"
+        RETURN 61
+    ELIF $抓捕对象名称结果 == "ABRA"
+        RETURN 63
+    ELIF $抓捕对象名称结果 == "KADABRA"
+        RETURN 64
+    ELIF $抓捕对象名称结果 == "MACHOP"
+        RETURN 66
+    ELIF $抓捕对象名称结果 == "MACHOKE"
+        RETURN 67
+    ELIF $抓捕对象名称结果 == "BELLSPROUT"
+        RETURN 69
+    ELIF $抓捕对象名称结果 == "WEEPINBELL"
+        RETURN 70
+    ELIF $抓捕对象名称结果 == "TENTACOOL"
+        RETURN 72
+    ELIF $抓捕对象名称结果 == "TENTACRUEL"
+        RETURN 73
+    ELIF $抓捕对象名称结果 == "GEODUDE"
+        RETURN 74
+    ELIF $抓捕对象名称结果 == "GRAVELER"
+        RETURN 75
+    ELIF $抓捕对象名称结果 == "PONYTA"
+        RETURN 77
+    ELIF $抓捕对象名称结果 == "RAPIDASH"
+        RETURN 78
+    ELIF $抓捕对象名称结果 == "SLOWPOKE"
+        RETURN 79
+    ELIF $抓捕对象名称结果 == "SLOWBRO"
+        RETURN 80
+    ELIF $抓捕对象名称结果 == "MAGNEMITE"
+        RETURN 81
+    ELIF $抓捕对象名称结果 == "MAGNETON"
+        RETURN 82
+    ELIF $抓捕对象名称结果 == "DODUO"
+        RETURN 84
+    ELIF $抓捕对象名称结果 == "SEEL"
+        RETURN 86
+    ELIF $抓捕对象名称结果 == "DEWGONG"
+        RETURN 87
+    ELIF $抓捕对象名称结果 == "GRIMER"
+        RETURN 88
+    ELIF $抓捕对象名称结果 == "MUK"
+        RETURN 89
+    ELIF $抓捕对象名称结果 == "SHELLDER"
+        RETURN 90
+    ELIF $抓捕对象名称结果 == "GASTLY"
+        RETURN 92
+    ELIF $抓捕对象名称结果 == "HAUNTER"
+        RETURN 93
+    ELIF $抓捕对象名称结果 == "ONIX"
+        RETURN 95
+    ELIF $抓捕对象名称结果 == "DROWZEE"
+        RETURN 96
+    ELIF $抓捕对象名称结果 == "HYPNO"
+        RETURN 97
+    ELIF $抓捕对象名称结果 == "KRABBY"
+        RETURN 98
+    ELIF $抓捕对象名称结果 == "KINGLER"
+        RETURN 99
+    ELIF $抓捕对象名称结果 == "VOLTORB"
+        RETURN 100
+    ELIF $抓捕对象名称结果 == "ELECTRODE"
+        RETURN 101
+    ELIF $抓捕对象名称结果 == "EXEGGCUTE"
+        RETURN 102
+    ELIF $抓捕对象名称结果 == "CUBONE"
+        RETURN 104
+    ELIF $抓捕对象名称结果 == "MAROWAK"
+        RETURN 105
+    ELIF $抓捕对象名称结果 == "HITMONLEE"
+        RETURN 106
+    ELIF $抓捕对象名称结果 == "HITMONCHAN"
+        RETURN 107
+    ELIF $抓捕对象名称结果 == "KOFFING"
+        RETURN 109
+    ELIF $抓捕对象名称结果 == "WEEZING"
+        RETURN 110
+    ELIF $抓捕对象名称结果 == "RHYHORN"
+        RETURN 111
+    ELIF $抓捕对象名称结果 == "CHANSEY"
+        RETURN 113
+    ELIF $抓捕对象名称结果 == "TANGELA"
+        RETURN 114
+    ELIF $抓捕对象名称结果 == "KANGASKHAN"
+        RETURN 115
+    ELIF $抓捕对象名称结果 == "HORSEA"
+        RETURN 116
+    ELIF $抓捕对象名称结果 == "SEADRA"
+        RETURN 117
+    ELIF $抓捕对象名称结果 == "GOLDEEN"
+        RETURN 118
+    ELIF $抓捕对象名称结果 == "SEAKING"
+        RETURN 119
+    ELIF $抓捕对象名称结果 == "STARYU"
+        RETURN 120
+    ELIF $抓捕对象名称结果 == "SCYTHER"
+        RETURN 123
+    ELIF $抓捕对象名称结果 == "ELECTABUZZ"
+        RETURN 125
+    ELIF $抓捕对象名称结果 == "MAGMAR"
+        RETURN 126
+    ELIF $抓捕对象名称结果 == "PINSIR"
+        RETURN 127
+    ELIF $抓捕对象名称结果 == "TAUROS"
+        RETURN 128
+    ELIF $抓捕对象名称结果 == "MAGIKARP"
+        RETURN 129
+    ELIF $抓捕对象名称结果 == "GYARADOS"
+        RETURN 130
+    ELIF $抓捕对象名称结果 == "LAPRAS"
+        RETURN 131
+    ELIF $抓捕对象名称结果 == "DITTO"
+        RETURN 132
+    ELIF $抓捕对象名称结果 == "EEVEE"
+        RETURN 133
+    ELIF $抓捕对象名称结果 == "OMANYTE"
+        RETURN 138
+    ELIF $抓捕对象名称结果 == "KABUTO"
+        RETURN 140
+    ELIF $抓捕对象名称结果 == "AERODACTYL"
+        RETURN 142
+    ELIF $抓捕对象名称结果 == "SNORLAX"
+        RETURN 143
+    ELIF $抓捕对象名称结果 == "ARTICUNO"
+        RETURN 144
+    ELIF $抓捕对象名称结果 == "ZAPDOS"
+        RETURN 145
+    ELIF $抓捕对象名称结果 == "MOLTRES"
+        RETURN 146
+    ELIF $抓捕对象名称结果 == "DRATINI"
+        RETURN 147
+    ELIF $抓捕对象名称结果 == "DRAGONAIR"
+        RETURN 148
+    ELIF $抓捕对象名称结果 == "MEWTWO"
+        RETURN 150
+    ELIF $抓捕对象名称结果 == "SENTRET"
+        RETURN 161
+    ELIF $抓捕对象名称结果 == "LEDYBA"
+        RETURN 165
+    ELIF $抓捕对象名称结果 == "SPINARAK"
+        RETURN 167
+    ELIF $抓捕对象名称结果 == "TOGEPI"
+        RETURN 175
+    ELIF $抓捕对象名称结果 == "NATU"
+        RETURN 177
+    ELIF $抓捕对象名称结果 == "MAREEP"
+        RETURN 179
+    ELIF $抓捕对象名称结果 == "MARILL"
+        RETURN 183
+    ELIF $抓捕对象名称结果 == "HOPPIP"
+        RETURN 187
+    ELIF $抓捕对象名称结果 == "AIPOM"
+        RETURN 190
+    ELIF $抓捕对象名称结果 == "YANMA"
+        RETURN 193
+    ELIF $抓捕对象名称结果 == "WOOPER"
+        RETURN 194
+    ELIF $抓捕对象名称结果 == "MURKROW"
+        RETURN 198
+    ELIF $抓捕对象名称结果 == "MISDREAVUS"
+        RETURN 200
+    ELIF $抓捕对象名称结果 == "UNOWN"
+        RETURN 201
+    ELIF $抓捕对象名称结果 == "WOBBUFFET"
+        RETURN 202
+    ELIF $抓捕对象名称结果 == "PINECO"
+        RETURN 204
+    ELIF $抓捕对象名称结果 == "DUNSPARCE"
+        RETURN 206
+    ELIF $抓捕对象名称结果 == "QWILFISH"
+        RETURN 211
+    ELIF $抓捕对象名称结果 == "SHUCKLE"
+        RETURN 213
+    ELIF $抓捕对象名称结果 == "HERACROSS"
+        RETURN 214
+    ELIF $抓捕对象名称结果 == "SNEASEL"
+        RETURN 215
+    ELIF $抓捕对象名称结果 == "TEDDIURSA"
+        RETURN 216
+    ELIF $抓捕对象名称结果 == "SLUGMA"
+        RETURN 218
+    ELIF $抓捕对象名称结果 == "MAGCARGO"
+        RETURN 219
+    ELIF $抓捕对象名称结果 == "SWINUB"
+        RETURN 220
+    ELIF $抓捕对象名称结果 == "REMORAID"
+        RETURN 223
+    ELIF $抓捕对象名称结果 == "DELIBIRD"
+        RETURN 225
+    ELIF $抓捕对象名称结果 == "MANTINE"
+        RETURN 226
+    ELIF $抓捕对象名称结果 == "SKARMORY"
+        RETURN 227
+    ELIF $抓捕对象名称结果 == "HOUNDOUR"
+        RETURN 228
+    ELIF $抓捕对象名称结果 == "PHANPY"
+        RETURN 231
+    ELIF $抓捕对象名称结果 == "STANTLER"
+        RETURN 234
+    ELIF $抓捕对象名称结果 == "SMEARGLE"
+        RETURN 235
+    ELIF $抓捕对象名称结果 == "RAIKOU"
+        RETURN 243
+    ELIF $抓捕对象名称结果 == "ENTEI"
+        RETURN 244
+    ELIF $抓捕对象名称结果 == "SUICUNE"
+        RETURN 245
+    ELIF $抓捕对象名称结果 == "LARVITAR"
+        RETURN 246
+    ELIF $抓捕对象名称结果 == "LUGIA"
+        RETURN 249
+    ELIF $抓捕对象名称结果 == "HO-OH"
+        RETURN 250
+    ELIF $抓捕对象名称结果 == "DEOXYS"
+        RETURN 386
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+# 名称输入反查表。中文名和英文显示名与上方TenLines兼容显示保持一致；
+# 全大写英文继续复用OCR反查，slug用于兼容小写输入。
+FUNC 目标宝可梦名称查图鉴编号($目标宝可梦输入名称: STRING): INT
+    IF $目标宝可梦输入名称 == "尼多兰♀"
+        RETURN 29
+    ELIF $目标宝可梦输入名称 == "尼多兰♂"
+        RETURN 32
+    ENDIF
+
+    $目标宝可梦英文查找结果 = 英文名称查图鉴编号($目标宝可梦输入名称)
+    IF $目标宝可梦英文查找结果 > 0
+        RETURN $目标宝可梦英文查找结果
+    ENDIF
+
+    $宝可梦名称图鉴表 = [1,4,7,10,11,13,14,16,17,19,20,21,22,23,24,25,27,28,29,30,32,33,35,37,39,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,60,61,63,64,66,67,69,70,72,73,74,75,77,78,79,80,81,82,84,86,87,88,89,90,92,93,95,96,97,98,99,100,101,102,104,105,106,107,109,110,111,113,114,115,116,117,118,119,120,123,125,126,127,128,129,130,131,132,133,138,140,142,143,144,145,146,147,148,150,161,165,167,175,177,179,183,187,190,193,194,198,200,201,202,204,206,211,213,214,215,216,218,219,220,223,225,226,227,228,231,234,235,243,244,245,246,249,250,386]
+    $宝可梦中文名称表 = ["妙蛙种子","小火龙","杰尼龟","绿毛虫","铁甲蛹","独角虫","铁壳蛹","波波","比比鸟","小拉达","拉达","烈雀","大嘴雀","阿柏蛇","阿柏怪","皮卡丘","穿山鼠","穿山王","尼多兰","尼多娜","尼多朗","尼多力诺","皮皮","六尾","胖丁","超音蝠","大嘴蝠","走路草","臭臭花","派拉斯","派拉斯特","毛球","摩鲁蛾","地鼠","三地鼠","喵喵","猫老大","可达鸭","哥达鸭","猴怪","火暴猴","卡蒂狗","蚊香蝌蚪","蚊香君","凯西","勇基拉","腕力","豪力","喇叭芽","口呆花","玛瑙水母","毒刺水母","小拳石","隆隆石","小火马","烈焰马","呆呆兽","呆壳兽","小磁怪","三合一磁怪","嘟嘟","小海狮","白海狮","臭泥","臭臭泥","大舌贝","鬼斯","鬼斯通","大岩蛇","催眠貘","引梦貘人","大钳蟹","巨钳蟹","霹雳电球","顽皮雷弹","蛋蛋","卡拉卡拉","嘎啦嘎啦","飞腿郎","快拳郎","瓦斯弹","双弹瓦斯","独角犀牛","吉利蛋","蔓藤怪","袋兽","墨海马","海刺龙","角金鱼","金鱼王","海星星","飞天螳螂","电击兽","鸭嘴火兽","凯罗斯","肯泰罗","鲤鱼王","暴鲤龙","拉普拉斯","百变怪","伊布","菊石兽","化石盔","化石翼龙","卡比兽","急冻鸟","闪电鸟","火焰鸟","迷你龙","哈克龙","超梦","尾立","芭瓢虫","圆丝蛛","波克比","天然雀","咩利羊","玛力露","毽子草","长尾怪手","蜻蜻蜓","乌波","黑暗鸦","梦妖","未知图腾","果然翁","榛果球","土龙弟弟","千针鱼","壶壶","赫拉克罗斯","狃拉","熊宝宝","熔岩虫","熔岩蜗牛","小山猪","铁炮鱼","信使鸟","巨翅飞鱼","盔甲鸟","戴鲁比","小小象","惊角鹿","图图犬","雷公","炎帝","水君","幼基拉斯","洛奇亚","凤王","代欧奇希斯"]
+    $宝可梦英文名称表 = ["Bulbasaur","Charmander","Squirtle","Caterpie","Metapod","Weedle","Kakuna","Pidgey","Pidgeotto","Rattata","Raticate","Spearow","Fearow","Ekans","Arbok","Pikachu","Sandshrew","Sandslash","Nidoran♀","Nidorina","Nidoran♂","Nidorino","Clefairy","Vulpix","Jigglypuff","Zubat","Golbat","Oddish","Gloom","Paras","Parasect","Venonat","Venomoth","Diglett","Dugtrio","Meowth","Persian","Psyduck","Golduck","Mankey","Primeape","Growlithe","Poliwag","Poliwhirl","Abra","Kadabra","Machop","Machoke","Bellsprout","Weepinbell","Tentacool","Tentacruel","Geodude","Graveler","Ponyta","Rapidash","Slowpoke","Slowbro","Magnemite","Magneton","Doduo","Seel","Dewgong","Grimer","Muk","Shellder","Gastly","Haunter","Onix","Drowzee","Hypno","Krabby","Kingler","Voltorb","Electrode","Exeggcute","Cubone","Marowak","Hitmonlee","Hitmonchan","Koffing","Weezing","Rhyhorn","Chansey","Tangela","Kangaskhan","Horsea","Seadra","Goldeen","Seaking","Staryu","Scyther","Electabuzz","Magmar","Pinsir","Tauros","Magikarp","Gyarados","Lapras","Ditto","Eevee","Omanyte","Kabuto","Aerodactyl","Snorlax","Articuno","Zapdos","Moltres","Dratini","Dragonair","Mewtwo","Sentret","Ledyba","Spinarak","Togepi","Natu","Mareep","Marill","Hoppip","Aipom","Yanma","Wooper","Murkrow","Misdreavus","Unown","Wobbuffet","Pineco","Dunsparce","Qwilfish","Shuckle","Heracross","Sneasel","Teddiursa","Slugma","Magcargo","Swinub","Remoraid","Delibird","Mantine","Skarmory","Houndour","Phanpy","Stantler","Smeargle","Raikou","Entei","Suicune","Larvitar","Lugia","Ho-Oh","Deoxys"]
+    $宝可梦英文Slug表 = ["bulbasaur","charmander","squirtle","caterpie","metapod","weedle","kakuna","pidgey","pidgeotto","rattata","raticate","spearow","fearow","ekans","arbok","pikachu","sandshrew","sandslash","nidoran-f","nidorina","nidoran-m","nidorino","clefairy","vulpix","jigglypuff","zubat","golbat","oddish","gloom","paras","parasect","venonat","venomoth","diglett","dugtrio","meowth","persian","psyduck","golduck","mankey","primeape","growlithe","poliwag","poliwhirl","abra","kadabra","machop","machoke","bellsprout","weepinbell","tentacool","tentacruel","geodude","graveler","ponyta","rapidash","slowpoke","slowbro","magnemite","magneton","doduo","seel","dewgong","grimer","muk","shellder","gastly","haunter","onix","drowzee","hypno","krabby","kingler","voltorb","electrode","exeggcute","cubone","marowak","hitmonlee","hitmonchan","koffing","weezing","rhyhorn","chansey","tangela","kangaskhan","horsea","seadra","goldeen","seaking","staryu","scyther","electabuzz","magmar","pinsir","tauros","magikarp","gyarados","lapras","ditto","eevee","omanyte","kabuto","aerodactyl","snorlax","articuno","zapdos","moltres","dratini","dragonair","mewtwo","sentret","ledyba","spinarak","togepi","natu","mareep","marill","hoppip","aipom","yanma","wooper","murkrow","misdreavus","unown","wobbuffet","pineco","dunsparce","qwilfish","shuckle","heracross","sneasel","teddiursa","slugma","magcargo","swinub","remoraid","delibird","mantine","skarmory","houndour","phanpy","stantler","smeargle","raikou","entei","suicune","larvitar","lugia","ho-oh","deoxys"]
+
+    $宝可梦名称表数量 = LEN($宝可梦名称图鉴表)
+    $宝可梦名称末索引 = $宝可梦名称表数量 - 1
+    FOR $宝可梦名称索引 = 0 TO $宝可梦名称末索引
+        $宝可梦名称组合 = $宝可梦中文名称表[$宝可梦名称索引] & " / " & $宝可梦英文名称表[$宝可梦名称索引]
+        IF $目标宝可梦输入名称 == $宝可梦中文名称表[$宝可梦名称索引] or $目标宝可梦输入名称 == $宝可梦英文名称表[$宝可梦名称索引] or $目标宝可梦输入名称 == $宝可梦英文Slug表[$宝可梦名称索引] or $目标宝可梦输入名称 == $宝可梦名称组合
+            RETURN $宝可梦名称图鉴表[$宝可梦名称索引]
+        ENDIF
+    NEXT
+
+    RETURN -1
+ENDFUNC
+
+# ==================================================
+# 来源记录
+# ==================================================
+# 1: 妙蛙种子 / Bulbasaur / slug=bulbasaur
+# 4: 小火龙 / Charmander / slug=charmander
+# 7: 杰尼龟 / Squirtle / slug=squirtle
+# 10: 绿毛虫 / Caterpie / slug=caterpie
+# 11: 铁甲蛹 / Metapod / slug=metapod
+# 13: 独角虫 / Weedle / slug=weedle
+# 14: 铁壳蛹 / Kakuna / slug=kakuna
+# 16: 波波 / Pidgey / slug=pidgey
+# 17: 比比鸟 / Pidgeotto / slug=pidgeotto
+# 19: 小拉达 / Rattata / slug=rattata
+# 20: 拉达 / Raticate / slug=raticate
+# 21: 烈雀 / Spearow / slug=spearow
+# 22: 大嘴雀 / Fearow / slug=fearow
+# 23: 阿柏蛇 / Ekans / slug=ekans
+# 24: 阿柏怪 / Arbok / slug=arbok
+# 25: 皮卡丘 / Pikachu / slug=pikachu
+# 27: 穿山鼠 / Sandshrew / slug=sandshrew
+# 28: 穿山王 / Sandslash / slug=sandslash
+# 29: 尼多兰 / Nidoran♀ / slug=nidoran-f
+# 30: 尼多娜 / Nidorina / slug=nidorina
+# 32: 尼多朗 / Nidoran♂ / slug=nidoran-m
+# 33: 尼多力诺 / Nidorino / slug=nidorino
+# 35: 皮皮 / Clefairy / slug=clefairy
+# 37: 六尾 / Vulpix / slug=vulpix
+# 39: 胖丁 / Jigglypuff / slug=jigglypuff
+# 41: 超音蝠 / Zubat / slug=zubat
+# 42: 大嘴蝠 / Golbat / slug=golbat
+# 43: 走路草 / Oddish / slug=oddish
+# 44: 臭臭花 / Gloom / slug=gloom
+# 46: 派拉斯 / Paras / slug=paras
+# 47: 派拉斯特 / Parasect / slug=parasect
+# 48: 毛球 / Venonat / slug=venonat
+# 49: 摩鲁蛾 / Venomoth / slug=venomoth
+# 50: 地鼠 / Diglett / slug=diglett
+# 51: 三地鼠 / Dugtrio / slug=dugtrio
+# 52: 喵喵 / Meowth / slug=meowth
+# 53: 猫老大 / Persian / slug=persian
+# 54: 可达鸭 / Psyduck / slug=psyduck
+# 55: 哥达鸭 / Golduck / slug=golduck
+# 56: 猴怪 / Mankey / slug=mankey
+# 57: 火暴猴 / Primeape / slug=primeape
+# 58: 卡蒂狗 / Growlithe / slug=growlithe
+# 60: 蚊香蝌蚪 / Poliwag / slug=poliwag
+# 61: 蚊香君 / Poliwhirl / slug=poliwhirl
+# 63: 凯西 / Abra / slug=abra
+# 64: 勇基拉 / Kadabra / slug=kadabra
+# 66: 腕力 / Machop / slug=machop
+# 67: 豪力 / Machoke / slug=machoke
+# 69: 喇叭芽 / Bellsprout / slug=bellsprout
+# 70: 口呆花 / Weepinbell / slug=weepinbell
+# 72: 玛瑙水母 / Tentacool / slug=tentacool
+# 73: 毒刺水母 / Tentacruel / slug=tentacruel
+# 74: 小拳石 / Geodude / slug=geodude
+# 75: 隆隆石 / Graveler / slug=graveler
+# 77: 小火马 / Ponyta / slug=ponyta
+# 78: 烈焰马 / Rapidash / slug=rapidash
+# 79: 呆呆兽 / Slowpoke / slug=slowpoke
+# 80: 呆壳兽 / Slowbro / slug=slowbro
+# 81: 小磁怪 / Magnemite / slug=magnemite
+# 82: 三合一磁怪 / Magneton / slug=magneton
+# 84: 嘟嘟 / Doduo / slug=doduo
+# 86: 小海狮 / Seel / slug=seel
+# 87: 白海狮 / Dewgong / slug=dewgong
+# 88: 臭泥 / Grimer / slug=grimer
+# 89: 臭臭泥 / Muk / slug=muk
+# 90: 大舌贝 / Shellder / slug=shellder
+# 92: 鬼斯 / Gastly / slug=gastly
+# 93: 鬼斯通 / Haunter / slug=haunter
+# 95: 大岩蛇 / Onix / slug=onix
+# 96: 催眠貘 / Drowzee / slug=drowzee
+# 97: 引梦貘人 / Hypno / slug=hypno
+# 98: 大钳蟹 / Krabby / slug=krabby
+# 99: 巨钳蟹 / Kingler / slug=kingler
+# 100: 霹雳电球 / Voltorb / slug=voltorb
+# 101: 顽皮雷弹 / Electrode / slug=electrode
+# 102: 蛋蛋 / Exeggcute / slug=exeggcute
+# 104: 卡拉卡拉 / Cubone / slug=cubone
+# 105: 嘎啦嘎啦 / Marowak / slug=marowak
+# 106: 飞腿郎 / Hitmonlee / slug=hitmonlee
+# 107: 快拳郎 / Hitmonchan / slug=hitmonchan
+# 109: 瓦斯弹 / Koffing / slug=koffing
+# 110: 双弹瓦斯 / Weezing / slug=weezing
+# 111: 独角犀牛 / Rhyhorn / slug=rhyhorn
+# 113: 吉利蛋 / Chansey / slug=chansey
+# 114: 蔓藤怪 / Tangela / slug=tangela
+# 115: 袋兽 / Kangaskhan / slug=kangaskhan
+# 116: 墨海马 / Horsea / slug=horsea
+# 117: 海刺龙 / Seadra / slug=seadra
+# 118: 角金鱼 / Goldeen / slug=goldeen
+# 119: 金鱼王 / Seaking / slug=seaking
+# 120: 海星星 / Staryu / slug=staryu
+# 123: 飞天螳螂 / Scyther / slug=scyther
+# 125: 电击兽 / Electabuzz / slug=electabuzz
+# 126: 鸭嘴火兽 / Magmar / slug=magmar
+# 127: 凯罗斯 / Pinsir / slug=pinsir
+# 128: 肯泰罗 / Tauros / slug=tauros
+# 129: 鲤鱼王 / Magikarp / slug=magikarp
+# 130: 暴鲤龙 / Gyarados / slug=gyarados
+# 131: 拉普拉斯 / Lapras / slug=lapras
+# 132: 百变怪 / Ditto / slug=ditto
+# 133: 伊布 / Eevee / slug=eevee
+# 138: 菊石兽 / Omanyte / slug=omanyte
+# 140: 化石盔 / Kabuto / slug=kabuto
+# 142: 化石翼龙 / Aerodactyl / slug=aerodactyl
+# 143: 卡比兽 / Snorlax / slug=snorlax
+# 144: 急冻鸟 / Articuno / slug=articuno
+# 145: 闪电鸟 / Zapdos / slug=zapdos
+# 146: 火焰鸟 / Moltres / slug=moltres
+# 147: 迷你龙 / Dratini / slug=dratini
+# 148: 哈克龙 / Dragonair / slug=dragonair
+# 150: 超梦 / Mewtwo / slug=mewtwo
+# 161: 尾立 / Sentret / slug=sentret
+# 165: 芭瓢虫 / Ledyba / slug=ledyba
+# 167: 圆丝蛛 / Spinarak / slug=spinarak
+# 175: 波克比 / Togepi / slug=togepi
+# 177: 天然雀 / Natu / slug=natu
+# 179: 咩利羊 / Mareep / slug=mareep
+# 183: 玛力露 / Marill / slug=marill
+# 187: 毽子草 / Hoppip / slug=hoppip
+# 190: 长尾怪手 / Aipom / slug=aipom
+# 193: 蜻蜻蜓 / Yanma / slug=yanma
+# 194: 乌波 / Wooper / slug=wooper
+# 198: 黑暗鸦 / Murkrow / slug=murkrow
+# 200: 梦妖 / Misdreavus / slug=misdreavus
+# 201: 未知图腾 / Unown / slug=unown
+# 202: 果然翁 / Wobbuffet / slug=wobbuffet
+# 204: 榛果球 / Pineco / slug=pineco
+# 206: 土龙弟弟 / Dunsparce / slug=dunsparce
+# 211: 千针鱼 / Qwilfish / slug=qwilfish
+# 213: 壶壶 / Shuckle / slug=shuckle
+# 214: 赫拉克罗斯 / Heracross / slug=heracross
+# 215: 狃拉 / Sneasel / slug=sneasel
+# 216: 熊宝宝 / Teddiursa / slug=teddiursa
+# 218: 熔岩虫 / Slugma / slug=slugma
+# 219: 熔岩蜗牛 / Magcargo / slug=magcargo
+# 220: 小山猪 / Swinub / slug=swinub
+# 223: 铁炮鱼 / Remoraid / slug=remoraid
+# 225: 信使鸟 / Delibird / slug=delibird
+# 226: 巨翅飞鱼 / Mantine / slug=mantine
+# 227: 盔甲鸟 / Skarmory / slug=skarmory
+# 228: 戴鲁比 / Houndour / slug=houndour
+# 231: 小小象 / Phanpy / slug=phanpy
+# 234: 惊角鹿 / Stantler / slug=stantler
+# 235: 图图犬 / Smeargle / slug=smeargle
+# 243: 雷公 / Raikou / slug=raikou
+# 244: 炎帝 / Entei / slug=entei
+# 245: 水君 / Suicune / slug=suicune
+# 246: 幼基拉斯 / Larvitar / slug=larvitar
+# 249: 洛奇亚 / Lugia / slug=lugia
+# 250: 凤王 / Ho-Oh / slug=ho-oh
+# 386: 代欧奇希斯 / Deoxys / slug=deoxys

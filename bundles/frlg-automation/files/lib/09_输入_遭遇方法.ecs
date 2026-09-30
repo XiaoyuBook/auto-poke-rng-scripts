@@ -1,0 +1,141 @@
+﻿FUNC 规范化遭遇方法($宝可梦遭遇方法: STRING): INT
+    IF $宝可梦遭遇方法 == "御三家"
+        RETURN 1
+    ELIF $宝可梦遭遇方法 == "starter"
+        RETURN 1
+    ELIF $宝可梦遭遇方法 == "starters"
+        RETURN 1
+    ELIF $宝可梦遭遇方法 == "化石复活"
+        RETURN 2
+    ELIF $宝可梦遭遇方法 == "化石"
+        RETURN 2
+    ELIF $宝可梦遭遇方法 == "fossil"
+        RETURN 2
+    ELIF $宝可梦遭遇方法 == "fossil revive"
+        RETURN 2
+    ELIF $宝可梦遭遇方法 == "赠送"
+        RETURN 3
+    ELIF $宝可梦遭遇方法 == "gift"
+        RETURN 3
+    ELIF $宝可梦遭遇方法 == "gift pokemon"
+        RETURN 3
+    ELIF $宝可梦遭遇方法 == "gift pokémon"
+        RETURN 3
+    ELIF $宝可梦遭遇方法 == "游戏角"
+        RETURN 4
+    ELIF $宝可梦遭遇方法 == "game corner"
+        RETURN 4
+    ELIF $宝可梦遭遇方法 == "game corner"
+        RETURN 4
+    ELIF $宝可梦遭遇方法 == "rocket game corner"
+        RETURN 4
+    ELIF $宝可梦遭遇方法 == "定点"
+        RETURN 5
+    ELIF $宝可梦遭遇方法 == "static"
+        RETURN 5
+    ELIF $宝可梦遭遇方法 == "stationary"
+        RETURN 5
+    ELIF $宝可梦遭遇方法 == "传说"
+        RETURN 6
+    ELIF $宝可梦遭遇方法 == "legendary"
+        RETURN 6
+    ELIF $宝可梦遭遇方法 == "legend"
+        RETURN 6
+    ELIF $宝可梦遭遇方法 == "活动"
+        RETURN 7
+    ELIF $宝可梦遭遇方法 == "event"
+        RETURN 7
+    ELIF $宝可梦遭遇方法 == "游走"
+        RETURN 8
+    ELIF $宝可梦遭遇方法 == "roaming"
+        RETURN 8
+    ELIF $宝可梦遭遇方法 == "roamer"
+        RETURN 8
+    ELIF $宝可梦遭遇方法 == "草丛"
+        RETURN 101
+    ELIF $宝可梦遭遇方法 == "草丛"
+        RETURN 101
+    ELIF $宝可梦遭遇方法 == "行走"
+        RETURN 101
+    ELIF $宝可梦遭遇方法 == "walk"
+        RETURN 101
+    ELIF $宝可梦遭遇方法 == "walking"
+        RETURN 101
+    ELIF $宝可梦遭遇方法 == "冲浪"
+        RETURN 102
+    ELIF $宝可梦遭遇方法 == "surf"
+        RETURN 102
+    ELIF $宝可梦遭遇方法 == "surfing"
+        RETURN 102
+    ELIF $宝可梦遭遇方法 == "碎岩"
+        RETURN 103
+    ELIF $宝可梦遭遇方法 == "rock smash"
+        RETURN 103
+    ELIF $宝可梦遭遇方法 == "rock smash"
+        RETURN 103
+    ELIF $宝可梦遭遇方法 == "rocksmash"
+        RETURN 103
+    ELIF $宝可梦遭遇方法 == "破旧钓竿"
+        RETURN 201
+    ELIF $宝可梦遭遇方法 == "旧钓竿"
+        RETURN 201
+    ELIF $宝可梦遭遇方法 == "old rod"
+        RETURN 201
+    ELIF $宝可梦遭遇方法 == "old rod"
+        RETURN 201
+    ELIF $宝可梦遭遇方法 == "oldrod"
+        RETURN 201
+    ELIF $宝可梦遭遇方法 == "好钓竿"
+        RETURN 202
+    ELIF $宝可梦遭遇方法 == "good rod"
+        RETURN 202
+    ELIF $宝可梦遭遇方法 == "good rod"
+        RETURN 202
+    ELIF $宝可梦遭遇方法 == "goodrod"
+        RETURN 202
+    ELIF $宝可梦遭遇方法 == "厉害钓竿" or $宝可梦遭遇方法 == "超级钓竿"
+        RETURN 203
+    ELIF $宝可梦遭遇方法 == "super rod"
+        RETURN 203
+    ELIF $宝可梦遭遇方法 == "super rod"
+        RETURN 203
+    ELIF $宝可梦遭遇方法 == "superrod"
+        RETURN 203
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+FUNC 目标遭遇方法名称($遭遇方法: INT): STRING
+    IF $遭遇方法 == 1
+        RETURN "御三家"
+    ELIF $遭遇方法 == 2
+        RETURN "化石复活"
+    ELIF $遭遇方法 == 3
+        RETURN "赠送"
+    ELIF $遭遇方法 == 4
+        RETURN "游戏角"
+    ELIF $遭遇方法 == 5
+        RETURN "定点"
+    ELIF $遭遇方法 == 6
+        RETURN "传说"
+    ELIF $遭遇方法 == 7
+        RETURN "活动"
+    ELIF $遭遇方法 == 8
+        RETURN "游走"
+    ELIF $遭遇方法 == 101
+        RETURN "草丛"
+    ELIF $遭遇方法 == 102
+        RETURN "冲浪"
+    ELIF $遭遇方法 == 103
+        RETURN "碎岩"
+    ELIF $遭遇方法 == 201
+        RETURN "破旧钓竿"
+    ELIF $遭遇方法 == 202
+        RETURN "好钓竿"
+    ELIF $遭遇方法 == 203
+        RETURN "厉害钓竿"
+    ENDIF
+
+    RETURN "未知遭遇方法"
+ENDFUNC

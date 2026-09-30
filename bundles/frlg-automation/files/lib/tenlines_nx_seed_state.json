@@ -1,0 +1,169 @@
+{
+  "branch": "main",
+  "fingerprint_basis": {
+    "branch": "main",
+    "games": {
+      "fr": {
+        "csv_sha256": "295cdb15d88001169378072bdfa571621829dfc10fd7d0f2dfa2553975ebc3f2",
+        "modes": [
+          {
+            "column": 2,
+            "name": "mono_h_a"
+          },
+          {
+            "column": 3,
+            "name": "stereo_h_a"
+          },
+          {
+            "column": 4,
+            "name": "mono_h_start"
+          },
+          {
+            "column": 5,
+            "name": "stereo_h_start"
+          },
+          {
+            "column": 2,
+            "name": "mono_h_a_blackout_r"
+          },
+          {
+            "column": 2,
+            "name": "mono_h_a_blackout_l"
+          },
+          {
+            "column": 3,
+            "name": "stereo_h_a_blackout_r"
+          },
+          {
+            "column": 3,
+            "name": "stereo_h_a_blackout_l"
+          },
+          {
+            "column": 4,
+            "name": "mono_h_start_blackout_r"
+          },
+          {
+            "column": 4,
+            "name": "mono_h_start_blackout_l"
+          },
+          {
+            "column": -2,
+            "name": "japanese_mono_h_a（临时日版御三家）"
+          }
+        ],
+        "raw_time_column": 1,
+        "record_count": 2311,
+        "sheet_url": "https://docs.google.com/spreadsheets/d/1mbn2-XAtmV7HZ1p4esgvUG710VX6FlfhN_HYL_zLJSk/gviz/tq?tqx=out:csv&sheet=FireRed%20Seeds"
+      },
+      "lg": {
+        "csv_sha256": "8931d4bf32f20c4ebf0fb56bd16710ccbb10df6efd40c0d310251f71d7bbcf02",
+        "modes": [
+          {
+            "column": 2,
+            "name": "mono_h_a"
+          },
+          {
+            "column": 3,
+            "name": "stereo_h_a"
+          },
+          {
+            "column": 4,
+            "name": "mono_h_start"
+          },
+          {
+            "column": 5,
+            "name": "stereo_h_start"
+          },
+          {
+            "column": 2,
+            "name": "mono_h_a_blackout_r"
+          },
+          {
+            "column": 2,
+            "name": "mono_h_a_blackout_l"
+          },
+          {
+            "column": 3,
+            "name": "stereo_h_a_blackout_r"
+          },
+          {
+            "column": 3,
+            "name": "stereo_h_a_blackout_l"
+          },
+          {
+            "column": 4,
+            "name": "mono_h_start_blackout_r"
+          },
+          {
+            "column": 4,
+            "name": "mono_h_start_blackout_l"
+          },
+          {
+            "column": -2,
+            "name": "japanese_mono_h_a（临时日版御三家）"
+          }
+        ],
+        "raw_time_column": 1,
+        "record_count": 2438,
+        "sheet_url": "https://docs.google.com/spreadsheets/d/1mbn2-XAtmV7HZ1p4esgvUG710VX6FlfhN_HYL_zLJSk/gviz/tq?tqx=out:csv&sheet=LeafGreen%20Seeds"
+      }
+    },
+    "generator_blob_sha": "90137499e7c7c6a7194a210b3fde9548bbb779ec"
+  },
+  "format_version": 1,
+  "games": {
+    "fr": {
+      "csv_last_modified_utc": null,
+      "csv_sha256": "295cdb15d88001169378072bdfa571621829dfc10fd7d0f2dfa2553975ebc3f2",
+      "max_index": 2310,
+      "modes": [
+        "mono_h_a",
+        "stereo_h_a",
+        "mono_h_start",
+        "stereo_h_start",
+        "mono_h_a_blackout_r",
+        "mono_h_a_blackout_l",
+        "stereo_h_a_blackout_r",
+        "stereo_h_a_blackout_l",
+        "mono_h_start_blackout_r",
+        "mono_h_start_blackout_l",
+        "japanese_mono_h_a（临时日版御三家）"
+      ],
+      "output_filename": "02_Seed表_火红_NX.ecs",
+      "record_count": 2311
+    },
+    "lg": {
+      "csv_last_modified_utc": null,
+      "csv_sha256": "8931d4bf32f20c4ebf0fb56bd16710ccbb10df6efd40c0d310251f71d7bbcf02",
+      "max_index": 2437,
+      "modes": [
+        "mono_h_a",
+        "stereo_h_a",
+        "mono_h_start",
+        "stereo_h_start",
+        "mono_h_a_blackout_r",
+        "mono_h_a_blackout_l",
+        "stereo_h_a_blackout_r",
+        "stereo_h_a_blackout_l",
+        "mono_h_start_blackout_r",
+        "mono_h_start_blackout_l",
+        "japanese_mono_h_a（临时日版御三家）"
+      ],
+      "output_filename": "03_Seed表_叶绿_NX.ecs",
+      "record_count": 2438
+    }
+  },
+  "generated_at_utc": "2026-09-12T10:29:36Z",
+  "generator_blob_sha": "90137499e7c7c6a7194a210b3fde9548bbb779ec",
+  "generator_path": "src/wasm/generate_ten_lines_precalc.py",
+  "last_checked_at_utc": "2026-09-12T10:29:36Z",
+  "output_signatures": {
+    "02_Seed表_火红_NX.ecs": "58bb3945e49790871f8ba627ac68d8cc62e36ca6f4e424ee981d6ad9e347ee7b",
+    "03_Seed表_叶绿_NX.ecs": "766d800151f73f99c636401b30367edfc67c9e2192ee6bff7b66a6b3b5ce0ade"
+  },
+  "published_frlg_seed_time_utc": "2026-05-28T22:23:59Z",
+  "remote_fingerprint": "8d1d3e0d4afd56c2733586affdc24ec234b15d299d9b16bddd377e97bd99ec1a",
+  "repo": "lincoln-lm/ten-lines",
+  "source_commit_date_utc": "2026-05-19T17:50:08Z",
+  "upstream_update_time_utc": "2026-05-28T22:23:59Z"
+}

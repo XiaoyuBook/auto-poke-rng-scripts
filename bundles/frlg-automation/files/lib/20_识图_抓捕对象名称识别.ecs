@@ -1,0 +1,1419 @@
+﻿# ==================================================
+# 抓捕对象名称识别.ecs
+# 逐位比较 A-Z 与 空 的匹配度，取最高项。
+#
+# 规则：
+#   1. 从第 01 位开始识别。
+#   2. 每一位取 A-Z/空 中匹配度最高者。
+#   3. 若最高匹配度 < 阈值，报错并停止。
+#   4. 若第 01 位最高为 空，报错并停止。
+#   5. 若第 02 位之后最高为 空，停止，并打印此前拼出的字符串。
+# ==================================================
+
+$抓捕对象名称最高匹配度 = -1
+$抓捕对象名称最佳字符 = ""
+$名称匹配输出结果 = 0
+$识图调试日志输出 = 0
+$最近出闪检测结果 = 0
+$最近出闪检测图鉴编号 = 0
+$普通闪光目标图鉴编号 = 0
+$普通非目标闪光停止 = 0
+$普通出闪录像 = 0
+$普通出闪录像长按MS = 1000
+
+FUNC 设置识图调试日志($启用: INT): INT
+    $识图调试日志输出 = $启用
+    RETURN 0
+ENDFUNC
+
+FUNC 清空最近出闪检测
+    $最近出闪检测结果 = 0
+    $最近出闪检测图鉴编号 = 0
+ENDFUNC
+
+FUNC 记录最近出闪检测($dex: INT): INT
+    $最近出闪检测结果 = 1
+    $最近出闪检测图鉴编号 = $dex
+    RETURN 0
+ENDFUNC
+
+FUNC 设置普通闪光策略($目标图鉴编号: INT, $非目标停止: INT, $出闪录像: INT, $录像长按MS: INT): INT
+    IF $目标图鉴编号 < 1 or $目标图鉴编号 > 386
+        PRINT 普通闪光策略目标图鉴编号无效: & $目标图鉴编号
+        RETURN 0
+    ENDIF
+    IF $非目标停止 != 0 and $非目标停止 != 1
+        PRINT 非目标闪光停止开关无效: & $非目标停止
+        RETURN 0
+    ENDIF
+    IF $出闪录像 != 0 and $出闪录像 != 1
+        PRINT 出闪录像开关无效: & $出闪录像
+        RETURN 0
+    ENDIF
+    IF $录像长按MS <= 0
+        PRINT 出闪录像长按时间无效: & $录像长按MS
+        RETURN 0
+    ENDIF
+    $普通闪光目标图鉴编号 = $目标图鉴编号
+    $普通非目标闪光停止 = $非目标停止
+    $普通出闪录像 = $出闪录像
+    $普通出闪录像长按MS = $录像长按MS
+    RETURN 1
+ENDFUNC
+
+FUNC 应用普通闪光策略($dex: INT): INT
+    IF $普通出闪录像 == 1
+        PRINT 闪光录像：长按CAPTURE保存最近约30秒录像
+        CAPTURE $普通出闪录像长按MS
+        WAIT 500
+    ENDIF
+    IF $普通非目标闪光停止 == 1 and $普通闪光目标图鉴编号 > 0 and $dex != $普通闪光目标图鉴编号
+        PRINT 遇到非目标闪光：图鉴 & $dex & "，目标 " & $普通闪光目标图鉴编号 & "；按配置停止脚本"
+        RETURN 2
+    ENDIF
+    RETURN 1
+ENDFUNC
+
+FUNC 读取最近出闪检测结果(): INT
+    RETURN $最近出闪检测结果
+ENDFUNC
+
+FUNC 读取最近出闪检测图鉴编号(): INT
+    RETURN $最近出闪检测图鉴编号
+ENDFUNC
+
+FUNC 抓捕对象名称更新最佳($匹配度: INT, $字符: STRING): INT
+    IF $匹配度 > $抓捕对象名称最高匹配度
+        $抓捕对象名称最高匹配度 = $匹配度
+        $抓捕对象名称最佳字符 = $字符
+    ENDIF
+    RETURN 0
+ENDFUNC
+
+FUNC 输出名称位匹配度($位: STRING, $字符: STRING, $匹配度: INT): INT
+    IF $识图调试日志输出 == 1
+        PRINT $位 & "最高: " & $字符 & " / " & $匹配度
+    ENDIF
+    RETURN 0
+ENDFUNC
+
+FUNC 识别抓捕对象名称($识图阈值: INT): STRING
+    PRINT ""
+    PRINT ========================
+    PRINT 抓捕对象名称识别
+    PRINT ========================
+
+    $名称 = ""
+    $位索引 = 0
+
+    PRINT ""
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char01|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char01|manual_prepare_then_restart|OR;抓捕名称第01位_A.IL:>=:" & $识图阈值 & ",抓捕名称第01位_B.IL:>=:" & $识图阈值 & ",抓捕名称第01位_C.IL:>=:" & $识图阈值 & ",抓捕名称第01位_D.IL:>=:" & $识图阈值 & ",抓捕名称第01位_E.IL:>=:" & $识图阈值 & ",抓捕名称第01位_F.IL:>=:" & $识图阈值 & ",抓捕名称第01位_G.IL:>=:" & $识图阈值 & ",抓捕名称第01位_H.IL:>=:" & $识图阈值 & ",抓捕名称第01位_I.IL:>=:" & $识图阈值 & ",抓捕名称第01位_J.IL:>=:" & $识图阈值 & ",抓捕名称第01位_K.IL:>=:" & $识图阈值 & ",抓捕名称第01位_L.IL:>=:" & $识图阈值 & ",抓捕名称第01位_M.IL:>=:" & $识图阈值 & ",抓捕名称第01位_N.IL:>=:" & $识图阈值 & ",抓捕名称第01位_O.IL:>=:" & $识图阈值 & ",抓捕名称第01位_P.IL:>=:" & $识图阈值 & ",抓捕名称第01位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第01位_R.IL:>=:" & $识图阈值 & ",抓捕名称第01位_S.IL:>=:" & $识图阈值 & ",抓捕名称第01位_T.IL:>=:" & $识图阈值 & ",抓捕名称第01位_U.IL:>=:" & $识图阈值 & ",抓捕名称第01位_V.IL:>=:" & $识图阈值 & ",抓捕名称第01位_W.IL:>=:" & $识图阈值 & ",抓捕名称第01位_X.IL:>=:" & $识图阈值 & ",抓捕名称第01位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第01位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第01位_空.IL:>=:" & $识图阈值 & "|!"
+    $第01位 = 识别抓捕对象名称第01位()
+    $名称匹配输出结果 = 输出名称位匹配度("第01位", $第01位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char01|第01位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第01位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第01位 == "空"
+    PRINT "FRLG_STAGE|FAIL|wild.name.char01|名称首位识别为空|!"
+        PRINT ""
+        PRINT 抓捕对象名称识别失败：第01位最高为 空，名称为空
+        RETURN ""
+    ENDIF
+
+
+
+    PRINT "FRLG_STAGE|END|wild.name.char01|!"
+    $名称 = $名称 & $第01位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char02|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char02|manual_prepare_then_restart|OR;抓捕名称第02位_A.IL:>=:" & $识图阈值 & ",抓捕名称第02位_B.IL:>=:" & $识图阈值 & ",抓捕名称第02位_C.IL:>=:" & $识图阈值 & ",抓捕名称第02位_D.IL:>=:" & $识图阈值 & ",抓捕名称第02位_E.IL:>=:" & $识图阈值 & ",抓捕名称第02位_F.IL:>=:" & $识图阈值 & ",抓捕名称第02位_G.IL:>=:" & $识图阈值 & ",抓捕名称第02位_H.IL:>=:" & $识图阈值 & ",抓捕名称第02位_I.IL:>=:" & $识图阈值 & ",抓捕名称第02位_J.IL:>=:" & $识图阈值 & ",抓捕名称第02位_K.IL:>=:" & $识图阈值 & ",抓捕名称第02位_L.IL:>=:" & $识图阈值 & ",抓捕名称第02位_M.IL:>=:" & $识图阈值 & ",抓捕名称第02位_N.IL:>=:" & $识图阈值 & ",抓捕名称第02位_O.IL:>=:" & $识图阈值 & ",抓捕名称第02位_P.IL:>=:" & $识图阈值 & ",抓捕名称第02位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第02位_R.IL:>=:" & $识图阈值 & ",抓捕名称第02位_S.IL:>=:" & $识图阈值 & ",抓捕名称第02位_T.IL:>=:" & $识图阈值 & ",抓捕名称第02位_U.IL:>=:" & $识图阈值 & ",抓捕名称第02位_V.IL:>=:" & $识图阈值 & ",抓捕名称第02位_W.IL:>=:" & $识图阈值 & ",抓捕名称第02位_X.IL:>=:" & $识图阈值 & ",抓捕名称第02位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第02位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第02位_空.IL:>=:" & $识图阈值 & "|!"
+    $第02位 = 识别抓捕对象名称第02位()
+    $名称匹配输出结果 = 输出名称位匹配度("第02位", $第02位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char02|第02位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第02位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第02位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char02|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char02|!"
+    $名称 = $名称 & $第02位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char03|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char03|manual_prepare_then_restart|OR;抓捕名称第03位_A.IL:>=:" & $识图阈值 & ",抓捕名称第03位_B.IL:>=:" & $识图阈值 & ",抓捕名称第03位_C.IL:>=:" & $识图阈值 & ",抓捕名称第03位_D.IL:>=:" & $识图阈值 & ",抓捕名称第03位_E.IL:>=:" & $识图阈值 & ",抓捕名称第03位_F.IL:>=:" & $识图阈值 & ",抓捕名称第03位_G.IL:>=:" & $识图阈值 & ",抓捕名称第03位_H.IL:>=:" & $识图阈值 & ",抓捕名称第03位_I.IL:>=:" & $识图阈值 & ",抓捕名称第03位_J.IL:>=:" & $识图阈值 & ",抓捕名称第03位_K.IL:>=:" & $识图阈值 & ",抓捕名称第03位_L.IL:>=:" & $识图阈值 & ",抓捕名称第03位_M.IL:>=:" & $识图阈值 & ",抓捕名称第03位_N.IL:>=:" & $识图阈值 & ",抓捕名称第03位_O.IL:>=:" & $识图阈值 & ",抓捕名称第03位_P.IL:>=:" & $识图阈值 & ",抓捕名称第03位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第03位_R.IL:>=:" & $识图阈值 & ",抓捕名称第03位_S.IL:>=:" & $识图阈值 & ",抓捕名称第03位_T.IL:>=:" & $识图阈值 & ",抓捕名称第03位_U.IL:>=:" & $识图阈值 & ",抓捕名称第03位_V.IL:>=:" & $识图阈值 & ",抓捕名称第03位_W.IL:>=:" & $识图阈值 & ",抓捕名称第03位_X.IL:>=:" & $识图阈值 & ",抓捕名称第03位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第03位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第03位_空.IL:>=:" & $识图阈值 & "|!"
+    $第03位 = 识别抓捕对象名称第03位()
+    $名称匹配输出结果 = 输出名称位匹配度("第03位", $第03位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char03|第03位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第03位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第03位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char03|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char03|!"
+    $名称 = $名称 & $第03位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char04|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char04|manual_prepare_then_restart|OR;抓捕名称第04位_A.IL:>=:" & $识图阈值 & ",抓捕名称第04位_B.IL:>=:" & $识图阈值 & ",抓捕名称第04位_C.IL:>=:" & $识图阈值 & ",抓捕名称第04位_D.IL:>=:" & $识图阈值 & ",抓捕名称第04位_E.IL:>=:" & $识图阈值 & ",抓捕名称第04位_F.IL:>=:" & $识图阈值 & ",抓捕名称第04位_G.IL:>=:" & $识图阈值 & ",抓捕名称第04位_H.IL:>=:" & $识图阈值 & ",抓捕名称第04位_I.IL:>=:" & $识图阈值 & ",抓捕名称第04位_J.IL:>=:" & $识图阈值 & ",抓捕名称第04位_K.IL:>=:" & $识图阈值 & ",抓捕名称第04位_L.IL:>=:" & $识图阈值 & ",抓捕名称第04位_M.IL:>=:" & $识图阈值 & ",抓捕名称第04位_N.IL:>=:" & $识图阈值 & ",抓捕名称第04位_O.IL:>=:" & $识图阈值 & ",抓捕名称第04位_P.IL:>=:" & $识图阈值 & ",抓捕名称第04位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第04位_R.IL:>=:" & $识图阈值 & ",抓捕名称第04位_S.IL:>=:" & $识图阈值 & ",抓捕名称第04位_T.IL:>=:" & $识图阈值 & ",抓捕名称第04位_U.IL:>=:" & $识图阈值 & ",抓捕名称第04位_V.IL:>=:" & $识图阈值 & ",抓捕名称第04位_W.IL:>=:" & $识图阈值 & ",抓捕名称第04位_X.IL:>=:" & $识图阈值 & ",抓捕名称第04位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第04位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第04位_空.IL:>=:" & $识图阈值 & "|!"
+    $第04位 = 识别抓捕对象名称第04位()
+    $名称匹配输出结果 = 输出名称位匹配度("第04位", $第04位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char04|第04位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第04位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第04位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char04|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char04|!"
+    $名称 = $名称 & $第04位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char05|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char05|manual_prepare_then_restart|OR;抓捕名称第05位_A.IL:>=:" & $识图阈值 & ",抓捕名称第05位_B.IL:>=:" & $识图阈值 & ",抓捕名称第05位_C.IL:>=:" & $识图阈值 & ",抓捕名称第05位_D.IL:>=:" & $识图阈值 & ",抓捕名称第05位_E.IL:>=:" & $识图阈值 & ",抓捕名称第05位_F.IL:>=:" & $识图阈值 & ",抓捕名称第05位_G.IL:>=:" & $识图阈值 & ",抓捕名称第05位_H.IL:>=:" & $识图阈值 & ",抓捕名称第05位_I.IL:>=:" & $识图阈值 & ",抓捕名称第05位_J.IL:>=:" & $识图阈值 & ",抓捕名称第05位_K.IL:>=:" & $识图阈值 & ",抓捕名称第05位_L.IL:>=:" & $识图阈值 & ",抓捕名称第05位_M.IL:>=:" & $识图阈值 & ",抓捕名称第05位_N.IL:>=:" & $识图阈值 & ",抓捕名称第05位_O.IL:>=:" & $识图阈值 & ",抓捕名称第05位_P.IL:>=:" & $识图阈值 & ",抓捕名称第05位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第05位_R.IL:>=:" & $识图阈值 & ",抓捕名称第05位_S.IL:>=:" & $识图阈值 & ",抓捕名称第05位_T.IL:>=:" & $识图阈值 & ",抓捕名称第05位_U.IL:>=:" & $识图阈值 & ",抓捕名称第05位_V.IL:>=:" & $识图阈值 & ",抓捕名称第05位_W.IL:>=:" & $识图阈值 & ",抓捕名称第05位_X.IL:>=:" & $识图阈值 & ",抓捕名称第05位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第05位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第05位_空.IL:>=:" & $识图阈值 & "|!"
+    $第05位 = 识别抓捕对象名称第05位()
+    $名称匹配输出结果 = 输出名称位匹配度("第05位", $第05位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char05|第05位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第05位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第05位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char05|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char05|!"
+    $名称 = $名称 & $第05位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char06|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char06|manual_prepare_then_restart|OR;抓捕名称第06位_A.IL:>=:" & $识图阈值 & ",抓捕名称第06位_B.IL:>=:" & $识图阈值 & ",抓捕名称第06位_C.IL:>=:" & $识图阈值 & ",抓捕名称第06位_D.IL:>=:" & $识图阈值 & ",抓捕名称第06位_E.IL:>=:" & $识图阈值 & ",抓捕名称第06位_F.IL:>=:" & $识图阈值 & ",抓捕名称第06位_G.IL:>=:" & $识图阈值 & ",抓捕名称第06位_H.IL:>=:" & $识图阈值 & ",抓捕名称第06位_I.IL:>=:" & $识图阈值 & ",抓捕名称第06位_J.IL:>=:" & $识图阈值 & ",抓捕名称第06位_K.IL:>=:" & $识图阈值 & ",抓捕名称第06位_L.IL:>=:" & $识图阈值 & ",抓捕名称第06位_M.IL:>=:" & $识图阈值 & ",抓捕名称第06位_N.IL:>=:" & $识图阈值 & ",抓捕名称第06位_O.IL:>=:" & $识图阈值 & ",抓捕名称第06位_P.IL:>=:" & $识图阈值 & ",抓捕名称第06位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第06位_R.IL:>=:" & $识图阈值 & ",抓捕名称第06位_S.IL:>=:" & $识图阈值 & ",抓捕名称第06位_T.IL:>=:" & $识图阈值 & ",抓捕名称第06位_U.IL:>=:" & $识图阈值 & ",抓捕名称第06位_V.IL:>=:" & $识图阈值 & ",抓捕名称第06位_W.IL:>=:" & $识图阈值 & ",抓捕名称第06位_X.IL:>=:" & $识图阈值 & ",抓捕名称第06位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第06位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第06位_空.IL:>=:" & $识图阈值 & "|!"
+    $第06位 = 识别抓捕对象名称第06位()
+    $名称匹配输出结果 = 输出名称位匹配度("第06位", $第06位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char06|第06位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第06位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第06位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char06|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char06|!"
+    $名称 = $名称 & $第06位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char07|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char07|manual_prepare_then_restart|OR;抓捕名称第07位_A.IL:>=:" & $识图阈值 & ",抓捕名称第07位_B.IL:>=:" & $识图阈值 & ",抓捕名称第07位_C.IL:>=:" & $识图阈值 & ",抓捕名称第07位_D.IL:>=:" & $识图阈值 & ",抓捕名称第07位_E.IL:>=:" & $识图阈值 & ",抓捕名称第07位_F.IL:>=:" & $识图阈值 & ",抓捕名称第07位_G.IL:>=:" & $识图阈值 & ",抓捕名称第07位_H.IL:>=:" & $识图阈值 & ",抓捕名称第07位_I.IL:>=:" & $识图阈值 & ",抓捕名称第07位_J.IL:>=:" & $识图阈值 & ",抓捕名称第07位_K.IL:>=:" & $识图阈值 & ",抓捕名称第07位_L.IL:>=:" & $识图阈值 & ",抓捕名称第07位_M.IL:>=:" & $识图阈值 & ",抓捕名称第07位_N.IL:>=:" & $识图阈值 & ",抓捕名称第07位_O.IL:>=:" & $识图阈值 & ",抓捕名称第07位_P.IL:>=:" & $识图阈值 & ",抓捕名称第07位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第07位_R.IL:>=:" & $识图阈值 & ",抓捕名称第07位_S.IL:>=:" & $识图阈值 & ",抓捕名称第07位_T.IL:>=:" & $识图阈值 & ",抓捕名称第07位_U.IL:>=:" & $识图阈值 & ",抓捕名称第07位_V.IL:>=:" & $识图阈值 & ",抓捕名称第07位_W.IL:>=:" & $识图阈值 & ",抓捕名称第07位_X.IL:>=:" & $识图阈值 & ",抓捕名称第07位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第07位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第07位_空.IL:>=:" & $识图阈值 & "|!"
+    $第07位 = 识别抓捕对象名称第07位()
+    $名称匹配输出结果 = 输出名称位匹配度("第07位", $第07位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char07|第07位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第07位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第07位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char07|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char07|!"
+    $名称 = $名称 & $第07位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char08|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char08|manual_prepare_then_restart|OR;抓捕名称第08位_A.IL:>=:" & $识图阈值 & ",抓捕名称第08位_B.IL:>=:" & $识图阈值 & ",抓捕名称第08位_C.IL:>=:" & $识图阈值 & ",抓捕名称第08位_D.IL:>=:" & $识图阈值 & ",抓捕名称第08位_E.IL:>=:" & $识图阈值 & ",抓捕名称第08位_F.IL:>=:" & $识图阈值 & ",抓捕名称第08位_G.IL:>=:" & $识图阈值 & ",抓捕名称第08位_H.IL:>=:" & $识图阈值 & ",抓捕名称第08位_I.IL:>=:" & $识图阈值 & ",抓捕名称第08位_J.IL:>=:" & $识图阈值 & ",抓捕名称第08位_K.IL:>=:" & $识图阈值 & ",抓捕名称第08位_L.IL:>=:" & $识图阈值 & ",抓捕名称第08位_M.IL:>=:" & $识图阈值 & ",抓捕名称第08位_N.IL:>=:" & $识图阈值 & ",抓捕名称第08位_O.IL:>=:" & $识图阈值 & ",抓捕名称第08位_P.IL:>=:" & $识图阈值 & ",抓捕名称第08位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第08位_R.IL:>=:" & $识图阈值 & ",抓捕名称第08位_S.IL:>=:" & $识图阈值 & ",抓捕名称第08位_T.IL:>=:" & $识图阈值 & ",抓捕名称第08位_U.IL:>=:" & $识图阈值 & ",抓捕名称第08位_V.IL:>=:" & $识图阈值 & ",抓捕名称第08位_W.IL:>=:" & $识图阈值 & ",抓捕名称第08位_X.IL:>=:" & $识图阈值 & ",抓捕名称第08位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第08位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第08位_公.IL:>=:" & $识图阈值 & ",抓捕名称第08位_母.IL:>=:" & $识图阈值 & ",抓捕名称第08位_空.IL:>=:" & $识图阈值 & "|!"
+    $第08位 = 识别抓捕对象名称第08位()
+    $名称匹配输出结果 = 输出名称位匹配度("第08位", $第08位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char08|第08位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第08位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第08位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char08|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char08|!"
+    $名称 = $名称 & $第08位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char09|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char09|manual_prepare_then_restart|OR;抓捕名称第09位_A.IL:>=:" & $识图阈值 & ",抓捕名称第09位_B.IL:>=:" & $识图阈值 & ",抓捕名称第09位_C.IL:>=:" & $识图阈值 & ",抓捕名称第09位_D.IL:>=:" & $识图阈值 & ",抓捕名称第09位_E.IL:>=:" & $识图阈值 & ",抓捕名称第09位_F.IL:>=:" & $识图阈值 & ",抓捕名称第09位_G.IL:>=:" & $识图阈值 & ",抓捕名称第09位_H.IL:>=:" & $识图阈值 & ",抓捕名称第09位_I.IL:>=:" & $识图阈值 & ",抓捕名称第09位_J.IL:>=:" & $识图阈值 & ",抓捕名称第09位_K.IL:>=:" & $识图阈值 & ",抓捕名称第09位_L.IL:>=:" & $识图阈值 & ",抓捕名称第09位_M.IL:>=:" & $识图阈值 & ",抓捕名称第09位_N.IL:>=:" & $识图阈值 & ",抓捕名称第09位_O.IL:>=:" & $识图阈值 & ",抓捕名称第09位_P.IL:>=:" & $识图阈值 & ",抓捕名称第09位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第09位_R.IL:>=:" & $识图阈值 & ",抓捕名称第09位_S.IL:>=:" & $识图阈值 & ",抓捕名称第09位_T.IL:>=:" & $识图阈值 & ",抓捕名称第09位_U.IL:>=:" & $识图阈值 & ",抓捕名称第09位_V.IL:>=:" & $识图阈值 & ",抓捕名称第09位_W.IL:>=:" & $识图阈值 & ",抓捕名称第09位_X.IL:>=:" & $识图阈值 & ",抓捕名称第09位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第09位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第09位_空.IL:>=:" & $识图阈值 & "|!"
+    $第09位 = 识别抓捕对象名称第09位()
+    $名称匹配输出结果 = 输出名称位匹配度("第09位", $第09位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char09|第09位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第09位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第09位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char09|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char09|!"
+    $名称 = $名称 & $第09位
+    $位索引 += 1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.name.char10|wild.name.fallback|0|lib/20_识图_抓捕对象名称识别.ecs|识别抓捕对象名称|lib20.wild.name.char10|manual_prepare_then_restart|OR;抓捕名称第10位_A.IL:>=:" & $识图阈值 & ",抓捕名称第10位_B.IL:>=:" & $识图阈值 & ",抓捕名称第10位_C.IL:>=:" & $识图阈值 & ",抓捕名称第10位_D.IL:>=:" & $识图阈值 & ",抓捕名称第10位_E.IL:>=:" & $识图阈值 & ",抓捕名称第10位_F.IL:>=:" & $识图阈值 & ",抓捕名称第10位_G.IL:>=:" & $识图阈值 & ",抓捕名称第10位_H.IL:>=:" & $识图阈值 & ",抓捕名称第10位_I.IL:>=:" & $识图阈值 & ",抓捕名称第10位_J.IL:>=:" & $识图阈值 & ",抓捕名称第10位_K.IL:>=:" & $识图阈值 & ",抓捕名称第10位_L.IL:>=:" & $识图阈值 & ",抓捕名称第10位_M.IL:>=:" & $识图阈值 & ",抓捕名称第10位_N.IL:>=:" & $识图阈值 & ",抓捕名称第10位_O.IL:>=:" & $识图阈值 & ",抓捕名称第10位_P.IL:>=:" & $识图阈值 & ",抓捕名称第10位_Q.IL:>=:" & $识图阈值 & ",抓捕名称第10位_R.IL:>=:" & $识图阈值 & ",抓捕名称第10位_S.IL:>=:" & $识图阈值 & ",抓捕名称第10位_T.IL:>=:" & $识图阈值 & ",抓捕名称第10位_U.IL:>=:" & $识图阈值 & ",抓捕名称第10位_V.IL:>=:" & $识图阈值 & ",抓捕名称第10位_W.IL:>=:" & $识图阈值 & ",抓捕名称第10位_X.IL:>=:" & $识图阈值 & ",抓捕名称第10位_Y.IL:>=:" & $识图阈值 & ",抓捕名称第10位_Z.IL:>=:" & $识图阈值 & ",抓捕名称第10位_空.IL:>=:" & $识图阈值 & "|!"
+    $第10位 = 识别抓捕对象名称第10位()
+    $名称匹配输出结果 = 输出名称位匹配度("第10位", $第10位, $抓捕对象名称最高匹配度)
+
+    IF $抓捕对象名称最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.name.char10|第10位名称候选全部低于阈值|!"
+        PRINT 抓捕对象名称识别失败：第10位全部低于阈值，最高匹配度: & $抓捕对象名称最高匹配度
+        RETURN ""
+    ENDIF
+
+    IF $第10位 == "空"
+    PRINT "FRLG_STAGE|END|wild.name.char10|!"
+        PRINT ""
+        PRINT 名称识别结果: & $名称
+        RETURN $名称
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.name.char10|!"
+    $名称 = $名称 & $第10位
+
+    PRINT 名称识别结果: & $名称
+    RETURN $名称
+ENDFUNC
+
+FUNC 识别抓捕对象名称优先OCR($识图阈值: INT): STRING
+    $OCR抓捕对象名称结果 = OCR识别抓捕对象名称()
+    $OCR抓捕对象图鉴编号 = 英文名称查图鉴编号($OCR抓捕对象名称结果)
+
+    IF $OCR抓捕对象图鉴编号 <= 0
+        PRINT ""
+        PRINT 【OCR名称识别】
+        PRINT OCR结果不在名称表，回到单字识别
+        RETURN 识别抓捕对象名称($识图阈值)
+    ENDIF
+
+    $OCR匹配确认 = OCR名称闪光匹配度确认($OCR抓捕对象图鉴编号, $识图阈值)
+    IF $OCR匹配确认 == 0
+        PRINT ""
+        PRINT 【OCR名称识别】
+        PRINT OCR结果匹配度不足，回到单字识别: & $OCR抓捕对象名称结果
+        RETURN 识别抓捕对象名称($识图阈值)
+    ENDIF
+
+    RETURN $OCR抓捕对象名称结果
+ENDFUNC
+
+# ==================================================
+# 抓捕对象闪光检测
+# 根据识别出的图鉴编号，比较普通标签与闪光标签匹配度。
+# 闪光匹配度更高时，返回 1。
+# ==================================================
+
+$normalScore = -1
+$shinyScore = -1
+$shinyCheckAvailable = 0
+$未知图腾形态最高匹配度 = -1
+$未知图腾形态最佳编号 = -1
+$未知图腾普通形态最高匹配度 = -1
+$未知图腾普通形态最佳编号 = -1
+$未知图腾闪光形态最高匹配度 = -1
+$未知图腾闪光形态最佳编号 = -1
+$识别未知图腾形态编号 = -1
+
+FUNC 更新未知图腾普通形态最佳($匹配度: INT, $形态编号: INT): INT
+    IF $匹配度 > $未知图腾普通形态最高匹配度
+        $未知图腾普通形态最高匹配度 = $匹配度
+        $未知图腾普通形态最佳编号 = $形态编号
+    ENDIF
+
+    RETURN 0
+ENDFUNC
+
+FUNC 更新未知图腾闪光形态最佳($匹配度: INT, $形态编号: INT): INT
+    IF $匹配度 > $未知图腾闪光形态最高匹配度
+        $未知图腾闪光形态最高匹配度 = $匹配度
+        $未知图腾闪光形态最佳编号 = $形态编号
+    ENDIF
+
+    RETURN 0
+ENDFUNC
+
+FUNC 未知图腾形态文本($形态编号: INT): STRING
+    IF $形态编号 == 0
+        RETURN "A"
+    ELIF $形态编号 == 1
+        RETURN "B"
+    ELIF $形态编号 == 2
+        RETURN "C"
+    ELIF $形态编号 == 3
+        RETURN "D"
+    ELIF $形态编号 == 4
+        RETURN "E"
+    ELIF $形态编号 == 5
+        RETURN "F"
+    ELIF $形态编号 == 6
+        RETURN "G"
+    ELIF $形态编号 == 7
+        RETURN "H"
+    ELIF $形态编号 == 8
+        RETURN "I"
+    ELIF $形态编号 == 9
+        RETURN "J"
+    ELIF $形态编号 == 10
+        RETURN "K"
+    ELIF $形态编号 == 11
+        RETURN "L"
+    ELIF $形态编号 == 12
+        RETURN "M"
+    ELIF $形态编号 == 13
+        RETURN "N"
+    ELIF $形态编号 == 14
+        RETURN "O"
+    ELIF $形态编号 == 15
+        RETURN "P"
+    ELIF $形态编号 == 16
+        RETURN "Q"
+    ELIF $形态编号 == 17
+        RETURN "R"
+    ELIF $形态编号 == 18
+        RETURN "S"
+    ELIF $形态编号 == 19
+        RETURN "T"
+    ELIF $形态编号 == 20
+        RETURN "U"
+    ELIF $形态编号 == 21
+        RETURN "V"
+    ELIF $形态编号 == 22
+        RETURN "W"
+    ELIF $形态编号 == 23
+        RETURN "X"
+    ELIF $形态编号 == 24
+        RETURN "Y"
+    ELIF $形态编号 == 25
+        RETURN "Z"
+    ELIF $形态编号 == 26
+        RETURN "?"
+    ELIF $形态编号 == 27
+        RETURN "!"
+    ENDIF
+
+    RETURN "未知"
+ENDFUNC
+
+FUNC 识别未知图腾形态($识图阈值: INT): INT
+    $未知图腾普通形态最高匹配度 = -1
+    $未知图腾普通形态最佳编号 = -1
+    $未知图腾闪光形态最高匹配度 = -1
+    $未知图腾闪光形态最佳编号 = -1
+    $识别未知图腾形态编号 = -1
+
+    PRINT "FRLG_STAGE|BEGIN|wild.unown.form|wild.unown.form|0|lib/20_识图_抓捕对象名称识别.ecs|识别未知图腾形态|lib20.wild.unown.form|manual_prepare_then_restart|OR;201_未知图腾_a.IL:>=:" & $识图阈值 & ",201_未知图腾_b.IL:>=:" & $识图阈值 & ",201_未知图腾_c.IL:>=:" & $识图阈值 & ",201_未知图腾_d.IL:>=:" & $识图阈值 & ",201_未知图腾_e.IL:>=:" & $识图阈值 & ",201_未知图腾_f.IL:>=:" & $识图阈值 & ",201_未知图腾_g.IL:>=:" & $识图阈值 & ",201_未知图腾_h.IL:>=:" & $识图阈值 & ",201_未知图腾_i.IL:>=:" & $识图阈值 & ",201_未知图腾_j.IL:>=:" & $识图阈值 & ",201_未知图腾_k.IL:>=:" & $识图阈值 & ",201_未知图腾_l.IL:>=:" & $识图阈值 & ",201_未知图腾_m.IL:>=:" & $识图阈值 & ",201_未知图腾_n.IL:>=:" & $识图阈值 & ",201_未知图腾_o.IL:>=:" & $识图阈值 & ",201_未知图腾_p.IL:>=:" & $识图阈值 & ",201_未知图腾_q.IL:>=:" & $识图阈值 & ",201_未知图腾_r.IL:>=:" & $识图阈值 & ",201_未知图腾_s.IL:>=:" & $识图阈值 & ",201_未知图腾_t.IL:>=:" & $识图阈值 & ",201_未知图腾_u.IL:>=:" & $识图阈值 & ",201_未知图腾_v.IL:>=:" & $识图阈值 & ",201_未知图腾_w.IL:>=:" & $识图阈值 & ",201_未知图腾_x.IL:>=:" & $识图阈值 & ",201_未知图腾_y.IL:>=:" & $识图阈值 & ",201_未知图腾_z.IL:>=:" & $识图阈值 & ",201_未知图腾_问号.IL:>=:" & $识图阈值 & ",201_未知图腾_叹号.IL:>=:" & $识图阈值 & ",201_未知图腾_a_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_b_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_c_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_d_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_e_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_f_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_g_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_h_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_i_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_j_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_k_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_l_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_m_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_n_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_o_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_p_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_q_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_r_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_s_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_t_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_u_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_v_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_w_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_x_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_y_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_z_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_问号_闪.IL:>=:" & $识图阈值 & ",201_未知图腾_叹号_闪.IL:>=:" & $识图阈值 & "|!"
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_a, 0)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_b, 1)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_c, 2)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_d, 3)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_e, 4)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_f, 5)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_g, 6)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_h, 7)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_i, 8)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_j, 9)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_k, 10)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_l, 11)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_m, 12)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_n, 13)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_o, 14)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_p, 15)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_q, 16)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_r, 17)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_s, 18)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_t, 19)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_u, 20)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_v, 21)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_w, 22)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_x, 23)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_y, 24)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_z, 25)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_问号, 26)
+    $tmp = 更新未知图腾普通形态最佳(@201_未知图腾_叹号, 27)
+
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_a_闪, 0)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_b_闪, 1)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_c_闪, 2)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_d_闪, 3)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_e_闪, 4)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_f_闪, 5)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_g_闪, 6)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_h_闪, 7)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_i_闪, 8)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_j_闪, 9)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_k_闪, 10)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_l_闪, 11)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_m_闪, 12)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_n_闪, 13)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_o_闪, 14)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_p_闪, 15)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_q_闪, 16)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_r_闪, 17)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_s_闪, 18)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_t_闪, 19)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_u_闪, 20)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_v_闪, 21)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_w_闪, 22)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_x_闪, 23)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_y_闪, 24)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_z_闪, 25)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_问号_闪, 26)
+    $tmp = 更新未知图腾闪光形态最佳(@201_未知图腾_叹号_闪, 27)
+
+    IF $未知图腾闪光形态最高匹配度 > $未知图腾普通形态最高匹配度
+        $未知图腾形态最高匹配度 = $未知图腾闪光形态最高匹配度
+        $未知图腾形态最佳编号 = $未知图腾闪光形态最佳编号
+    ELSE
+        $未知图腾形态最高匹配度 = $未知图腾普通形态最高匹配度
+        $未知图腾形态最佳编号 = $未知图腾普通形态最佳编号
+    ENDIF
+
+    PRINT ""
+    PRINT 【未知图腾形态】
+    IF $识图调试日志输出 == 1
+        PRINT 普通最高: & $未知图腾普通形态最高匹配度 & " / " & 未知图腾形态文本($未知图腾普通形态最佳编号)
+        PRINT 闪光最高: & $未知图腾闪光形态最高匹配度 & " / " & 未知图腾形态文本($未知图腾闪光形态最佳编号)
+        PRINT 形态最高: & $未知图腾形态最高匹配度
+    ENDIF
+
+    IF $未知图腾形态最高匹配度 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.unown.form|未知图腾形态候选均低于阈值|!"
+        PRINT 形态识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.unown.form|!"
+    PRINT 形态: & 未知图腾形态文本($未知图腾形态最佳编号)
+    $识别未知图腾形态编号 = $未知图腾形态最佳编号
+    RETURN $未知图腾形态最佳编号
+ENDFUNC
+
+FUNC SetCaptureShinyScores($dex: INT): INT
+    $normalScore = -1
+    $shinyScore = -1
+
+    IF $dex == 1
+        $normalScore = @001_妙蛙种子
+        $shinyScore = @001_妙蛙种子_闪
+    ELIF $dex == 4
+        $normalScore = @004_小火龙
+        $shinyScore = @004_小火龙_闪
+    ELIF $dex == 7
+        $normalScore = @007_杰尼龟
+        $shinyScore = @007_杰尼龟_闪
+    ELIF $dex == 10
+        $normalScore = @010_绿毛虫
+        $shinyScore = @010_绿毛虫_闪
+    ELIF $dex == 11
+        $normalScore = @011_铁甲蛹
+        $shinyScore = @011_铁甲蛹_闪
+    ELIF $dex == 13
+        $normalScore = @013_独角虫
+        $shinyScore = @013_独角虫_闪
+    ELIF $dex == 14
+        $normalScore = @014_铁壳蛹
+        $shinyScore = @014_铁壳蛹_闪
+    ELIF $dex == 16
+        $normalScore = @016_波波
+        $shinyScore = @016_波波_闪
+    ELIF $dex == 17
+        $normalScore = @017_比比鸟
+        $shinyScore = @017_比比鸟_闪
+    ELIF $dex == 19
+        $normalScore = @019_小拉达
+        $shinyScore = @019_小拉达_闪
+    ELIF $dex == 20
+        $normalScore = @020_拉达
+        $shinyScore = @020_拉达_闪
+    ELIF $dex == 21
+        $normalScore = @021_烈雀
+        $shinyScore = @021_烈雀_闪
+    ELIF $dex == 22
+        $normalScore = @022_大嘴雀
+        $shinyScore = @022_大嘴雀_闪
+    ELIF $dex == 23
+        $normalScore = @023_阿柏蛇
+        $shinyScore = @023_阿柏蛇_闪
+    ELIF $dex == 24
+        $normalScore = @024_阿柏怪
+        $shinyScore = @024_阿柏怪_闪
+    ELIF $dex == 25
+        $normalScore = @025_皮卡丘
+        $shinyScore = @025_皮卡丘_闪
+    ELIF $dex == 27
+        $normalScore = @027_穿山鼠
+        $shinyScore = @027_穿山鼠_闪
+    ELIF $dex == 28
+        $normalScore = @028_穿山王
+        $shinyScore = @028_穿山王_闪
+    ELIF $dex == 29
+        $normalScore = @029_尼多兰
+        $shinyScore = @029_尼多兰_闪
+    ELIF $dex == 30
+        $normalScore = @030_尼多娜
+        $shinyScore = @030_尼多娜_闪
+    ELIF $dex == 32
+        $normalScore = @032_尼多朗
+        $shinyScore = @032_尼多朗_闪
+    ELIF $dex == 33
+        $normalScore = @033_尼多力诺
+        $shinyScore = @033_尼多力诺_闪
+    ELIF $dex == 35
+        $normalScore = @035_皮皮
+        $shinyScore = @035_皮皮_闪
+    ELIF $dex == 37
+        $normalScore = @037_六尾
+        $shinyScore = @037_六尾_闪
+    ELIF $dex == 39
+        $normalScore = @039_胖丁
+        $shinyScore = @039_胖丁_闪
+    ELIF $dex == 41
+        $normalScore = @041_超音蝠
+        $shinyScore = @041_超音蝠_闪
+    ELIF $dex == 42
+        $normalScore = @042_大嘴蝠
+        $shinyScore = @042_大嘴蝠_闪
+    ELIF $dex == 43
+        $normalScore = @043_走路草
+        $shinyScore = @043_走路草_闪
+    ELIF $dex == 44
+        $normalScore = @044_臭臭花
+        $shinyScore = @044_臭臭花_闪
+    ELIF $dex == 46
+        $normalScore = @046_派拉斯
+        $shinyScore = @046_派拉斯_闪
+    ELIF $dex == 47
+        $normalScore = @047_派拉斯特
+        $shinyScore = @047_派拉斯特_闪
+    ELIF $dex == 48
+        $normalScore = @048_毛球
+        $shinyScore = @048_毛球_闪
+    ELIF $dex == 49
+        $normalScore = @049_摩鲁蛾
+        $shinyScore = @049_摩鲁蛾_闪
+    ELIF $dex == 50
+        $normalScore = @050_地鼠
+        $shinyScore = @050_地鼠_闪
+    ELIF $dex == 51
+        $normalScore = @051_三地鼠
+        $shinyScore = @051_三地鼠_闪
+    ELIF $dex == 52
+        $normalScore = @052_喵喵
+        $shinyScore = @052_喵喵_闪
+    ELIF $dex == 53
+        $normalScore = @053_猫老大
+        $shinyScore = @053_猫老大_闪
+    ELIF $dex == 54
+        $normalScore = @054_可达鸭
+        $shinyScore = @054_可达鸭_闪
+    ELIF $dex == 55
+        $normalScore = @055_哥达鸭
+        $shinyScore = @055_哥达鸭_闪
+    ELIF $dex == 56
+        $normalScore = @056_猴怪
+        $shinyScore = @056_猴怪_闪
+    ELIF $dex == 57
+        $normalScore = @057_火暴猴
+        $shinyScore = @057_火暴猴_闪
+    ELIF $dex == 58
+        $normalScore = @058_卡蒂狗
+        $shinyScore = @058_卡蒂狗_闪
+    ELIF $dex == 60
+        $normalScore = @060_蚊香蝌蚪
+        $shinyScore = @060_蚊香蝌蚪_闪
+    ELIF $dex == 61
+        $normalScore = @061_蚊香君
+        $shinyScore = @061_蚊香君_闪
+    ELIF $dex == 63
+        $normalScore = @063_凯西
+        $shinyScore = @063_凯西_闪
+    ELIF $dex == 64
+        $normalScore = @064_勇基拉
+        $shinyScore = @064_勇基拉_闪
+    ELIF $dex == 66
+        $normalScore = @066_腕力
+        $shinyScore = @066_腕力_闪
+    ELIF $dex == 67
+        $normalScore = @067_豪力
+        $shinyScore = @067_豪力_闪
+    ELIF $dex == 69
+        $normalScore = @069_喇叭芽
+        $shinyScore = @069_喇叭芽_闪
+    ELIF $dex == 70
+        $normalScore = @070_口呆花
+        $shinyScore = @070_口呆花_闪
+    ELIF $dex == 72
+        $normalScore = @072_玛瑙水母
+        $shinyScore = @072_玛瑙水母_闪
+    ELIF $dex == 73
+        $normalScore = @073_毒刺水母
+        $shinyScore = @073_毒刺水母_闪
+    ELIF $dex == 74
+        $normalScore = @074_小拳石
+        $shinyScore = @074_小拳石_闪
+    ELIF $dex == 75
+        $normalScore = @075_隆隆石
+        $shinyScore = @075_隆隆石_闪
+    ELIF $dex == 77
+        $normalScore = @077_小火马
+        $shinyScore = @077_小火马_闪
+    ELIF $dex == 78
+        $normalScore = @078_烈焰马
+        $shinyScore = @078_烈焰马_闪
+    ELIF $dex == 79
+        $normalScore = @079_呆呆兽
+        $shinyScore = @079_呆呆兽_闪
+    ELIF $dex == 80
+        $normalScore = @080_呆壳兽
+        $shinyScore = @080_呆壳兽_闪
+    ELIF $dex == 81
+        $normalScore = @081_小磁怪
+        $shinyScore = @081_小磁怪_闪
+    ELIF $dex == 82
+        $normalScore = @082_三合一磁怪
+        $shinyScore = @082_三合一磁怪_闪
+    ELIF $dex == 84
+        $normalScore = @084_嘟嘟
+        $shinyScore = @084_嘟嘟_闪
+    ELIF $dex == 86
+        $normalScore = @086_小海狮
+        $shinyScore = @086_小海狮_闪
+    ELIF $dex == 87
+        $normalScore = @087_白海狮
+        $shinyScore = @087_白海狮_闪
+    ELIF $dex == 88
+        $normalScore = @088_臭泥
+        $shinyScore = @088_臭泥_闪
+    ELIF $dex == 89
+        $normalScore = @089_臭臭泥
+        $shinyScore = @089_臭臭泥_闪
+    ELIF $dex == 90
+        $normalScore = @090_大舌贝
+        $shinyScore = @090_大舌贝_闪
+    ELIF $dex == 92
+        $normalScore = @092_鬼斯
+        $shinyScore = @092_鬼斯_闪
+    ELIF $dex == 93
+        $normalScore = @093_鬼斯通
+        $shinyScore = @093_鬼斯通_闪
+    ELIF $dex == 95
+        $normalScore = @095_大岩蛇
+        $shinyScore = @095_大岩蛇_闪
+    ELIF $dex == 96
+        $normalScore = @096_催眠貘
+        $shinyScore = @096_催眠貘_闪
+    ELIF $dex == 97
+        $normalScore = @097_引梦貘人
+        $shinyScore = @097_引梦貘人_闪
+    ELIF $dex == 98
+        $normalScore = @098_大钳蟹
+        $shinyScore = @098_大钳蟹_闪
+    ELIF $dex == 99
+        $normalScore = @099_巨钳蟹
+        $shinyScore = @099_巨钳蟹_闪
+    ELIF $dex == 100
+        $normalScore = @100_雷电球
+        $shinyScore = @100_雷电球_闪
+    ELIF $dex == 101
+        $normalScore = @101_顽皮雷弹
+        $shinyScore = @101_顽皮雷弹_闪
+    ELIF $dex == 102
+        $normalScore = @102_蛋蛋
+        $shinyScore = @102_蛋蛋_闪
+    ELIF $dex == 104
+        $normalScore = @104_卡拉卡拉
+        $shinyScore = @104_卡拉卡拉_闪
+    ELIF $dex == 105
+        $normalScore = @105_嘎啦嘎啦
+        $shinyScore = @105_嘎啦嘎啦_闪
+    ELIF $dex == 106
+        $normalScore = @106_飞腿郎
+        $shinyScore = @106_飞腿郎_闪
+    ELIF $dex == 107
+        $normalScore = @107_快拳郎
+        $shinyScore = @107_快拳郎_闪
+    ELIF $dex == 109
+        $normalScore = @109_瓦斯弹
+        $shinyScore = @109_瓦斯弹_闪
+    ELIF $dex == 110
+        $normalScore = @110_双弹瓦斯
+        $shinyScore = @110_双弹瓦斯_闪
+    ELIF $dex == 111
+        $normalScore = @111_独角犀牛
+        $shinyScore = @111_独角犀牛_闪
+    ELIF $dex == 113
+        $normalScore = @113_吉利蛋
+        $shinyScore = @113_吉利蛋_闪
+    ELIF $dex == 114
+        $normalScore = @114_蔓藤怪
+        $shinyScore = @114_蔓藤怪_闪
+    ELIF $dex == 115
+        $normalScore = @115_袋兽
+        $shinyScore = @115_袋兽_闪
+    ELIF $dex == 116
+        $normalScore = @116_墨海马
+        $shinyScore = @116_墨海马_闪
+    ELIF $dex == 117
+        $normalScore = @117_海刺龙
+        $shinyScore = @117_海刺龙_闪
+    ELIF $dex == 118
+        $normalScore = @118_角金鱼
+        $shinyScore = @118_角金鱼_闪
+    ELIF $dex == 119
+        $normalScore = @119_金鱼王
+        $shinyScore = @119_金鱼王_闪
+    ELIF $dex == 120
+        $normalScore = @120_海星星
+        $shinyScore = @120_海星星_闪
+    ELIF $dex == 123
+        $normalScore = @123_飞天螳螂
+        $shinyScore = @123_飞天螳螂_闪
+    ELIF $dex == 125
+        $normalScore = @125_电击兽
+        $shinyScore = @125_电击兽_闪
+    ELIF $dex == 126
+        $normalScore = @126_鸭嘴火兽
+        $shinyScore = @126_鸭嘴火兽_闪
+    ELIF $dex == 127
+        $normalScore = @127_凯罗斯
+        $shinyScore = @127_凯罗斯_闪
+    ELIF $dex == 128
+        $normalScore = @128_肯泰罗
+        $shinyScore = @128_肯泰罗_闪
+    ELIF $dex == 129
+        $normalScore = @129_鲤鱼王
+        $shinyScore = @129_鲤鱼王_闪
+    ELIF $dex == 130
+        $normalScore = @130_暴鲤龙
+        $shinyScore = @130_暴鲤龙_闪
+    ELIF $dex == 131
+        $normalScore = @131_拉普拉斯
+        $shinyScore = @131_拉普拉斯_闪
+    ELIF $dex == 132
+        $normalScore = @132_百变怪
+        $shinyScore = @132_百变怪_闪
+    ELIF $dex == 133
+        $normalScore = @133_伊布
+        $shinyScore = @133_伊布_闪
+    ELIF $dex == 138
+        $normalScore = @138_菊石兽
+        $shinyScore = @138_菊石兽_闪
+    ELIF $dex == 140
+        $normalScore = @140_化石盔
+        $shinyScore = @140_化石盔_闪
+    ELIF $dex == 142
+        $normalScore = @142_化石翼龙
+        $shinyScore = @142_化石翼龙_闪
+    ELIF $dex == 143
+        $normalScore = @143_卡比兽
+        $shinyScore = @143_卡比兽_闪
+    ELIF $dex == 144
+        $normalScore = @144_急冻鸟
+        $shinyScore = @144_急冻鸟_闪
+    ELIF $dex == 145
+        $normalScore = @145_闪电鸟
+        $shinyScore = @145_闪电鸟_闪
+    ELIF $dex == 146
+        $normalScore = @146_火焰鸟
+        $shinyScore = @146_火焰鸟_闪
+    ELIF $dex == 147
+        $normalScore = @147_迷你龙
+        $shinyScore = @147_迷你龙_闪
+    ELIF $dex == 148
+        $normalScore = @148_哈克龙
+        $shinyScore = @148_哈克龙_闪
+    ELIF $dex == 150
+        $normalScore = @150_超梦
+        $shinyScore = @150_超梦_闪
+    ELIF $dex == 161
+        $normalScore = @161_尾立
+        $shinyScore = @161_尾立_闪
+    ELIF $dex == 165
+        $normalScore = @165_芭瓢虫
+        $shinyScore = @165_芭瓢虫_闪
+    ELIF $dex == 167
+        $normalScore = @167_圆丝蛛
+        $shinyScore = @167_圆丝蛛_闪
+    ELIF $dex == 177
+        $normalScore = @177_天然雀
+        $shinyScore = @177_天然雀_闪
+    ELIF $dex == 179
+        $normalScore = @179_咩利羊
+        $shinyScore = @179_咩利羊_闪
+    ELIF $dex == 183
+        $normalScore = @183_玛力露
+        $shinyScore = @183_玛力露_闪
+    ELIF $dex == 187
+        $normalScore = @187_毽子草
+        $shinyScore = @187_毽子草_闪
+    ELIF $dex == 190
+        $normalScore = @190_长尾怪手
+        $shinyScore = @190_长尾怪手_闪
+    ELIF $dex == 193
+        $normalScore = @193_蜻蜻蜓
+        $shinyScore = @193_蜻蜻蜓_闪
+    ELIF $dex == 194
+        $normalScore = @194_乌波
+        $shinyScore = @194_乌波_闪
+    ELIF $dex == 198
+        $normalScore = @198_黑暗鸦
+        $shinyScore = @198_黑暗鸦_闪
+    ELIF $dex == 200
+        $normalScore = @200_梦妖
+        $shinyScore = @200_梦妖_闪
+    ELIF $dex == 202
+        $normalScore = @202_果然翁
+        $shinyScore = @202_果然翁_闪
+    ELIF $dex == 204
+        $normalScore = @204_榛果球
+        $shinyScore = @204_榛果球_闪
+    ELIF $dex == 206
+        $normalScore = @206_土龙弟弟
+        $shinyScore = @206_土龙弟弟_闪
+    ELIF $dex == 211
+        $normalScore = @211_千针鱼
+        $shinyScore = @211_千针鱼_闪
+    ELIF $dex == 213
+        $normalScore = @213_壶壶
+        $shinyScore = @213_壶壶_闪
+    ELIF $dex == 214
+        $normalScore = @214_赫拉克罗斯
+        $shinyScore = @214_赫拉克罗斯_闪
+    ELIF $dex == 215
+        $normalScore = @215_狃拉
+        $shinyScore = @215_狃拉_闪
+    ELIF $dex == 216
+        $normalScore = @216_熊宝宝
+        $shinyScore = @216_熊宝宝_闪
+    ELIF $dex == 218
+        $normalScore = @218_熔岩虫
+        $shinyScore = @218_熔岩虫_闪
+    ELIF $dex == 219
+        $normalScore = @219_熔岩蜗牛
+        $shinyScore = @219_熔岩蜗牛_闪
+    ELIF $dex == 220
+        $normalScore = @220_小山猪
+        $shinyScore = @220_小山猪_闪
+    ELIF $dex == 223
+        $normalScore = @223_铁炮鱼
+        $shinyScore = @223_铁炮鱼_闪
+    ELIF $dex == 225
+        $normalScore = @225_信使鸟
+        $shinyScore = @225_信使鸟_闪
+    ELIF $dex == 226
+        $normalScore = @226_巨翅飞鱼
+        $shinyScore = @226_巨翅飞鱼_闪
+    ELIF $dex == 227
+        $normalScore = @227_盔甲鸟
+        $shinyScore = @227_盔甲鸟_闪
+    ELIF $dex == 228
+        $normalScore = @228_戴鲁比
+        $shinyScore = @228_戴鲁比_闪
+    ELIF $dex == 231
+        $normalScore = @231_小小象
+        $shinyScore = @231_小小象_闪
+    ELIF $dex == 234
+        $normalScore = @234_惊角鹿
+        $shinyScore = @234_惊角鹿_闪
+    ELIF $dex == 235
+        $normalScore = @235_图图犬
+        $shinyScore = @235_图图犬_闪
+    ELIF $dex == 243
+        $normalScore = @243_雷公
+        $shinyScore = @243_雷公_闪
+    ELIF $dex == 244
+        $normalScore = @244_炎帝
+        $shinyScore = @244_炎帝_闪
+    ELIF $dex == 245
+        $normalScore = @245_水君
+        $shinyScore = @245_水君_闪
+    ELIF $dex == 246
+        $normalScore = @246_幼基拉斯
+        $shinyScore = @246_幼基拉斯_闪
+    ELIF $dex == 249
+        $normalScore = @249_洛奇亚
+        $shinyScore = @249_洛奇亚_闪
+    ELIF $dex == 250
+        $normalScore = @250_凤王
+        $shinyScore = @250_凤王_闪
+    ELIF $dex == 386
+        $normalScore = @386_代欧奇希斯
+        $shinyScore = @386_代欧奇希斯_闪
+    ELSE
+        RETURN 0
+    ENDIF
+
+    RETURN 1
+ENDFUNC
+
+FUNC OCR名称闪光匹配度确认($dex: INT, $识图阈值: INT): INT
+    IF $dex == 201
+        $OCR未知图腾形态编号 = 识别未知图腾形态($识图阈值)
+        IF $OCR未知图腾形态编号 >= 0
+            RETURN 1
+        ENDIF
+        RETURN 0
+    ENDIF
+
+    $shinyCheckAvailable = SetCaptureShinyScores($dex)
+    IF $shinyCheckAvailable == 0
+        PRINT ""
+        PRINT 【OCR名称确认】
+        PRINT 未找到对应普通/闪光标签，图鉴编号: & $dex
+        RETURN 0
+    ENDIF
+
+    PRINT ""
+    PRINT 【OCR名称确认】
+
+    IF $normalScore < $识图阈值 and $shinyScore < $识图阈值
+        PRINT OCR名称错误
+        RETURN 0
+    ENDIF
+
+    PRINT Sprite标签与OCR名称一致
+    RETURN 1
+ENDFUNC
+
+FUNC CheckCaptureShiny($dex: INT, $识图阈值: INT): INT
+    IF $dex == 201
+        IF $识别未知图腾形态编号 < 0
+            $未知图腾形态编号 = 识别未知图腾形态($识图阈值)
+        ENDIF
+
+        IF $识别未知图腾形态编号 >= 0 and $未知图腾闪光形态最高匹配度 > $未知图腾普通形态最高匹配度
+            $记录出闪检测结果 = 记录最近出闪检测($dex)
+            PRINT 已识别到闪光未知图腾
+            RETURN 应用普通闪光策略($dex)
+        ENDIF
+
+        RETURN 0
+    ENDIF
+
+    $shinyCheckAvailable = SetCaptureShinyScores($dex)
+    IF $shinyCheckAvailable == 0
+        PRINT ""
+        PRINT 【出闪检测】
+        PRINT 未找到对应普通/闪光标签，图鉴编号: & $dex
+        RETURN 0
+    ENDIF
+
+    IF $识图调试日志输出 == 1
+        PRINT ""
+        PRINT 【出闪检测】
+        PRINT 普通匹配度: & $normalScore
+        PRINT 闪光匹配度: & $shinyScore
+    ENDIF
+
+    IF $shinyScore > $normalScore
+        $记录出闪检测结果 = 记录最近出闪检测($dex)
+        IF $识图调试日志输出 == 0
+            PRINT ""
+            PRINT 【出闪检测】
+        ENDIF
+        PRINT 已识别到闪光个体
+        RETURN 应用普通闪光策略($dex)
+    ENDIF
+
+    RETURN 0
+ENDFUNC
+
+FUNC 识别抓捕对象名称第01位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第01位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第02位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第02位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第03位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第03位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第04位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第04位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第05位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第05位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第06位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第06位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第07位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第07位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第08位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_公, "♂")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_母, "♀")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第08位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第09位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第09位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC
+
+FUNC 识别抓捕对象名称第10位(): STRING
+    $抓捕对象名称最高匹配度 = -1
+    $抓捕对象名称最佳字符 = ""
+
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_A, "A")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_B, "B")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_C, "C")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_D, "D")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_E, "E")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_F, "F")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_G, "G")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_H, "H")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_I, "I")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_J, "J")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_K, "K")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_L, "L")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_M, "M")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_N, "N")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_O, "O")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_P, "P")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_Q, "Q")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_R, "R")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_S, "S")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_T, "T")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_U, "U")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_V, "V")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_W, "W")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_X, "X")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_Y, "Y")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_Z, "Z")
+    $tmp = 抓捕对象名称更新最佳(@抓捕名称第10位_空, "空")
+
+    RETURN $抓捕对象名称最佳字符
+ENDFUNC

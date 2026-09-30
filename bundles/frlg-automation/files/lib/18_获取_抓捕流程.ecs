@@ -1,0 +1,740 @@
+﻿# ==================================================
+# lib/18_获取_抓捕流程.ecs
+# ==================================================
+$麻痹配置 = 0
+$点到为止配置 = 0
+$三圣兽当前方向 = 2
+$三圣兽移动分子 = 0
+$三圣兽移动按住MS = 0
+$三圣兽方向变化 = 0
+$三圣兽喷雾已消耗步数 = 0
+$三圣兽喷雾剩余步数 = 0
+$三圣兽刷新轮次 = 0
+$三圣兽草丛往返轮次 = 0
+$三圣兽耗尽半程步数 = 0
+$三圣兽执行结果 = 0
+$三圣兽喷雾识别尝试 = 0
+$三圣兽喷雾已确认 = 0
+FUNC 麻痹点到为止配置($麻痹: INT, $点到为止: INT): INT
+    IF $麻痹 == 1
+        $麻痹配置 = 1
+    ELSE
+        $麻痹配置 = 0
+    ENDIF
+    IF $点到为止 == 1
+        $点到为止配置 = 1
+    ELSE
+        $点到为止配置 = 0
+    ENDIF
+    RETURN 0
+ENDFUNC
+
+FUNC 扔球抓捕($目标全国图鉴编号: INT, $出闪后继续抓捕: INT, $出闪检测结果: INT): INT
+    $对面状态 = 1
+    $时差出闪 = 0
+    $移动到抓捕球种 = 0
+    PRINT ""
+    PRINT 【抓捕】
+    IF $麻痹配置 == 1 and $出闪检测结果 == 1
+        CALL 麻痹
+    ENDIF
+    IF $对面状态 == 0
+        PRINT 某一方死亡
+        RETURN 0
+    ELIF $对面状态 == 2
+        PRINT 结果: 对面逃跑
+        RETURN 2
+    ELIF $对面状态 == -1
+        PRINT 时差检测到出闪
+        $记录出闪检测结果 = 记录最近出闪检测($目标全国图鉴编号)
+        $时差出闪 = 1
+        IF $出闪后继续抓捕 == 1
+            PRINT 出闪后继续抓捕
+            1500
+            B
+            1500
+            $对面状态 = 1
+        ELSE
+            RETURN -1
+        ENDIF
+    ENDIF
+
+    IF $点到为止配置 == 1 and $出闪检测结果 == 1
+        CALL 点到为止
+    ENDIF
+    IF $对面状态 == 0
+        PRINT 某一方死亡
+        RETURN 0
+    ELIF $对面状态 == 2
+        PRINT 结果: 对面逃跑
+        RETURN 2
+    ELIF $对面状态 == -1
+        PRINT 时差检测到出闪
+        $记录出闪检测结果 = 记录最近出闪检测($目标全国图鉴编号)
+        $时差出闪 = 1
+        IF $出闪后继续抓捕 == 1
+            PRINT 出闪后继续抓捕
+            1500
+            B
+            1500
+            $对面状态 = 1
+        ELSE
+            RETURN -1
+        ENDIF
+    ENDIF
+
+    PRINT "FRLG_STAGE|BEGIN|capture.wait_ready|capture.wait_ready|15000|lib/18_获取_抓捕流程.ecs|扔球抓捕|lib18.capture.wait_ready|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+    FOR
+        IF @抓捕就绪 > 95
+            PRINT "FRLG_STAGE|END|capture.wait_ready|!"
+            PRINT 抓捕就绪
+            IF @我方HP < 95
+                PRINT 我方HP不足一半，补血
+                CALL 补血
+                PRINT "FRLG_STAGE|BEGIN|capture.wait_ready|capture.wait_ready|15000|lib/18_获取_抓捕流程.ecs|扔球抓捕|lib18.capture.wait_ready|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+            ELSE
+                PRINT 尝试抓捕
+                RIGHT
+                WAIT 500
+                UP
+                WAIT 500
+                A
+                WAIT 1500
+                RIGHT
+                WAIT 500
+                RIGHT
+                WAIT 500
+                IF $移动到抓捕球种 == 0 and ($时差出闪 == 1 or $出闪检测结果 == 1)
+                    PRINT 移动到抓捕球种
+                    DOWN
+                    500
+                    $移动到抓捕球种 = 1
+                ENDIF
+                IF $移动到抓捕球种 == 1 and $出闪检测结果 == 0
+                    PRINT 移动到大师球
+                    UP
+                    500
+                    $移动到抓捕球种 = 0
+                ENDIF
+                A
+                WAIT 500
+                A#扔球
+                PRINT "FRLG_STAGE|BEGIN|capture.ball_result|capture.ball_result|0|lib/18_获取_抓捕流程.ecs|扔球抓捕|lib18.capture.ball_result|manual_prepare_then_restart|OR;晃0下.IL:>:95,晃1下.IL:>:95,晃2下.IL:>:95,晃3下.IL:>:95,抓获成功.IL:>:95|!"
+                FOR
+                    100
+                    IF @晃0下 > 95 or @晃1下 > 95 or @晃2下 > 95 or @晃3下 > 95
+                        PRINT "FRLG_STAGE|END|capture.ball_result|!"
+                        PRINT 未抓到，继续扔球
+                        BREAK
+                    ELIF @抓获成功 > 95
+                        PRINT "FRLG_STAGE|END|capture.ball_result|!"
+                        PRINT 结果: 抓获成功
+                        FOR 22
+                            B
+                            500
+                        NEXT
+                        RETURN 1
+                    ENDIF
+                NEXT
+                PRINT "FRLG_STAGE|FAIL|capture.ball_result|投球动画识别达到脚本内上限|!"
+                PRINT "FRLG_STAGE|BEGIN|capture.wait_ready|capture.wait_ready|15000|lib/18_获取_抓捕流程.ecs|扔球抓捕|lib18.capture.wait_ready|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+            ENDIF
+        ELIF @某一方死了 > 95
+            PRINT "FRLG_STAGE|END|capture.wait_ready|!"
+            PRINT 某一方死亡
+            RETURN 0
+        ELIF @野生逃跑 > 95
+            PRINT "FRLG_STAGE|END|capture.wait_ready|!"
+            PRINT 结果: 对面逃跑
+            500
+            B
+            5000
+            RETURN 2
+        ELIF @时差检测 > 95
+            PRINT "FRLG_STAGE|END|capture.wait_ready|!"
+            PRINT 时差检测到出闪
+            $记录出闪检测结果 = 记录最近出闪检测($目标全国图鉴编号)
+            $时差出闪 = 1
+            IF $出闪后继续抓捕 == 1
+                PRINT 出闪后继续抓捕
+                1500
+                B
+                1500
+                $对面状态 = 1
+                PRINT "FRLG_STAGE|BEGIN|capture.wait_ready|capture.wait_ready|15000|lib/18_获取_抓捕流程.ecs|扔球抓捕|lib18.capture.wait_ready|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+            ELSE
+                RETURN -1
+            ENDIF
+        ENDIF
+        100
+    NEXT
+    RETURN 0
+ENDFUNC
+
+FUNC 麻痹
+    PRINT "FRLG_STAGE|BEGIN|capture.paralysis_turn|capture.paralysis_turn|30000|lib/18_获取_抓捕流程.ecs|麻痹|lib18.capture.paralysis_turn|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,麻痹.IL:>:95,被挑衅检查.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+    FOR
+        IF @抓捕就绪 > 95
+            PRINT "FRLG_STAGE|END|capture.paralysis_turn|!"
+            IF @我方HP < 95
+                PRINT 我方HP不足一半，补血
+                CALL 补血
+            ELIF @麻痹 > 95
+                IF @麻痹 > 95
+                    PRINT 麻痹成功
+                ENDIF
+                BREAK
+            ELSE
+                PRINT 尝试麻痹
+                LEFT
+                500
+                UP
+                500
+                A
+                500
+                A
+            ENDIF
+            PRINT "FRLG_STAGE|BEGIN|capture.paralysis_turn|capture.paralysis_turn|30000|lib/18_获取_抓捕流程.ecs|麻痹|lib18.capture.paralysis_turn|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,麻痹.IL:>:95,被挑衅检查.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+        ELIF @被挑衅检查 > 95
+            PRINT "FRLG_STAGE|END|capture.paralysis_turn|!"
+            PRINT 被挑衅，继续尝试麻痹
+            3000
+            B
+            3000
+            PRINT "FRLG_STAGE|BEGIN|capture.paralysis_turn|capture.paralysis_turn|30000|lib/18_获取_抓捕流程.ecs|麻痹|lib18.capture.paralysis_turn|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,麻痹.IL:>:95,被挑衅检查.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+        ELIF @某一方死了 > 95
+            PRINT "FRLG_STAGE|END|capture.paralysis_turn|!"
+            $对面状态 = 0
+            BREAK
+        ELIF @野生逃跑 > 95
+            PRINT "FRLG_STAGE|END|capture.paralysis_turn|!"
+            $对面状态 = 2
+            500
+            B
+            5000
+            BREAK
+        ELIF @时差检测 > 95
+            PRINT "FRLG_STAGE|END|capture.paralysis_turn|!"
+            $对面状态 = -1
+            3000
+            BREAK
+        ENDIF
+        500
+    NEXT
+ENDFUNC
+
+FUNC 点到为止
+    PRINT "FRLG_STAGE|BEGIN|capture.false_swipe_open_menu|capture.false_swipe_open_menu|30000|lib/18_获取_抓捕流程.ecs|点到为止|lib18.capture.false_swipe_open_menu|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,时差检测.IL:>:95|!"
+    FOR
+        IF @抓捕就绪 > 95
+            PRINT "FRLG_STAGE|END|capture.false_swipe_open_menu|!"
+            LEFT
+            500
+            DOWN
+            500
+            A
+            1500
+            RIGHT
+            500
+            A
+            500
+            A
+            BREAK
+        ELIF @时差检测 > 95
+            PRINT "FRLG_STAGE|END|capture.false_swipe_open_menu|!"
+            $对面状态 = -1
+            BREAK
+        ENDIF
+        500
+    NEXT
+    PRINT "FRLG_STAGE|BEGIN|capture.false_swipe_turn|capture.false_swipe_turn|30000|lib/18_获取_抓捕流程.ecs|点到为止|lib18.capture.false_swipe_turn|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,1HP.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+    FOR
+        IF @抓捕就绪 > 95
+            PRINT "FRLG_STAGE|END|capture.false_swipe_turn|!"
+            IF @我方HP< 95
+                PRINT 我方HP不足一半，补血
+                CALL 补血
+            ELIF @1HP > 95
+                PRINT 点到为止成功
+                BREAK
+            ELSE
+                PRINT 尝试点到为止
+                LEFT
+                500
+                UP
+                500
+                A
+                500
+                A
+            ENDIF
+            PRINT "FRLG_STAGE|BEGIN|capture.false_swipe_turn|capture.false_swipe_turn|30000|lib/18_获取_抓捕流程.ecs|点到为止|lib18.capture.false_swipe_turn|manual_prepare_then_restart|OR;抓捕就绪.IL:>:95,1HP.IL:>:95,某一方死了.IL:>:95,野生逃跑.IL:>:95,时差检测.IL:>:95|!"
+        ELIF @某一方死了 > 95
+            PRINT "FRLG_STAGE|END|capture.false_swipe_turn|!"
+            $对面状态 = 0
+            BREAK
+        ELIF @野生逃跑 > 95
+            PRINT "FRLG_STAGE|END|capture.false_swipe_turn|!"
+            $对面状态 = 2
+            500
+            B
+            5000
+            BREAK
+        ELIF @时差检测 > 95
+            PRINT "FRLG_STAGE|END|capture.false_swipe_turn|!"
+            $对面状态 = -1
+            3000
+            BREAK
+        ENDIF
+        500
+    NEXT
+ENDFUNC
+
+FUNC 移动到三圣兽遭遇地点($进入TV: INT, $目标全国图鉴编号: INT, $出闪后继续抓捕: INT, $识图阈值: INT): INT
+    FOR 6
+        LEFT
+        500
+    NEXT
+    DOWN DOWN
+    1500
+    DOWN UP
+    2500
+    DOWN
+    500
+    DOWN
+    500
+    LEFT
+    500
+    LEFT
+    500
+    LEFT
+    500
+    B DOWN
+    50
+    DOWN DOWN
+    3500
+    DOWN UP
+    50
+    B UP
+    50
+    FOR 2
+        A
+        1500
+    NEXT
+    A
+    5500
+    X
+    500
+    DOWN
+    500
+    A
+    1500
+    RIGHT
+    500
+    DOWN
+    500
+    A
+    500
+    DOWN
+    500
+    A
+    1500
+    FOR 10
+        LEFT
+        100
+    NEXT
+    FOR 5
+        UP
+        100
+    NEXT
+    A
+    7500
+
+    PRINT ""
+    PRINT 【游走搜索】跑步换区，黄金喷雾按250步计数
+    $三圣兽当前方向 = 2
+    CALL 三圣兽开始跑步
+    $三圣兽当前方向 = 三圣兽按格二倍速方向段(2, 9, $三圣兽当前方向)
+    $三圣兽当前方向 = 三圣兽按格二倍速方向段(1, 3, $三圣兽当前方向)
+    $三圣兽当前方向 = 三圣兽按格二倍速方向段(2, 6, $三圣兽当前方向)
+    CALL 三圣兽结束跑步
+
+    X
+    500
+    DOWN
+    500
+    A
+    1500
+    LEFT
+    1500
+    DOWN
+    500
+    DOWN
+    500
+    A
+    500
+    A
+    1500
+    B
+    500
+    B
+    1500
+    B
+    500
+
+    CALL 三圣兽开始跑步
+    $三圣兽当前方向 = 三圣兽按格二倍速方向段(2, 1, $三圣兽当前方向)
+    $三圣兽当前方向 = 三圣兽按格二倍速方向段(3, 3, $三圣兽当前方向)
+    $三圣兽喷雾已消耗步数 = 4
+    PRINT 第一瓶进入循环前已消耗4步
+
+    $抓捕结果 = 三圣兽计步换区搜索($目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+    RETURN $抓捕结果
+ENDFUNC
+
+FUNC 三圣兽按格二倍速方向段($方向: INT, $格数: INT, $原方向: INT): INT
+    IF $格数 <= 0
+        RETURN $原方向
+    ENDIF
+
+    $三圣兽方向变化 = 0
+    IF $方向 != $原方向
+        $三圣兽方向变化 = 1
+    ENDIF
+    $三圣兽移动分子 = 400 * $格数 - 160
+    IF $三圣兽方向变化 == 1
+        $三圣兽移动分子 += 400
+    ENDIF
+    $三圣兽移动按住MS = ($三圣兽移动分子 + 1) / 3
+
+    IF $方向 == 0
+        UP DOWN
+        WAIT $三圣兽移动按住MS
+        UP UP
+    ELIF $方向 == 1
+        RIGHT DOWN
+        WAIT $三圣兽移动按住MS
+        RIGHT UP
+    ELIF $方向 == 2
+        DOWN DOWN
+        WAIT $三圣兽移动按住MS
+        DOWN UP
+    ELSE
+        LEFT DOWN
+        WAIT $三圣兽移动按住MS
+        LEFT UP
+    ENDIF
+    WAIT 350
+    RETURN $方向
+ENDFUNC
+
+FUNC 三圣兽开始跑步
+    B DOWN
+    WAIT 500
+ENDFUNC
+
+FUNC 三圣兽结束跑步
+    B UP
+    WAIT 500
+ENDFUNC
+
+FUNC 三圣兽计步移动($方向: INT, $格数: INT, $检查野生: INT, $目标全国图鉴编号: INT, $出闪后继续抓捕: INT, $识图阈值: INT): INT
+    IF $三圣兽喷雾已消耗步数 + $格数 > 250
+        CALL 三圣兽结束跑步
+        PRINT 游走喷雾计步超过250步，停止搜索
+        RETURN 0
+    ENDIF
+
+    $三圣兽当前方向 = 三圣兽按格二倍速方向段($方向, $格数, $三圣兽当前方向)
+    $三圣兽喷雾已消耗步数 += $格数
+    IF $检查野生 == 1 and @野生出现 > 90
+        CALL 三圣兽结束跑步
+        PRINT 游走宝可梦出现，进入闪光与抓捕检测
+        $三圣兽执行结果 = 三圣兽抓捕($目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+        RETURN $三圣兽执行结果
+    ENDIF
+    RETURN 10
+ENDFUNC
+
+FUNC 三圣兽计步换区搜索($目标全国图鉴编号: INT, $出闪后继续抓捕: INT, $识图阈值: INT): INT
+    FOR
+        FOR $三圣兽刷新轮次 = 1 TO 4
+            FOR $三圣兽草丛往返轮次 = 1 TO 3
+                $三圣兽执行结果 = 三圣兽计步移动(2, 6, 1, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+                IF $三圣兽执行结果 != 10
+                    RETURN $三圣兽执行结果
+                ENDIF
+                $三圣兽执行结果 = 三圣兽计步移动(0, 6, 1, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+                IF $三圣兽执行结果 != 10
+                    RETURN $三圣兽执行结果
+                ENDIF
+            NEXT
+
+            $三圣兽执行结果 = 三圣兽计步移动(2, 6, 1, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+            IF $三圣兽执行结果 != 10
+                RETURN $三圣兽执行结果
+            ENDIF
+            $三圣兽执行结果 = 三圣兽计步移动(2, 5, 0, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+            IF $三圣兽执行结果 != 10
+                RETURN $三圣兽执行结果
+            ENDIF
+
+            # 进门和返回的换图动作不消耗喷雾步数。
+            $三圣兽当前方向 = 三圣兽按格二倍速方向段(2, 1, $三圣兽当前方向)
+            WAIT 2000
+            $三圣兽当前方向 = 三圣兽按格二倍速方向段(0, 1, $三圣兽当前方向)
+            WAIT 2000
+
+            $三圣兽执行结果 = 三圣兽计步移动(0, 5, 0, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+            IF $三圣兽执行结果 != 10
+                RETURN $三圣兽执行结果
+            ENDIF
+            $三圣兽执行结果 = 三圣兽计步移动(0, 6, 1, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+            IF $三圣兽执行结果 != 10
+                RETURN $三圣兽执行结果
+            ENDIF
+
+            PRINT 游走换区 & $三圣兽刷新轮次 & "/4，喷雾已用 " & $三圣兽喷雾已消耗步数 & "/250 步"
+        NEXT
+
+        $三圣兽喷雾剩余步数 = 250 - $三圣兽喷雾已消耗步数
+        $三圣兽耗尽半程步数 = $三圣兽喷雾剩余步数 / 2
+        PRINT 喷雾末段: 剩余 & $三圣兽喷雾剩余步数 & " 步，执行下/上各 " & $三圣兽耗尽半程步数 & " 格"
+        $三圣兽执行结果 = 三圣兽计步移动(2, $三圣兽耗尽半程步数, 1, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+        IF $三圣兽执行结果 != 10
+            RETURN $三圣兽执行结果
+        ENDIF
+        $三圣兽执行结果 = 三圣兽计步移动(0, $三圣兽耗尽半程步数, 1, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+        IF $三圣兽执行结果 != 10
+            RETURN $三圣兽执行结果
+        ENDIF
+        CALL 三圣兽结束跑步
+
+        $喷雾用完 = ""
+        $三圣兽喷雾已确认 = 0
+        FOR $三圣兽喷雾识别尝试 = 1 TO 3
+            $喷雾用完 = OCR(272, 783, 274, 96, "FRLG_EN_ALL")
+            IF $喷雾用完 == "REPEL’s"
+                $三圣兽喷雾已确认 = 1
+                BREAK
+            ENDIF
+            WAIT 300
+        NEXT
+        IF $三圣兽喷雾已确认 == 0
+            PRINT 喷雾计步结束但未识别到耗尽提示，停止游走
+            RETURN 0
+        ENDIF
+
+        PRINT 喷雾耗尽已确认，补充黄金喷雾
+        CALL 三圣兽计步补喷
+        $三圣兽喷雾已消耗步数 = 0
+        CALL 三圣兽开始跑步
+    NEXT
+    RETURN 0
+ENDFUNC
+
+FUNC 三圣兽计步补喷
+    B
+    WAIT 500
+    X
+    WAIT 500
+    A
+    WAIT 1500
+    LEFT
+    WAIT 500
+    LEFT
+    WAIT 500
+    UP
+    WAIT 500
+    UP
+    WAIT 500
+    DOWN
+    WAIT 500
+    DOWN
+    WAIT 500
+    A
+    WAIT 500
+    A
+    WAIT 500
+    FOR 6
+        B
+        WAIT 500
+    NEXT
+ENDFUNC
+
+FUNC 三圣兽抓捕($目标全国图鉴编号: INT, $出闪后继续抓捕: INT, $识图阈值: INT): INT
+    $三圣兽抓捕结果 = 0
+    FOR
+        $喷雾用完 = OCR(272, 783, 274, 96, "FRLG_EN_ALL")
+        IF $喷雾用完 == "REPEL’s"
+            UP UP
+            16
+            DOWN UP
+            50
+            B
+            500
+            X
+            500
+            A
+            1500
+            LEFT
+            500
+            LEFT
+            500
+            UP
+            500
+            UP
+            500
+            DOWN
+            500
+            DOWN
+            500
+            A
+            500
+            A
+            500
+            FOR 6
+                B
+                500
+            NEXT
+            UP DOWN
+            50
+            $喷雾用完 = ""
+        ENDIF
+
+        IF @2号道路 > 90
+            UP UP
+            50
+            DOWN DOWN
+        ENDIF
+
+        $喷雾用完 = OCR(272, 783, 274, 96, "FRLG_EN_ALL")
+        IF $喷雾用完 == "REPEL’s"
+            UP UP
+            16
+            DOWN UP
+            50
+            B
+            500
+            X
+            500
+            A
+            1500
+            LEFT
+            500
+            LEFT
+            500
+            UP
+            500
+            UP
+            500
+            DOWN
+            500
+            DOWN
+            500
+            A
+            500
+            A
+            500
+            FOR 6
+                B
+                500
+            NEXT
+            UP DOWN
+            50
+            $喷雾用完 = ""
+        ENDIF
+
+        IF @换区 > 90 or @森林 > 90
+            DOWN UP
+            50
+            UP DOWN
+        ENDIF
+
+        $喷雾用完 = OCR(272, 783, 274, 96, "FRLG_EN_ALL")
+        IF $喷雾用完 == "REPEL’s"
+            UP UP
+            16
+            DOWN UP
+            50
+            B
+            500
+            X
+            500
+            A
+            1500
+            LEFT
+            500
+            LEFT
+            500
+            UP
+            500
+            UP
+            500
+            DOWN
+            500
+            DOWN
+            500
+            A
+            500
+            A
+            500
+            FOR 6
+                B
+                500
+            NEXT
+            UP DOWN
+            50
+            $喷雾用完 = ""
+        ENDIF
+
+        IF @野生出现 > 90
+
+            $出闪检测结果 = CheckCaptureShiny($目标全国图鉴编号, $识图阈值)
+            IF $出闪检测结果 == 1 and $出闪后继续抓捕 == 0
+                RETURN -1
+            ENDIF
+
+            UP UP
+            50
+            DOWN UP
+            1000
+            B
+            5000
+            $三圣兽抓捕结果 = 扔球抓捕($目标全国图鉴编号, $出闪后继续抓捕, $出闪检测结果)
+            IF $三圣兽抓捕结果 == 2
+                UP DOWN
+                16
+            ELSE
+                RETURN $三圣兽抓捕结果
+            ENDIF
+        ENDIF
+    NEXT
+    RETURN 0
+ENDFUNC
+
+FUNC 补血
+    UP
+    500
+    RIGHT
+    500
+    A
+    1500
+    LEFT
+    500
+    LEFT
+    500
+    UP
+    500
+    UP
+    500
+    DOWN
+    500
+    A
+    500
+    A
+    1500
+    A
+    4000
+    B
+    1500
+ENDFUNC

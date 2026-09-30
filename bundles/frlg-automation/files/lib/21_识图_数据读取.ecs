@@ -1,0 +1,1678 @@
+﻿# ==================================================
+# lib/19_识图_读取.ecs
+# 由 generate_image_module.py 生成
+# 生成时间 2026-05-06 06:25:51.120133
+#
+# 函数：
+#   识别性别($性别阈值, $识图阈值)
+#   识别性格($识图阈值)
+#   识别LV($识图阈值)
+#   识别HP($识图阈值)
+#   识别ATK($识图阈值)
+#   识别DEF($识图阈值)
+#   识别SPA($识图阈值)
+#   识别SPD($识图阈值)
+#   识别SPE($识图阈值)
+# ==================================================
+
+# ==================================================
+# 性别识别
+# 返回：
+#   0 = 雄
+#   1 = 雌
+#   2 = 无性别
+#   -1 = 失败
+# ==================================================
+
+# ==================================================
+# 性别识别
+#
+# 参数：
+#   $性别阈值:
+#       255 = 无性别
+#       0   = 全雄
+#       254 = 全雌
+#       其他 = 可变性别
+#
+#   $识图阈值:
+#       公/母图标最低匹配度阈值
+#
+# 返回：
+#   0  = 雄
+#   1  = 雌
+#   2  = 无性别
+#   -1 = 失败
+# ==================================================
+
+FUNC 识别性别($性别阈值: INT, $识图阈值: INT): INT
+    IF $性别阈值 == 255
+        RETURN 2
+    ENDIF
+
+    IF $性别阈值 == 0
+        RETURN 0
+    ENDIF
+
+    IF $性别阈值 == 254
+        RETURN 1
+    ENDIF
+
+    PRINT "FRLG_STAGE|BEGIN|wild.data.gender|wild.data.gender|0|lib/21_识图_数据读取.ecs|识别性别|lib21.read.gender|manual_prepare_then_restart|OR;公图标.IL:>=:" & $识图阈值 & ",母图标.IL:>=:" & $识图阈值 & "|!"
+    $公匹配 = @公图标
+    $母匹配 = @母图标
+
+    IF $公匹配 >= $母匹配
+        IF $公匹配 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.data.gender|公母标签均低于性别阈值|!"
+            PRINT 性别识别失败，最高匹配度: & $公匹配
+            RETURN -1
+        ENDIF
+
+        PRINT "FRLG_STAGE|END|wild.data.gender|!"
+        RETURN 0
+    ELSE
+        IF $母匹配 < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.data.gender|公母标签均低于性别阈值|!"
+            PRINT 性别识别失败，最高匹配度: & $母匹配
+            RETURN -1
+        ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.gender|!"
+        RETURN 1
+    ENDIF
+ENDFUNC
+
+# ==================================================
+# 性格识别
+# 返回 Gen3 性格编号
+# ==================================================
+
+FUNC 识别性格($识图阈值: INT): INT
+    $best = -1
+    $nature = -1
+
+    $ocr_nature = OCR(215, 762, 574, 81, "FRLG_EN_ALL")
+
+    IF $ocr_nature == "HARDY nature."
+        RETURN 0
+    ELIF $ocr_nature == "LONELY nature."
+        PRINT "FRLG_STAGE|END|wild.data.gender|!"
+        RETURN 1
+    ELIF $ocr_nature == "BRAVE nature."
+        RETURN 2
+    ELIF $ocr_nature == "ADAMANT nature."
+        RETURN 3
+    ELIF $ocr_nature == "NAUGHTY nature."
+        RETURN 4
+    ELIF $ocr_nature == "BOLD nature."
+        RETURN 5
+    ELIF $ocr_nature == "DOCILE nature."
+        RETURN 6
+    ELIF $ocr_nature == "RELAXED nature."
+        RETURN 7
+    ELIF $ocr_nature == "IMPISH nature."
+        RETURN 8
+    ELIF $ocr_nature == "LAX nature."
+        RETURN 9
+    ELIF $ocr_nature == "TIMID nature."
+        RETURN 10
+    ELIF $ocr_nature == "HASTY nature."
+        RETURN 11
+    ELIF $ocr_nature == "SERIOUS nature."
+        RETURN 12
+    ELIF $ocr_nature == "JOLLY nature."
+        RETURN 13
+    ELIF $ocr_nature == "NAIVE nature."
+        RETURN 14
+    ELIF $ocr_nature == "MODEST nature."
+        RETURN 15
+    ELIF $ocr_nature == "MILD nature."
+        RETURN 16
+    ELIF $ocr_nature == "QUIET nature."
+        RETURN 17
+    ELIF $ocr_nature == "BASHFUL nature."
+        RETURN 18
+    ELIF $ocr_nature == "RASH nature."
+        RETURN 19
+    ELIF $ocr_nature == "CALM nature."
+        RETURN 20
+    ELIF $ocr_nature == "GENTLE nature."
+        RETURN 21
+    ELIF $ocr_nature == "SASSY nature."
+        RETURN 22
+    ELIF $ocr_nature == "CAREFUL nature."
+        RETURN 23
+    ELIF $ocr_nature == "QUIRKY nature."
+        RETURN 24
+    ENDIF
+
+    PRINT "FRLG_STAGE|BEGIN|wild.data.nature|wild.data.nature|0|lib/21_识图_数据读取.ecs|识别性格|lib21.read.nature|manual_prepare_then_restart|OR;性格Hardy.IL:>=:" & $识图阈值 & ",性格Lonely.IL:>=:" & $识图阈值 & ",性格Brave.IL:>=:" & $识图阈值 & ",性格Adamant.IL:>=:" & $识图阈值 & ",性格Naughty.IL:>=:" & $识图阈值 & ",性格Bold.IL:>=:" & $识图阈值 & ",性格Docile.IL:>=:" & $识图阈值 & ",性格Relaxed.IL:>=:" & $识图阈值 & ",性格Impish.IL:>=:" & $识图阈值 & ",性格Lax.IL:>=:" & $识图阈值 & ",性格Timid.IL:>=:" & $识图阈值 & ",性格Hasty.IL:>=:" & $识图阈值 & ",性格Serious.IL:>=:" & $识图阈值 & ",性格Jolly.IL:>=:" & $识图阈值 & ",性格Naive.IL:>=:" & $识图阈值 & ",性格Modest.IL:>=:" & $识图阈值 & ",性格Mild.IL:>=:" & $识图阈值 & ",性格Quiet.IL:>=:" & $识图阈值 & ",性格Bashful.IL:>=:" & $识图阈值 & ",性格Rash.IL:>=:" & $识图阈值 & ",性格Calm.IL:>=:" & $识图阈值 & ",性格Gentle.IL:>=:" & $识图阈值 & ",性格Sassy.IL:>=:" & $识图阈值 & ",性格Careful.IL:>=:" & $识图阈值 & ",性格Quirky.IL:>=:" & $识图阈值 & "|!"
+    $s = @性格Hardy
+    IF $s > $best
+        $best = $s
+        $nature = 0
+    ENDIF
+
+    $s = @性格Lonely
+    IF $s > $best
+        $best = $s
+        $nature = 1
+    ENDIF
+
+    $s = @性格Brave
+    IF $s > $best
+        $best = $s
+        $nature = 2
+    ENDIF
+
+    $s = @性格Adamant
+    IF $s > $best
+        $best = $s
+        $nature = 3
+    ENDIF
+
+    $s = @性格Naughty
+    IF $s > $best
+        $best = $s
+        $nature = 4
+    ENDIF
+
+    $s = @性格Bold
+    IF $s > $best
+        $best = $s
+        $nature = 5
+    ENDIF
+
+    $s = @性格Docile
+    IF $s > $best
+        $best = $s
+        $nature = 6
+    ENDIF
+
+    $s = @性格Relaxed
+    IF $s > $best
+        $best = $s
+        $nature = 7
+    ENDIF
+
+    $s = @性格Impish
+    IF $s > $best
+        $best = $s
+        $nature = 8
+    ENDIF
+
+    $s = @性格Lax
+    IF $s > $best
+        $best = $s
+        $nature = 9
+    ENDIF
+
+    $s = @性格Timid
+    IF $s > $best
+        $best = $s
+        $nature = 10
+    ENDIF
+
+    $s = @性格Hasty
+    IF $s > $best
+        $best = $s
+        $nature = 11
+    ENDIF
+
+    $s = @性格Serious
+    IF $s > $best
+        $best = $s
+        $nature = 12
+    ENDIF
+
+    $s = @性格Jolly
+    IF $s > $best
+        $best = $s
+        $nature = 13
+    ENDIF
+
+    $s = @性格Naive
+    IF $s > $best
+        $best = $s
+        $nature = 14
+    ENDIF
+
+    $s = @性格Modest
+    IF $s > $best
+        $best = $s
+        $nature = 15
+    ENDIF
+
+    $s = @性格Mild
+    IF $s > $best
+        $best = $s
+        $nature = 16
+    ENDIF
+
+    $s = @性格Quiet
+    IF $s > $best
+        $best = $s
+        $nature = 17
+    ENDIF
+
+    $s = @性格Bashful
+    IF $s > $best
+        $best = $s
+        $nature = 18
+    ENDIF
+
+    $s = @性格Rash
+    IF $s > $best
+        $best = $s
+        $nature = 19
+    ENDIF
+
+    $s = @性格Calm
+    IF $s > $best
+        $best = $s
+        $nature = 20
+    ENDIF
+
+    $s = @性格Gentle
+    IF $s > $best
+        $best = $s
+        $nature = 21
+    ENDIF
+
+    $s = @性格Sassy
+    IF $s > $best
+        $best = $s
+        $nature = 22
+    ENDIF
+
+    $s = @性格Careful
+    IF $s > $best
+        $best = $s
+        $nature = 23
+    ENDIF
+
+    $s = @性格Quirky
+    IF $s > $best
+        $best = $s
+        $nature = 24
+    ENDIF
+
+    IF $best < $识图阈值
+    PRINT "FRLG_STAGE|FAIL|wild.data.nature|性格OCR及候选标签均未达到阈值|!"
+        PRINT 性格识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.nature|!"
+    RETURN $nature
+ENDFUNC
+
+# ==================================================
+# 等级识别
+#
+# Lv5:
+#   LV_十位_5 最大
+#   LV_个位_空 最大
+#   返回 5
+#
+# Lv15:
+#   LV_十位_1 最大
+#   LV_个位_5 最大
+#   返回 15
+# ==================================================
+
+FUNC 识别LV($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.level|wild.data.level|0|lib/21_识图_数据读取.ecs|识别LV|lib21.read.level|manual_prepare_then_restart|OR;LV_十位_1.IL:>=:" & $识图阈值 & ",LV_十位_2.IL:>=:" & $识图阈值 & ",LV_十位_3.IL:>=:" & $识图阈值 & ",LV_十位_4.IL:>=:" & $识图阈值 & ",LV_十位_5.IL:>=:" & $识图阈值 & ",LV_十位_6.IL:>=:" & $识图阈值 & ",LV_十位_7.IL:>=:" & $识图阈值 & ",LV_十位_8.IL:>=:" & $识图阈值 & ",LV_十位_9.IL:>=:" & $识图阈值 & ",LV_个位_0.IL:>=:" & $识图阈值 & ",LV_个位_1.IL:>=:" & $识图阈值 & ",LV_个位_2.IL:>=:" & $识图阈值 & ",LV_个位_3.IL:>=:" & $识图阈值 & ",LV_个位_4.IL:>=:" & $识图阈值 & ",LV_个位_5.IL:>=:" & $识图阈值 & ",LV_个位_6.IL:>=:" & $识图阈值 & ",LV_个位_7.IL:>=:" & $识图阈值 & ",LV_个位_8.IL:>=:" & $识图阈值 & ",LV_个位_9.IL:>=:" & $识图阈值 & ",LV_个位_空.IL:>=:" & $识图阈值 & "|!"
+    $十 = 识别LV十位($识图阈值)
+    $个 = 识别LV个位($识图阈值)
+
+    IF $十 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.level|等级十位或个位候选低于阈值|!"
+        RETURN -1
+    ENDIF
+
+    # -2 表示 LV 个位/空整体识别失败
+    IF $个 == -2
+    PRINT "FRLG_STAGE|FAIL|wild.data.level|等级十位或个位候选低于阈值|!"
+        RETURN -1
+    ENDIF
+
+    # -1 表示 LV_个位_空 命中，即个位数等级
+    IF $个 == -1
+    PRINT "FRLG_STAGE|END|wild.data.level|!"
+        RETURN $十
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.level|!"
+    RETURN $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别LV十位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @LV_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @LV_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @LV_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @LV_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @LV_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @LV_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @LV_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @LV_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @LV_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT LV十位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# 返回：
+#   0~9 = 个位数字
+#   -1 = LV_个位_空，说明个位数等级
+#   -2 = 识别失败
+FUNC 识别LV个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -2
+
+    $s = @LV_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @LV_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @LV_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @LV_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @LV_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @LV_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @LV_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @LV_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @LV_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @LV_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    $s = @LV_个位_空
+    IF $s > $best
+        $best = $s
+        $digit = -1
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT LV个位/空识别失败，最高匹配度: & $best
+        RETURN -2
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# ==================================================
+# HP 识别
+#
+# 百位低于阈值 -> 0
+# 十位低于阈值 -> 0
+# 个位低于阈值 -> 失败
+# ==================================================
+
+FUNC 识别HP($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.hp|wild.data.hp|0|lib/21_识图_数据读取.ecs|识别HP|lib21.read.hp|manual_prepare_then_restart|OR;HP_个位_0.IL:>=:" & $识图阈值 & ",HP_个位_1.IL:>=:" & $识图阈值 & ",HP_个位_2.IL:>=:" & $识图阈值 & ",HP_个位_3.IL:>=:" & $识图阈值 & ",HP_个位_4.IL:>=:" & $识图阈值 & ",HP_个位_5.IL:>=:" & $识图阈值 & ",HP_个位_6.IL:>=:" & $识图阈值 & ",HP_个位_7.IL:>=:" & $识图阈值 & ",HP_个位_8.IL:>=:" & $识图阈值 & ",HP_个位_9.IL:>=:" & $识图阈值 & "|!"
+    $百 = 识别HP百位($识图阈值)
+    $十 = 识别HP十位($识图阈值)
+    $个 = 识别HP个位($识图阈值)
+
+    IF $个 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.hp|HP个位数字候选低于阈值|!"
+        PRINT HP识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.hp|!"
+    RETURN $百 * 100 + $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别HP百位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @HP_百位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @HP_百位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @HP_百位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @HP_百位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别HP十位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @HP_十位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @HP_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @HP_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @HP_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @HP_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @HP_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @HP_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @HP_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @HP_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @HP_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别HP个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @HP_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @HP_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @HP_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @HP_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @HP_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @HP_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @HP_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @HP_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @HP_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @HP_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT HP个位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# ==================================================
+# ATK 识别
+#
+# 百位低于阈值 -> 0
+# 十位低于阈值 -> 0
+# 个位低于阈值 -> 失败
+# ==================================================
+
+FUNC 识别ATK($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.atk|wild.data.atk|0|lib/21_识图_数据读取.ecs|识别ATK|lib21.read.atk|manual_prepare_then_restart|OR;ATK_个位_0.IL:>=:" & $识图阈值 & ",ATK_个位_1.IL:>=:" & $识图阈值 & ",ATK_个位_2.IL:>=:" & $识图阈值 & ",ATK_个位_3.IL:>=:" & $识图阈值 & ",ATK_个位_4.IL:>=:" & $识图阈值 & ",ATK_个位_5.IL:>=:" & $识图阈值 & ",ATK_个位_6.IL:>=:" & $识图阈值 & ",ATK_个位_7.IL:>=:" & $识图阈值 & ",ATK_个位_8.IL:>=:" & $识图阈值 & ",ATK_个位_9.IL:>=:" & $识图阈值 & "|!"
+    $百 = 识别ATK百位($识图阈值)
+    $十 = 识别ATK十位($识图阈值)
+    $个 = 识别ATK个位($识图阈值)
+
+    IF $个 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.atk|ATK个位数字候选低于阈值|!"
+        PRINT ATK识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.atk|!"
+    RETURN $百 * 100 + $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别ATK百位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @ATK_百位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @ATK_百位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @ATK_百位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别ATK十位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @ATK_十位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @ATK_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @ATK_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @ATK_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @ATK_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @ATK_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @ATK_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @ATK_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @ATK_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @ATK_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别ATK个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @ATK_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @ATK_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @ATK_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @ATK_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @ATK_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @ATK_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @ATK_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @ATK_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @ATK_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @ATK_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT ATK个位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# ==================================================
+# DEF 识别
+#
+# 百位低于阈值 -> 0
+# 十位低于阈值 -> 0
+# 个位低于阈值 -> 失败
+# ==================================================
+
+FUNC 识别DEF($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.def|wild.data.def|0|lib/21_识图_数据读取.ecs|识别DEF|lib21.read.def|manual_prepare_then_restart|OR;DEF_个位_0.IL:>=:" & $识图阈值 & ",DEF_个位_1.IL:>=:" & $识图阈值 & ",DEF_个位_2.IL:>=:" & $识图阈值 & ",DEF_个位_3.IL:>=:" & $识图阈值 & ",DEF_个位_4.IL:>=:" & $识图阈值 & ",DEF_个位_5.IL:>=:" & $识图阈值 & ",DEF_个位_6.IL:>=:" & $识图阈值 & ",DEF_个位_7.IL:>=:" & $识图阈值 & ",DEF_个位_8.IL:>=:" & $识图阈值 & ",DEF_个位_9.IL:>=:" & $识图阈值 & "|!"
+    $百 = 识别DEF百位($识图阈值)
+    $十 = 识别DEF十位($识图阈值)
+    $个 = 识别DEF个位($识图阈值)
+
+    IF $个 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.def|DEF个位数字候选低于阈值|!"
+        PRINT DEF识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.def|!"
+    RETURN $百 * 100 + $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别DEF百位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @DEF_百位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @DEF_百位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @DEF_百位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别DEF十位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @DEF_十位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @DEF_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @DEF_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @DEF_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @DEF_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @DEF_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @DEF_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @DEF_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @DEF_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @DEF_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别DEF个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @DEF_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @DEF_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @DEF_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @DEF_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @DEF_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @DEF_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @DEF_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @DEF_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @DEF_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @DEF_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT DEF个位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# ==================================================
+# SPA 识别
+#
+# 百位低于阈值 -> 0
+# 十位低于阈值 -> 0
+# 个位低于阈值 -> 失败
+# ==================================================
+
+FUNC 识别SPA($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.spa|wild.data.spa|0|lib/21_识图_数据读取.ecs|识别SPA|lib21.read.spa|manual_prepare_then_restart|OR;SPA_个位_0.IL:>=:" & $识图阈值 & ",SPA_个位_1.IL:>=:" & $识图阈值 & ",SPA_个位_2.IL:>=:" & $识图阈值 & ",SPA_个位_3.IL:>=:" & $识图阈值 & ",SPA_个位_4.IL:>=:" & $识图阈值 & ",SPA_个位_5.IL:>=:" & $识图阈值 & ",SPA_个位_6.IL:>=:" & $识图阈值 & ",SPA_个位_7.IL:>=:" & $识图阈值 & ",SPA_个位_8.IL:>=:" & $识图阈值 & ",SPA_个位_9.IL:>=:" & $识图阈值 & "|!"
+    $百 = 识别SPA百位($识图阈值)
+    $十 = 识别SPA十位($识图阈值)
+    $个 = 识别SPA个位($识图阈值)
+
+    IF $个 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.spa|SPA个位数字候选低于阈值|!"
+        PRINT SPA识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.spa|!"
+    RETURN $百 * 100 + $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别SPA百位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @SPA_百位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPA_百位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPA_百位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别SPA十位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @SPA_十位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @SPA_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPA_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPA_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @SPA_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @SPA_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @SPA_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @SPA_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @SPA_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @SPA_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别SPA个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @SPA_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @SPA_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPA_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPA_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @SPA_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @SPA_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @SPA_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @SPA_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @SPA_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @SPA_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT SPA个位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# ==================================================
+# SPD 识别
+#
+# 百位低于阈值 -> 0
+# 十位低于阈值 -> 0
+# 个位低于阈值 -> 失败
+# ==================================================
+
+FUNC 识别SPD($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.spd|wild.data.spd|0|lib/21_识图_数据读取.ecs|识别SPD|lib21.read.spd|manual_prepare_then_restart|OR;SPD_个位_0.IL:>=:" & $识图阈值 & ",SPD_个位_1.IL:>=:" & $识图阈值 & ",SPD_个位_2.IL:>=:" & $识图阈值 & ",SPD_个位_3.IL:>=:" & $识图阈值 & ",SPD_个位_4.IL:>=:" & $识图阈值 & ",SPD_个位_5.IL:>=:" & $识图阈值 & ",SPD_个位_6.IL:>=:" & $识图阈值 & ",SPD_个位_7.IL:>=:" & $识图阈值 & ",SPD_个位_8.IL:>=:" & $识图阈值 & ",SPD_个位_9.IL:>=:" & $识图阈值 & "|!"
+    $百 = 识别SPD百位($识图阈值)
+    $十 = 识别SPD十位($识图阈值)
+    $个 = 识别SPD个位($识图阈值)
+
+    IF $个 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.spd|SPD个位数字候选低于阈值|!"
+        PRINT SPD识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.spd|!"
+    RETURN $百 * 100 + $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别SPD百位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @SPD_百位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPD_百位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPD_百位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别SPD十位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @SPD_十位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @SPD_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPD_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPD_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @SPD_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @SPD_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @SPD_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @SPD_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @SPD_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @SPD_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别SPD个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @SPD_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @SPD_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPD_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPD_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @SPD_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @SPD_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @SPD_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @SPD_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @SPD_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @SPD_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT SPD个位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+# ==================================================
+# SPE 识别
+#
+# 百位低于阈值 -> 0
+# 十位低于阈值 -> 0
+# 个位低于阈值 -> 失败
+# ==================================================
+
+FUNC 识别SPE($识图阈值: INT): INT
+    PRINT "FRLG_STAGE|BEGIN|wild.data.spe|wild.data.spe|0|lib/21_识图_数据读取.ecs|识别SPE|lib21.read.spe|manual_prepare_then_restart|OR;SPE_个位_0.IL:>=:" & $识图阈值 & ",SPE_个位_1.IL:>=:" & $识图阈值 & ",SPE_个位_2.IL:>=:" & $识图阈值 & ",SPE_个位_3.IL:>=:" & $识图阈值 & ",SPE_个位_4.IL:>=:" & $识图阈值 & ",SPE_个位_5.IL:>=:" & $识图阈值 & ",SPE_个位_6.IL:>=:" & $识图阈值 & ",SPE_个位_7.IL:>=:" & $识图阈值 & ",SPE_个位_8.IL:>=:" & $识图阈值 & ",SPE_个位_9.IL:>=:" & $识图阈值 & "|!"
+    $百 = 识别SPE百位($识图阈值)
+    $十 = 识别SPE十位($识图阈值)
+    $个 = 识别SPE个位($识图阈值)
+
+    IF $个 < 0
+    PRINT "FRLG_STAGE|FAIL|wild.data.spe|SPE个位数字候选低于阈值|!"
+        PRINT SPE识别失败
+        RETURN -1
+    ENDIF
+
+    PRINT "FRLG_STAGE|END|wild.data.spe|!"
+    RETURN $百 * 100 + $十 * 10 + $个
+ENDFUNC
+
+FUNC 识别SPE百位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @SPE_百位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPE_百位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPE_百位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别SPE十位($识图阈值: INT): INT
+    $best = -1
+    $digit = 0
+
+    $s = @SPE_十位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @SPE_十位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPE_十位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPE_十位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @SPE_十位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @SPE_十位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @SPE_十位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @SPE_十位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @SPE_十位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @SPE_十位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        RETURN 0
+    ENDIF
+
+    RETURN $digit
+ENDFUNC
+
+FUNC 识别SPE个位($识图阈值: INT): INT
+    $best = -1
+    $digit = -1
+
+    $s = @SPE_个位_0
+    IF $s > $best
+        $best = $s
+        $digit = 0
+    ENDIF
+
+    $s = @SPE_个位_1
+    IF $s > $best
+        $best = $s
+        $digit = 1
+    ENDIF
+
+    $s = @SPE_个位_2
+    IF $s > $best
+        $best = $s
+        $digit = 2
+    ENDIF
+
+    $s = @SPE_个位_3
+    IF $s > $best
+        $best = $s
+        $digit = 3
+    ENDIF
+
+    $s = @SPE_个位_4
+    IF $s > $best
+        $best = $s
+        $digit = 4
+    ENDIF
+
+    $s = @SPE_个位_5
+    IF $s > $best
+        $best = $s
+        $digit = 5
+    ENDIF
+
+    $s = @SPE_个位_6
+    IF $s > $best
+        $best = $s
+        $digit = 6
+    ENDIF
+
+    $s = @SPE_个位_7
+    IF $s > $best
+        $best = $s
+        $digit = 7
+    ENDIF
+
+    $s = @SPE_个位_8
+    IF $s > $best
+        $best = $s
+        $digit = 8
+    ENDIF
+
+    $s = @SPE_个位_9
+    IF $s > $best
+        $best = $s
+        $digit = 9
+    ENDIF
+
+    IF $best < $识图阈值
+        PRINT SPE个位识别失败，最高匹配度: & $best
+        RETURN -1
+    ENDIF
+
+    RETURN $digit
+ENDFUNC

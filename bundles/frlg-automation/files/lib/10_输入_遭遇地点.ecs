@@ -1,0 +1,1522 @@
+# ==================================================
+# 03_地点数据.ecs
+#
+# 自动生成。
+# 规范输出名：当前TenLines简体中文地点名（网站版本 2026-07-29）。
+# 兼容输入：保留其它中文译名、PokéAPI slug及英文空格写法。
+#
+# 重要：
+#   本文件的地点编号必须和 04_目标组合数据.ecs 配套使用。
+#   请用相同参数生成 03 和 04：
+#       --version
+#       --start
+#       --end
+#
+# 本次生成参数：
+#   version = both
+#   start   = 1
+#   end     = 386
+#   目标组合数量 = 1992
+#   地点数量 = 135
+#
+# 函数：
+#   规范化遭遇地点($宝可梦遭遇地点)
+#   目标遭遇地点名称($遭遇地点)
+#
+# 注意：
+#   如果其它 ECS 文件里也定义了同名函数，
+#   请只保留本文件这一份，避免重复定义。
+# ==================================================
+
+FUNC 规范化遭遇地点($宝可梦遭遇地点: STRING): INT
+    IF $宝可梦遭遇地点 == "pallet town"
+        RETURN 1
+    ELIF $宝可梦遭遇地点 == "真新镇"
+        RETURN 1
+    ELIF $宝可梦遭遇地点 == "fighting dojo"
+        RETURN 2
+    ELIF $宝可梦遭遇地点 == "格斗道场"
+        RETURN 2
+    ELIF $宝可梦遭遇地点 == "silph co"
+        RETURN 3
+    ELIF $宝可梦遭遇地点 == "西尔佛公司"
+        RETURN 3
+    ELIF $宝可梦遭遇地点 == "celadon mansion"
+        RETURN 4
+    ELIF $宝可梦遭遇地点 == "玉虹公寓"
+        RETURN 4
+    ELIF $宝可梦遭遇地点 == "pokemon lab"
+        RETURN 5
+    ELIF $宝可梦遭遇地点 == "宝可梦研究所"
+        RETURN 5
+    ELIF $宝可梦遭遇地点 == "12号道路"
+        RETURN 6
+    ELIF $宝可梦遭遇地点 == "kanto route 12"
+        RETURN 6
+    ELIF $宝可梦遭遇地点 == "seafoam islands"
+        RETURN 7
+    ELIF $宝可梦遭遇地点 == "双子岛"
+        RETURN 7
+    ELIF $宝可梦遭遇地点 == "power plant"
+        RETURN 8
+    ELIF $宝可梦遭遇地点 == "无人发电厂"
+        RETURN 8
+    ELIF $宝可梦遭遇地点 == "mt ember"
+        RETURN 9
+    ELIF $宝可梦遭遇地点 == "灯火山（底部）"
+        RETURN 9
+    ELIF $宝可梦遭遇地点 == "cerulean cave"
+        RETURN 10
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟"
+        RETURN 10
+    ELIF $宝可梦遭遇地点 == "navel rock"
+        RETURN 11
+    ELIF $宝可梦遭遇地点 == "肚脐岩"
+        RETURN 11
+    ELIF $宝可梦遭遇地点 == "birth island"
+        RETURN 12
+    ELIF $宝可梦遭遇地点 == "诞生之岛"
+        RETURN 12
+    ELIF $宝可梦遭遇地点 == "kanto"
+        RETURN 13
+    ELIF $宝可梦遭遇地点 == "关都"
+        RETURN 13
+    ELIF $宝可梦遭遇地点 == "2号道路"
+        RETURN 14
+    ELIF $宝可梦遭遇地点 == "kanto route 2 south towards viridian city"
+        RETURN 14
+    ELIF $宝可梦遭遇地点 == "24号道路"
+        RETURN 15
+    ELIF $宝可梦遭遇地点 == "kanto route 24"
+        RETURN 15
+    ELIF $宝可梦遭遇地点 == "kanto route 24 area"
+        RETURN 15
+    ELIF $宝可梦遭遇地点 == "25号道路"
+        RETURN 16
+    ELIF $宝可梦遭遇地点 == "kanto route 25"
+        RETURN 16
+    ELIF $宝可梦遭遇地点 == "kanto route 25 area"
+        RETURN 16
+    ELIF $宝可梦遭遇地点 == "viridian forest"
+        RETURN 17
+    ELIF $宝可梦遭遇地点 == "viridian forest area"
+        RETURN 17
+    ELIF $宝可梦遭遇地点 == "常青森林"
+        RETURN 17
+    ELIF $宝可梦遭遇地点 == "pattern bush"
+        RETURN 18
+    ELIF $宝可梦遭遇地点 == "pattern bush area"
+        RETURN 18
+    ELIF $宝可梦遭遇地点 == "标志之林"
+        RETURN 18
+    ELIF $宝可梦遭遇地点 == "1号道路"
+        RETURN 19
+    ELIF $宝可梦遭遇地点 == "kanto route 1"
+        RETURN 19
+    ELIF $宝可梦遭遇地点 == "kanto route 1 area"
+        RETURN 19
+    ELIF $宝可梦遭遇地点 == "3号道路"
+        RETURN 20
+    ELIF $宝可梦遭遇地点 == "kanto route 3"
+        RETURN 20
+    ELIF $宝可梦遭遇地点 == "kanto route 3 area"
+        RETURN 20
+    ELIF $宝可梦遭遇地点 == "5号道路"
+        RETURN 21
+    ELIF $宝可梦遭遇地点 == "kanto route 5"
+        RETURN 21
+    ELIF $宝可梦遭遇地点 == "kanto route 5 area"
+        RETURN 21
+    ELIF $宝可梦遭遇地点 == "6号道路"
+        RETURN 22
+    ELIF $宝可梦遭遇地点 == "kanto route 6"
+        RETURN 22
+    ELIF $宝可梦遭遇地点 == "kanto route 6 area"
+        RETURN 22
+    ELIF $宝可梦遭遇地点 == "7号道路"
+        RETURN 23
+    ELIF $宝可梦遭遇地点 == "kanto route 7"
+        RETURN 23
+    ELIF $宝可梦遭遇地点 == "kanto route 7 area"
+        RETURN 23
+    ELIF $宝可梦遭遇地点 == "8号道路"
+        RETURN 24
+    ELIF $宝可梦遭遇地点 == "kanto route 8"
+        RETURN 24
+    ELIF $宝可梦遭遇地点 == "kanto route 8 area"
+        RETURN 24
+    ELIF $宝可梦遭遇地点 == "13号道路"
+        RETURN 25
+    ELIF $宝可梦遭遇地点 == "kanto route 13"
+        RETURN 25
+    ELIF $宝可梦遭遇地点 == "kanto route 13 area"
+        RETURN 25
+    ELIF $宝可梦遭遇地点 == "14号道路"
+        RETURN 26
+    ELIF $宝可梦遭遇地点 == "kanto route 14"
+        RETURN 26
+    ELIF $宝可梦遭遇地点 == "kanto route 14 area"
+        RETURN 26
+    ELIF $宝可梦遭遇地点 == "15号道路"
+        RETURN 27
+    ELIF $宝可梦遭遇地点 == "kanto route 15"
+        RETURN 27
+    ELIF $宝可梦遭遇地点 == "kanto route 15 area"
+        RETURN 27
+    ELIF $宝可梦遭遇地点 == "berry forest"
+        RETURN 28
+    ELIF $宝可梦遭遇地点 == "berry forest area"
+        RETURN 28
+    ELIF $宝可梦遭遇地点 == "树果森林"
+        RETURN 28
+    ELIF $宝可梦遭遇地点 == "bond bridge"
+        RETURN 29
+    ELIF $宝可梦遭遇地点 == "bond bridge area"
+        RETURN 29
+    ELIF $宝可梦遭遇地点 == "索桥"
+        RETURN 29
+    ELIF $宝可梦遭遇地点 == "five isle meadow"
+        RETURN 30
+    ELIF $宝可梦遭遇地点 == "five isle meadow area"
+        RETURN 30
+    ELIF $宝可梦遭遇地点 == "第5岛空地"
+        RETURN 30
+    ELIF $宝可梦遭遇地点 == "4号道路"
+        RETURN 31
+    ELIF $宝可梦遭遇地点 == "kanto route 4"
+        RETURN 31
+    ELIF $宝可梦遭遇地点 == "kanto route 4 area"
+        RETURN 31
+    ELIF $宝可梦遭遇地点 == "9号道路"
+        RETURN 32
+    ELIF $宝可梦遭遇地点 == "kanto route 9"
+        RETURN 32
+    ELIF $宝可梦遭遇地点 == "kanto route 9 area"
+        RETURN 32
+    ELIF $宝可梦遭遇地点 == "16号道路"
+        RETURN 33
+    ELIF $宝可梦遭遇地点 == "kanto route 16"
+        RETURN 33
+    ELIF $宝可梦遭遇地点 == "kanto route 16 area"
+        RETURN 33
+    ELIF $宝可梦遭遇地点 == "17号道路"
+        RETURN 34
+    ELIF $宝可梦遭遇地点 == "kanto route 17"
+        RETURN 34
+    ELIF $宝可梦遭遇地点 == "kanto route 17 area"
+        RETURN 34
+    ELIF $宝可梦遭遇地点 == "18号道路"
+        RETURN 35
+    ELIF $宝可梦遭遇地点 == "kanto route 18"
+        RETURN 35
+    ELIF $宝可梦遭遇地点 == "kanto route 18 area"
+        RETURN 35
+    ELIF $宝可梦遭遇地点 == "22号道路"
+        RETURN 36
+    ELIF $宝可梦遭遇地点 == "kanto route 22"
+        RETURN 36
+    ELIF $宝可梦遭遇地点 == "kanto route 22 area"
+        RETURN 36
+    ELIF $宝可梦遭遇地点 == "pokemon mansion 1f"
+        RETURN 37
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 1f"
+        RETURN 37
+    ELIF $宝可梦遭遇地点 == "pokemon mansion 2f"
+        RETURN 38
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 2f"
+        RETURN 38
+    ELIF $宝可梦遭遇地点 == "pokemon mansion 3f"
+        RETURN 39
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 3f"
+        RETURN 39
+    ELIF $宝可梦遭遇地点 == "pokemon mansion b1f"
+        RETURN 40
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 b1f"
+        RETURN 40
+    ELIF $宝可梦遭遇地点 == "10号道路"
+        RETURN 41
+    ELIF $宝可梦遭遇地点 == "kanto route 10"
+        RETURN 41
+    ELIF $宝可梦遭遇地点 == "kanto route 10 area"
+        RETURN 41
+    ELIF $宝可梦遭遇地点 == "11号道路"
+        RETURN 42
+    ELIF $宝可梦遭遇地点 == "kanto route 11"
+        RETURN 42
+    ELIF $宝可梦遭遇地点 == "kanto route 11 area"
+        RETURN 42
+    ELIF $宝可梦遭遇地点 == "23号道路"
+        RETURN 43
+    ELIF $宝可梦遭遇地点 == "kanto route 23"
+        RETURN 43
+    ELIF $宝可梦遭遇地点 == "kanto route 23 area"
+        RETURN 43
+    ELIF $宝可梦遭遇地点 == "kindle road"
+        RETURN 44
+    ELIF $宝可梦遭遇地点 == "kindle road area"
+        RETURN 44
+    ELIF $宝可梦遭遇地点 == "热气之路"
+        RETURN 44
+    ELIF $宝可梦遭遇地点 == "treasure beach"
+        RETURN 45
+    ELIF $宝可梦遭遇地点 == "treasure beach area"
+        RETURN 45
+    ELIF $宝可梦遭遇地点 == "宝物海滩"
+        RETURN 45
+    ELIF $宝可梦遭遇地点 == "cape brink"
+        RETURN 46
+    ELIF $宝可梦遭遇地点 == "cape brink area"
+        RETURN 46
+    ELIF $宝可梦遭遇地点 == "边缘海岬"
+        RETURN 46
+    ELIF $宝可梦遭遇地点 == "water path"
+        RETURN 47
+    ELIF $宝可梦遭遇地点 == "water path area"
+        RETURN 47
+    ELIF $宝可梦遭遇地点 == "水之步道"
+        RETURN 47
+    ELIF $宝可梦遭遇地点 == "ruin valley"
+        RETURN 48
+    ELIF $宝可梦遭遇地点 == "ruin valley area"
+        RETURN 48
+    ELIF $宝可梦遭遇地点 == "遗迹山谷"
+        RETURN 48
+    ELIF $宝可梦遭遇地点 == "canyon entrance"
+        RETURN 49
+    ELIF $宝可梦遭遇地点 == "canyon entrance area"
+        RETURN 49
+    ELIF $宝可梦遭遇地点 == "溪谷入口"
+        RETURN 49
+    ELIF $宝可梦遭遇地点 == "sevault canyon"
+        RETURN 50
+    ELIF $宝可梦遭遇地点 == "sevault canyon area"
+        RETURN 50
+    ELIF $宝可梦遭遇地点 == "七宝溪谷"
+        RETURN 50
+    ELIF $宝可梦遭遇地点 == "kanto victory road 2 1f"
+        RETURN 51
+    ELIF $宝可梦遭遇地点 == "冠军之路 1f"
+        RETURN 51
+    ELIF $宝可梦遭遇地点 == "kanto victory road 2 2f"
+        RETURN 52
+    ELIF $宝可梦遭遇地点 == "冠军之路 2f"
+        RETURN 52
+    ELIF $宝可梦遭遇地点 == "kanto victory road 2 3f"
+        RETURN 53
+    ELIF $宝可梦遭遇地点 == "冠军之路 3f"
+        RETURN 53
+    ELIF $宝可梦遭遇地点 == "kanto safari zone middle"
+        RETURN 54
+    ELIF $宝可梦遭遇地点 == "狩猎地带（入口）"
+        RETURN 54
+    ELIF $宝可梦遭遇地点 == "kanto safari zone area 1 east"
+        RETURN 55
+    ELIF $宝可梦遭遇地点 == "狩猎地带东区（第1区）"
+        RETURN 55
+    ELIF $宝可梦遭遇地点 == "kanto safari zone area 2 north"
+        RETURN 56
+    ELIF $宝可梦遭遇地点 == "狩猎地带北区（第2区）"
+        RETURN 56
+    ELIF $宝可梦遭遇地点 == "kanto safari zone area 3 west"
+        RETURN 57
+    ELIF $宝可梦遭遇地点 == "狩猎地带西区（第3区）"
+        RETURN 57
+    ELIF $宝可梦遭遇地点 == "mt moon 1f"
+        RETURN 58
+    ELIF $宝可梦遭遇地点 == "月见山 1f"
+        RETURN 58
+    ELIF $宝可梦遭遇地点 == "mt moon b2f"
+        RETURN 59
+    ELIF $宝可梦遭遇地点 == "月见山 b2f"
+        RETURN 59
+    ELIF $宝可梦遭遇地点 == "seafoam islands 1f"
+        RETURN 60
+    ELIF $宝可梦遭遇地点 == "双子岛 1f"
+        RETURN 60
+    ELIF $宝可梦遭遇地点 == "seafoam islands b1f"
+        RETURN 61
+    ELIF $宝可梦遭遇地点 == "双子岛 b1f"
+        RETURN 61
+    ELIF $宝可梦遭遇地点 == "seafoam islands b2f"
+        RETURN 62
+    ELIF $宝可梦遭遇地点 == "双子岛 b2f"
+        RETURN 62
+    ELIF $宝可梦遭遇地点 == "seafoam islands b3f"
+        RETURN 63
+    ELIF $宝可梦遭遇地点 == "双子岛 b3f"
+        RETURN 63
+    ELIF $宝可梦遭遇地点 == "rock tunnel 1f"
+        RETURN 64
+    ELIF $宝可梦遭遇地点 == "岩山隧道 1f"
+        RETURN 64
+    ELIF $宝可梦遭遇地点 == "rock tunnel b1f"
+        RETURN 65
+    ELIF $宝可梦遭遇地点 == "岩山隧道 b1f"
+        RETURN 65
+    ELIF $宝可梦遭遇地点 == "icefall cave entrance"
+        RETURN 66
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟"
+        RETURN 66
+    ELIF $宝可梦遭遇地点 == "icefall cave 1f"
+        RETURN 67
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟 1f"
+        RETURN 67
+    ELIF $宝可梦遭遇地点 == "icefall cave b1f"
+        RETURN 68
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟 b1f"
+        RETURN 68
+    ELIF $宝可梦遭遇地点 == "icefall cave waterfall"
+        RETURN 69
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟（最深处）"
+        RETURN 69
+    ELIF $宝可梦遭遇地点 == "lost cave room 1"
+        RETURN 70
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 70
+    ELIF $宝可梦遭遇地点 == "lost cave room 2"
+        RETURN 71
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 71
+    ELIF $宝可梦遭遇地点 == "lost cave room 3"
+        RETURN 72
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 72
+    ELIF $宝可梦遭遇地点 == "lost cave room 4"
+        RETURN 73
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 73
+    ELIF $宝可梦遭遇地点 == "lost cave room 5"
+        RETURN 74
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 74
+    ELIF $宝可梦遭遇地点 == "lost cave room 6"
+        RETURN 75
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 75
+    ELIF $宝可梦遭遇地点 == "lost cave room 7"
+        RETURN 76
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 76
+    ELIF $宝可梦遭遇地点 == "lost cave room 8"
+        RETURN 77
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 77
+    ELIF $宝可梦遭遇地点 == "lost cave room 9"
+        RETURN 78
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 78
+    ELIF $宝可梦遭遇地点 == "lost cave room 10"
+        RETURN 79
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 79
+    ELIF $宝可梦遭遇地点 == "lost cave item rooms"
+        RETURN 80
+    ELIF $宝可梦遭遇地点 == "不归之穴（有物品的房间）"
+        RETURN 80
+    ELIF $宝可梦遭遇地点 == "kanto altering cave a"
+        RETURN 81
+    ELIF $宝可梦遭遇地点 == "变化洞窟 a"
+        RETURN 81
+    ELIF $宝可梦遭遇地点 == "seafoam islands b4f"
+        RETURN 82
+    ELIF $宝可梦遭遇地点 == "双子岛 b4f"
+        RETURN 82
+    ELIF $宝可梦遭遇地点 == "cerulean cave 1f"
+        RETURN 83
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟 1f"
+        RETURN 83
+    ELIF $宝可梦遭遇地点 == "cerulean cave 2f"
+        RETURN 84
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟 2f"
+        RETURN 84
+    ELIF $宝可梦遭遇地点 == "cerulean cave b1f"
+        RETURN 85
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟 b1f"
+        RETURN 85
+    ELIF $宝可梦遭遇地点 == "mt moon b1f"
+        RETURN 86
+    ELIF $宝可梦遭遇地点 == "月见山 b1f"
+        RETURN 86
+    ELIF $宝可梦遭遇地点 == "digletts cave"
+        RETURN 87
+    ELIF $宝可梦遭遇地点 == "digletts cave area"
+        RETURN 87
+    ELIF $宝可梦遭遇地点 == "地鼠洞穴B1F"
+        RETURN 87
+    ELIF $宝可梦遭遇地点 == "19号道路"
+        RETURN 88
+    ELIF $宝可梦遭遇地点 == "kanto sea route 19"
+        RETURN 88
+    ELIF $宝可梦遭遇地点 == "kanto sea route 19 area"
+        RETURN 88
+    ELIF $宝可梦遭遇地点 == "20号道路"
+        RETURN 89
+    ELIF $宝可梦遭遇地点 == "kanto sea route 20"
+        RETURN 89
+    ELIF $宝可梦遭遇地点 == "kanto sea route 20 area"
+        RETURN 89
+    ELIF $宝可梦遭遇地点 == "cinnabar island"
+        RETURN 90
+    ELIF $宝可梦遭遇地点 == "cinnabar island area"
+        RETURN 90
+    ELIF $宝可梦遭遇地点 == "红莲镇"
+        RETURN 90
+    ELIF $宝可梦遭遇地点 == "viridian city"
+        RETURN 91
+    ELIF $宝可梦遭遇地点 == "viridian city area"
+        RETURN 91
+    ELIF $宝可梦遭遇地点 == "常青市"
+        RETURN 91
+    ELIF $宝可梦遭遇地点 == "cerulean city"
+        RETURN 92
+    ELIF $宝可梦遭遇地点 == "cerulean city area"
+        RETURN 92
+    ELIF $宝可梦遭遇地点 == "华蓝市"
+        RETURN 92
+    ELIF $宝可梦遭遇地点 == "vermilion city"
+        RETURN 93
+    ELIF $宝可梦遭遇地点 == "vermilion city area"
+        RETURN 93
+    ELIF $宝可梦遭遇地点 == "枯叶市"
+        RETURN 93
+    ELIF $宝可梦遭遇地点 == "celadon city"
+        RETURN 94
+    ELIF $宝可梦遭遇地点 == "celadon city area"
+        RETURN 94
+    ELIF $宝可梦遭遇地点 == "玉虹市"
+        RETURN 94
+    ELIF $宝可梦遭遇地点 == "fuchsia city"
+        RETURN 95
+    ELIF $宝可梦遭遇地点 == "fuchsia city area"
+        RETURN 95
+    ELIF $宝可梦遭遇地点 == "浅红市"
+        RETURN 95
+    ELIF $宝可梦遭遇地点 == "21号道路"
+        RETURN 96
+    ELIF $宝可梦遭遇地点 == "kanto sea route 21"
+        RETURN 96
+    ELIF $宝可梦遭遇地点 == "kanto sea route 21 area"
+        RETURN 96
+    ELIF $宝可梦遭遇地点 == "ss anne"
+        RETURN 97
+    ELIF $宝可梦遭遇地点 == "ss anne area"
+        RETURN 97
+    ELIF $宝可梦遭遇地点 == "圣特安努号"
+        RETURN 97
+    ELIF $宝可梦遭遇地点 == "resort gorgeous"
+        RETURN 98
+    ELIF $宝可梦遭遇地点 == "resort gorgeous area"
+        RETURN 98
+    ELIF $宝可梦遭遇地点 == "豪华度假区"
+        RETURN 98
+    ELIF $宝可梦遭遇地点 == "water labyrinth"
+        RETURN 99
+    ELIF $宝可梦遭遇地点 == "water labyrinth area"
+        RETURN 99
+    ELIF $宝可梦遭遇地点 == "水之迷宫"
+        RETURN 99
+    ELIF $宝可梦遭遇地点 == "memorial pillar"
+        RETURN 100
+    ELIF $宝可梦遭遇地点 == "memorial pillar area"
+        RETURN 100
+    ELIF $宝可梦遭遇地点 == "回忆之塔"
+        RETURN 100
+    ELIF $宝可梦遭遇地点 == "outcast island"
+        RETURN 101
+    ELIF $宝可梦遭遇地点 == "outcast island area"
+        RETURN 101
+    ELIF $宝可梦遭遇地点 == "外岛"
+        RETURN 101
+    ELIF $宝可梦遭遇地点 == "green path"
+        RETURN 102
+    ELIF $宝可梦遭遇地点 == "green path area"
+        RETURN 102
+    ELIF $宝可梦遭遇地点 == "绿之步道"
+        RETURN 102
+    ELIF $宝可梦遭遇地点 == "trainer tower"
+        RETURN 103
+    ELIF $宝可梦遭遇地点 == "trainer tower area"
+        RETURN 103
+    ELIF $宝可梦遭遇地点 == "训练家塔"
+        RETURN 103
+    ELIF $宝可梦遭遇地点 == "tanoby ruins"
+        RETURN 104
+    ELIF $宝可梦遭遇地点 == "tanoby ruins area"
+        RETURN 104
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹"
+        RETURN 104
+    ELIF $宝可梦遭遇地点 == "one island"
+        RETURN 105
+    ELIF $宝可梦遭遇地点 == "one island area"
+        RETURN 105
+    ELIF $宝可梦遭遇地点 == "第1岛"
+        RETURN 105
+    ELIF $宝可梦遭遇地点 == "four island"
+        RETURN 106
+    ELIF $宝可梦遭遇地点 == "four island area"
+        RETURN 106
+    ELIF $宝可梦遭遇地点 == "第4岛"
+        RETURN 106
+    ELIF $宝可梦遭遇地点 == "five island"
+        RETURN 107
+    ELIF $宝可梦遭遇地点 == "five island area"
+        RETURN 107
+    ELIF $宝可梦遭遇地点 == "第5岛"
+        RETURN 107
+    ELIF $宝可梦遭遇地点 == "mt ember cave"
+        RETURN 108
+    ELIF $宝可梦遭遇地点 == "灯火山（山腰洞窟）1F/3F"
+        RETURN 108
+    ELIF $宝可梦遭遇地点 == "mt ember inside"
+        RETURN 109
+    ELIF $宝可梦遭遇地点 == "灯火山（山腰洞窟）2F"
+        RETURN 109
+    ELIF $宝可梦遭遇地点 == "mt ember 1f cave behind team rocket"
+        RETURN 110
+    ELIF $宝可梦遭遇地点 == "灯火山 1f 火箭队后方洞窟"
+        RETURN 110
+    ELIF $宝可梦遭遇地点 == "mt ember b1f"
+        RETURN 111
+    ELIF $宝可梦遭遇地点 == "灯火山 b1f"
+        RETURN 111
+    ELIF $宝可梦遭遇地点 == "mt ember b2f"
+        RETURN 112
+    ELIF $宝可梦遭遇地点 == "灯火山 b2f"
+        RETURN 112
+    ELIF $宝可梦遭遇地点 == "mt ember summit"
+        RETURN 113
+    ELIF $宝可梦遭遇地点 == "灯火山（山腰洞窟）1F/3F"
+        RETURN 113
+    ELIF $宝可梦遭遇地点 == "pokemon tower 3f"
+        RETURN 114
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 3f"
+        RETURN 114
+    ELIF $宝可梦遭遇地点 == "pokemon tower 4f"
+        RETURN 115
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 4f"
+        RETURN 115
+    ELIF $宝可梦遭遇地点 == "pokemon tower 5f"
+        RETURN 116
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 5f"
+        RETURN 116
+    ELIF $宝可梦遭遇地点 == "pokemon tower 6f"
+        RETURN 117
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 6f"
+        RETURN 117
+    ELIF $宝可梦遭遇地点 == "pokemon tower 7f"
+        RETURN 118
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 7f"
+        RETURN 118
+    ELIF $宝可梦遭遇地点 == "kanto altering cave b"
+        RETURN 119
+    ELIF $宝可梦遭遇地点 == "变化洞窟 b"
+        RETURN 119
+    ELIF $宝可梦遭遇地点 == "kanto altering cave f"
+        RETURN 120
+    ELIF $宝可梦遭遇地点 == "变化洞窟 f"
+        RETURN 120
+    ELIF $宝可梦遭遇地点 == "monean chamber"
+        RETURN 121
+    ELIF $宝可梦遭遇地点 == "monean chamber area"
+        RETURN 121
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 monean 石室"
+        RETURN 121
+    ELIF $宝可梦遭遇地点 == "liptoo chamber"
+        RETURN 122
+    ELIF $宝可梦遭遇地点 == "liptoo chamber area"
+        RETURN 122
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 liptoo 石室"
+        RETURN 122
+    ELIF $宝可梦遭遇地点 == "weepth chamber"
+        RETURN 123
+    ELIF $宝可梦遭遇地点 == "weepth chamber area"
+        RETURN 123
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 weepth 石室"
+        RETURN 123
+    ELIF $宝可梦遭遇地点 == "dilford chamber"
+        RETURN 124
+    ELIF $宝可梦遭遇地点 == "dilford chamber area"
+        RETURN 124
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 dilford 石室"
+        RETURN 124
+    ELIF $宝可梦遭遇地点 == "scufib chamber"
+        RETURN 125
+    ELIF $宝可梦遭遇地点 == "scufib chamber area"
+        RETURN 125
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 scufib 石室"
+        RETURN 125
+    ELIF $宝可梦遭遇地点 == "rixy chamber"
+        RETURN 126
+    ELIF $宝可梦遭遇地点 == "rixy chamber area"
+        RETURN 126
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 rixy 石室"
+        RETURN 126
+    ELIF $宝可梦遭遇地点 == "viapos chamber"
+        RETURN 127
+    ELIF $宝可梦遭遇地点 == "viapos chamber area"
+        RETURN 127
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 viapos 石室"
+        RETURN 127
+    ELIF $宝可梦遭遇地点 == "kanto altering cave c"
+        RETURN 128
+    ELIF $宝可梦遭遇地点 == "变化洞窟 c"
+        RETURN 128
+    ELIF $宝可梦遭遇地点 == "three isle port"
+        RETURN 129
+    ELIF $宝可梦遭遇地点 == "three isle port area"
+        RETURN 129
+    ELIF $宝可梦遭遇地点 == "第3岛码头"
+        RETURN 129
+    ELIF $宝可梦遭遇地点 == "kanto altering cave g"
+        RETURN 130
+    ELIF $宝可梦遭遇地点 == "变化洞窟 g"
+        RETURN 130
+    ELIF $宝可梦遭遇地点 == "kanto altering cave e"
+        RETURN 131
+    ELIF $宝可梦遭遇地点 == "变化洞窟 e"
+        RETURN 131
+    ELIF $宝可梦遭遇地点 == "mt ember b3f"
+        RETURN 132
+    ELIF $宝可梦遭遇地点 == "灯火山 b3f"
+        RETURN 132
+    ELIF $宝可梦遭遇地点 == "kanto altering cave d"
+        RETURN 133
+    ELIF $宝可梦遭遇地点 == "变化洞窟 d"
+        RETURN 133
+    ELIF $宝可梦遭遇地点 == "kanto altering cave h"
+        RETURN 134
+    ELIF $宝可梦遭遇地点 == "变化洞窟 h"
+        RETURN 134
+    ELIF $宝可梦遭遇地点 == "kanto altering cave i"
+        RETURN 135
+    ELIF $宝可梦遭遇地点 == "变化洞窟 i"
+        RETURN 135
+        # tenlines 显示名别名。
+    ELIF $宝可梦遭遇地点 == "真新镇"
+        RETURN 1
+    ELIF $宝可梦遭遇地点 == "格斗道场"
+        RETURN 2
+    ELIF $宝可梦遭遇地点 == "西尔佛公司"
+        RETURN 3
+    ELIF $宝可梦遭遇地点 == "玉虹公寓"
+        RETURN 4
+    ELIF $宝可梦遭遇地点 == "宝可梦研究所"
+        RETURN 5
+    ELIF $宝可梦遭遇地点 == "12号道路"
+        RETURN 6
+    ELIF $宝可梦遭遇地点 == "双子岛"
+        RETURN 7
+    ELIF $宝可梦遭遇地点 == "无人发电厂"
+        RETURN 8
+    ELIF $宝可梦遭遇地点 == "灯火山（底部）"
+        RETURN 9
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟"
+        RETURN 10
+    ELIF $宝可梦遭遇地点 == "肚脐岩"
+        RETURN 11
+    ELIF $宝可梦遭遇地点 == "诞生之岛"
+        RETURN 12
+    ELIF $宝可梦遭遇地点 == "关都"
+        RETURN 13
+    ELIF $宝可梦遭遇地点 == "2号道路"
+        RETURN 14
+    ELIF $宝可梦遭遇地点 == "24号道路"
+        RETURN 15
+    ELIF $宝可梦遭遇地点 == "25号道路"
+        RETURN 16
+    ELIF $宝可梦遭遇地点 == "常青森林"
+        RETURN 17
+    ELIF $宝可梦遭遇地点 == "标志之林"
+        RETURN 18
+    ELIF $宝可梦遭遇地点 == "1号道路"
+        RETURN 19
+    ELIF $宝可梦遭遇地点 == "3号道路"
+        RETURN 20
+    ELIF $宝可梦遭遇地点 == "5号道路"
+        RETURN 21
+    ELIF $宝可梦遭遇地点 == "6号道路"
+        RETURN 22
+    ELIF $宝可梦遭遇地点 == "7号道路"
+        RETURN 23
+    ELIF $宝可梦遭遇地点 == "8号道路"
+        RETURN 24
+    ELIF $宝可梦遭遇地点 == "13号道路"
+        RETURN 25
+    ELIF $宝可梦遭遇地点 == "14号道路"
+        RETURN 26
+    ELIF $宝可梦遭遇地点 == "15号道路"
+        RETURN 27
+    ELIF $宝可梦遭遇地点 == "树果森林"
+        RETURN 28
+    ELIF $宝可梦遭遇地点 == "索桥"
+        RETURN 29
+    ELIF $宝可梦遭遇地点 == "第5岛空地"
+        RETURN 30
+    ELIF $宝可梦遭遇地点 == "4号道路"
+        RETURN 31
+    ELIF $宝可梦遭遇地点 == "9号道路"
+        RETURN 32
+    ELIF $宝可梦遭遇地点 == "16号道路"
+        RETURN 33
+    ELIF $宝可梦遭遇地点 == "17号道路"
+        RETURN 34
+    ELIF $宝可梦遭遇地点 == "18号道路"
+        RETURN 35
+    ELIF $宝可梦遭遇地点 == "22号道路"
+        RETURN 36
+    ELIF $宝可梦遭遇地点 == "宝可梦屋1F-3F"
+        RETURN 37
+    ELIF $宝可梦遭遇地点 == "宝可梦屋B1F"
+        RETURN 40
+    ELIF $宝可梦遭遇地点 == "10号道路"
+        RETURN 41
+    ELIF $宝可梦遭遇地点 == "11号道路"
+        RETURN 42
+    ELIF $宝可梦遭遇地点 == "23号道路"
+        RETURN 43
+    ELIF $宝可梦遭遇地点 == "热气之路"
+        RETURN 44
+    ELIF $宝可梦遭遇地点 == "宝物海滩"
+        RETURN 45
+    ELIF $宝可梦遭遇地点 == "边缘海岬"
+        RETURN 46
+    ELIF $宝可梦遭遇地点 == "水之步道"
+        RETURN 47
+    ELIF $宝可梦遭遇地点 == "遗迹山谷"
+        RETURN 48
+    ELIF $宝可梦遭遇地点 == "溪谷入口"
+        RETURN 49
+    ELIF $宝可梦遭遇地点 == "七宝溪谷"
+        RETURN 50
+    ELIF $宝可梦遭遇地点 == "冠军之路1F/3F"
+        RETURN 51
+    ELIF $宝可梦遭遇地点 == "冠军之路2F"
+        RETURN 52
+    ELIF $宝可梦遭遇地点 == "狩猎地带（入口）"
+        RETURN 54
+    ELIF $宝可梦遭遇地点 == "狩猎地带东区（第1区）"
+        RETURN 55
+    ELIF $宝可梦遭遇地点 == "狩猎地带北区（第2区）"
+        RETURN 56
+    ELIF $宝可梦遭遇地点 == "狩猎地带西区（第3区）"
+        RETURN 57
+    ELIF $宝可梦遭遇地点 == "月见山1F"
+        RETURN 58
+    ELIF $宝可梦遭遇地点 == "月见山B2F"
+        RETURN 59
+    ELIF $宝可梦遭遇地点 == "双子岛1F"
+        RETURN 60
+    ELIF $宝可梦遭遇地点 == "双子岛B1F"
+        RETURN 61
+    ELIF $宝可梦遭遇地点 == "双子岛B2F"
+        RETURN 62
+    ELIF $宝可梦遭遇地点 == "双子岛B3F"
+        RETURN 63
+    ELIF $宝可梦遭遇地点 == "岩山隧道1F"
+        RETURN 64
+    ELIF $宝可梦遭遇地点 == "岩山隧道B1F"
+        RETURN 65
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟"
+        RETURN 66
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟1F/B1F"
+        RETURN 67
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟（最深处）"
+        RETURN 69
+    ELIF $宝可梦遭遇地点 == "不归之穴"
+        RETURN 70
+    ELIF $宝可梦遭遇地点 == "不归之穴（有物品的房间）"
+        RETURN 80
+    ELIF $宝可梦遭遇地点 == "变幻洞窟"
+        RETURN 81
+    ELIF $宝可梦遭遇地点 == "双子岛B4F"
+        RETURN 82
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟1F"
+        RETURN 83
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟2F"
+        RETURN 84
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟B1F"
+        RETURN 85
+    ELIF $宝可梦遭遇地点 == "月见山B1F"
+        RETURN 86
+    ELIF $宝可梦遭遇地点 == "地鼠洞穴B1F"
+        RETURN 87
+    ELIF $宝可梦遭遇地点 == "19号道路"
+        RETURN 88
+    ELIF $宝可梦遭遇地点 == "20号道路"
+        RETURN 89
+    ELIF $宝可梦遭遇地点 == "红莲镇"
+        RETURN 90
+    ELIF $宝可梦遭遇地点 == "常青市"
+        RETURN 91
+    ELIF $宝可梦遭遇地点 == "华蓝市"
+        RETURN 92
+    ELIF $宝可梦遭遇地点 == "枯叶市"
+        RETURN 93
+    ELIF $宝可梦遭遇地点 == "玉虹市"
+        RETURN 94
+    ELIF $宝可梦遭遇地点 == "浅红市"
+        RETURN 95
+    ELIF $宝可梦遭遇地点 == "21号道路"
+        RETURN 96
+    ELIF $宝可梦遭遇地点 == "圣特安努号"
+        RETURN 97
+    ELIF $宝可梦遭遇地点 == "豪华度假区"
+        RETURN 98
+    ELIF $宝可梦遭遇地点 == "水之迷宫"
+        RETURN 99
+    ELIF $宝可梦遭遇地点 == "回忆之塔"
+        RETURN 100
+    ELIF $宝可梦遭遇地点 == "外岛"
+        RETURN 101
+    ELIF $宝可梦遭遇地点 == "绿之步道"
+        RETURN 102
+    ELIF $宝可梦遭遇地点 == "训练家塔"
+        RETURN 103
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹"
+        RETURN 104
+    ELIF $宝可梦遭遇地点 == "第1岛"
+        RETURN 105
+    ELIF $宝可梦遭遇地点 == "第4岛"
+        RETURN 106
+    ELIF $宝可梦遭遇地点 == "第5岛"
+        RETURN 107
+    ELIF $宝可梦遭遇地点 == "灯火山（山腰洞窟）1F/3F"
+        RETURN 108
+    ELIF $宝可梦遭遇地点 == "灯火山（山腰洞窟）2F"
+        RETURN 109
+    ELIF $宝可梦遭遇地点 == "灯火山（红宝石之路）1F"
+        RETURN 110
+    ELIF $宝可梦遭遇地点 == "灯火山（红宝石之路）B1F"
+        RETURN 111
+    ELIF $宝可梦遭遇地点 == "灯火山（红宝石之路）B2F"
+        RETURN 112
+    ELIF $宝可梦遭遇地点 == "宝可梦塔3F"
+        RETURN 114
+    ELIF $宝可梦遭遇地点 == "宝可梦塔4F-5F"
+        RETURN 115
+    ELIF $宝可梦遭遇地点 == "宝可梦塔6F"
+        RETURN 117
+    ELIF $宝可梦遭遇地点 == "宝可梦塔7F"
+        RETURN 118
+    ELIF $宝可梦遭遇地点 == "伊莱斯石室"
+        RETURN 121
+    ELIF $宝可梦遭遇地点 == "那藏石室"
+        RETURN 122
+    ELIF $宝可梦遭遇地点 == "由格石室"
+        RETURN 123
+    ELIF $宝可梦遭遇地点 == "阿利波卡石室"
+        RETURN 124
+    ELIF $宝可梦遭遇地点 == "科斗石室"
+        RETURN 125
+    ELIF $宝可梦遭遇地点 == "阿努泽石室"
+        RETURN 126
+    ELIF $宝可梦遭遇地点 == "澳利弗石室"
+        RETURN 127
+    ELIF $宝可梦遭遇地点 == "第3岛码头"
+        RETURN 129
+    ELIF $宝可梦遭遇地点 == "灯火山（红宝石之路）B3F"
+        RETURN 132
+
+        # tenlines 改名前的旧中文别名，保留兼容。
+    ELIF $宝可梦遭遇地点 == "常磐森林"
+        RETURN 17
+    ELIF $宝可梦遭遇地点 == "图案草丛"
+        RETURN 18
+    ELIF $宝可梦遭遇地点 == "果实森林"
+        RETURN 28
+    ELIF $宝可梦遭遇地点 == "羁绊桥"
+        RETURN 29
+    ELIF $宝可梦遭遇地点 == "五之岛空地"
+        RETURN 30
+    ELIF $宝可梦遭遇地点 == "灯火山道"
+        RETURN 44
+    ELIF $宝可梦遭遇地点 == "歧波海角"
+        RETURN 46
+    ELIF $宝可梦遭遇地点 == "狩猎地带 中央区"
+        RETURN 54
+    ELIF $宝可梦遭遇地点 == "狩猎地带 第1区东部"
+        RETURN 55
+    ELIF $宝可梦遭遇地点 == "狩猎地带 第2区北部"
+        RETURN 56
+    ELIF $宝可梦遭遇地点 == "狩猎地带 第3区西部"
+        RETURN 57
+    ELIF $宝可梦遭遇地点 == "红莲岛"
+        RETURN 90
+    ELIF $宝可梦遭遇地点 == "常磐市"
+        RETURN 91
+    ELIF $宝可梦遭遇地点 == "圣安奴号"
+        RETURN 97
+    ELIF $宝可梦遭遇地点 == "豪华度假村"
+        RETURN 98
+    ELIF $宝可梦遭遇地点 == "绿之散步道"
+        RETURN 102
+    ELIF $宝可梦遭遇地点 == "训练家之塔"
+        RETURN 103
+    ELIF $宝可梦遭遇地点 == "一之岛"
+        RETURN 105
+    ELIF $宝可梦遭遇地点 == "四之岛"
+        RETURN 106
+    ELIF $宝可梦遭遇地点 == "五之岛"
+        RETURN 107
+    ELIF $宝可梦遭遇地点 == "灯火山"
+        RETURN 9
+    ELIF $宝可梦遭遇地点 == "灯火山 洞窟"
+        RETURN 108
+    ELIF $宝可梦遭遇地点 == "灯火山 内部"
+        RETURN 109
+    ELIF $宝可梦遭遇地点 == "灯火山 1F 火箭队后方洞窟"
+        RETURN 110
+    ELIF $宝可梦遭遇地点 == "灯火山 B1F"
+        RETURN 111
+    ELIF $宝可梦遭遇地点 == "灯火山 B2F"
+        RETURN 112
+    ELIF $宝可梦遭遇地点 == "灯火山 山顶"
+        RETURN 113
+    ELIF $宝可梦遭遇地点 == "三之岛港口"
+        RETURN 129
+    ELIF $宝可梦遭遇地点 == "灯火山 B3F"
+        RETURN 132
+    ELIF $宝可梦遭遇地点 == "灯火山（红宝石之路）B1F楼梯"
+        RETURN 111
+    ELIF $宝可梦遭遇地点 == "灯火山（红宝石之路）B2F楼梯"
+        RETURN 112
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 1F"
+        RETURN 37
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 2F"
+        RETURN 38
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 3F"
+        RETURN 39
+    ELIF $宝可梦遭遇地点 == "宝可梦屋 B1F"
+        RETURN 40
+    ELIF $宝可梦遭遇地点 == "冠军之路 1F"
+        RETURN 51
+    ELIF $宝可梦遭遇地点 == "冠军之路 2F"
+        RETURN 52
+    ELIF $宝可梦遭遇地点 == "冠军之路 3F"
+        RETURN 53
+    ELIF $宝可梦遭遇地点 == "月见山 1F"
+        RETURN 58
+    ELIF $宝可梦遭遇地点 == "月见山 B2F"
+        RETURN 59
+    ELIF $宝可梦遭遇地点 == "双子岛 1F"
+        RETURN 60
+    ELIF $宝可梦遭遇地点 == "双子岛 B1F"
+        RETURN 61
+    ELIF $宝可梦遭遇地点 == "双子岛 B2F"
+        RETURN 62
+    ELIF $宝可梦遭遇地点 == "双子岛 B3F"
+        RETURN 63
+    ELIF $宝可梦遭遇地点 == "岩山隧道 1F"
+        RETURN 64
+    ELIF $宝可梦遭遇地点 == "岩山隧道 B1F"
+        RETURN 65
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟 入口"
+        RETURN 66
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟 1F"
+        RETURN 67
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟 B1F"
+        RETURN 68
+    ELIF $宝可梦遭遇地点 == "冻瀑洞窟 瀑布"
+        RETURN 69
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间1"
+        RETURN 70
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间2"
+        RETURN 71
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间3"
+        RETURN 72
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间4"
+        RETURN 73
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间5"
+        RETURN 74
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间6"
+        RETURN 75
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间7"
+        RETURN 76
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间8"
+        RETURN 77
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间9"
+        RETURN 78
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 房间10"
+        RETURN 79
+    ELIF $宝可梦遭遇地点 == "遗失洞窟 道具房间"
+        RETURN 80
+    ELIF $宝可梦遭遇地点 == "变化洞窟 A"
+        RETURN 81
+    ELIF $宝可梦遭遇地点 == "双子岛 B4F"
+        RETURN 82
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟 1F"
+        RETURN 83
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟 2F"
+        RETURN 84
+    ELIF $宝可梦遭遇地点 == "华蓝洞窟 B1F"
+        RETURN 85
+    ELIF $宝可梦遭遇地点 == "月见山 B1F"
+        RETURN 86
+    ELIF $宝可梦遭遇地点 == "地鼠洞穴"
+        RETURN 87
+    ELIF $宝可梦遭遇地点 == "19号水路"
+        RETURN 88
+    ELIF $宝可梦遭遇地点 == "20号水路"
+        RETURN 89
+    ELIF $宝可梦遭遇地点 == "21号水路"
+        RETURN 96
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 3F"
+        RETURN 114
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 4F"
+        RETURN 115
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 5F"
+        RETURN 116
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 6F"
+        RETURN 117
+    ELIF $宝可梦遭遇地点 == "宝可梦塔 7F"
+        RETURN 118
+    ELIF $宝可梦遭遇地点 == "变化洞窟 B"
+        RETURN 119
+    ELIF $宝可梦遭遇地点 == "变化洞窟 F"
+        RETURN 120
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Monean 石室"
+        RETURN 121
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Liptoo 石室"
+        RETURN 122
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Weepth 石室"
+        RETURN 123
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Dilford 石室"
+        RETURN 124
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Scufib 石室"
+        RETURN 125
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Rixy 石室"
+        RETURN 126
+    ELIF $宝可梦遭遇地点 == "阿斯卡纳遗迹 Viapos 石室"
+        RETURN 127
+    ELIF $宝可梦遭遇地点 == "变化洞窟 C"
+        RETURN 128
+    ELIF $宝可梦遭遇地点 == "变化洞窟 G"
+        RETURN 130
+    ELIF $宝可梦遭遇地点 == "变化洞窟 E"
+        RETURN 131
+    ELIF $宝可梦遭遇地点 == "变化洞窟 D"
+        RETURN 133
+    ELIF $宝可梦遭遇地点 == "变化洞窟 H"
+        RETURN 134
+    ELIF $宝可梦遭遇地点 == "变化洞窟 I"
+        RETURN 135
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+
+FUNC 目标遭遇地点名称($遭遇地点: INT): STRING
+    IF $遭遇地点 == 1
+        RETURN "真新镇"
+    ELIF $遭遇地点 == 2
+        RETURN "格斗道场"
+    ELIF $遭遇地点 == 3
+        RETURN "西尔佛公司"
+    ELIF $遭遇地点 == 4
+        RETURN "玉虹公寓"
+    ELIF $遭遇地点 == 5
+        RETURN "宝可梦研究所"
+    ELIF $遭遇地点 == 6
+        RETURN "12号道路"
+    ELIF $遭遇地点 == 7
+        RETURN "双子岛"
+    ELIF $遭遇地点 == 8
+        RETURN "无人发电厂"
+    ELIF $遭遇地点 == 9
+        RETURN "灯火山（底部）"
+    ELIF $遭遇地点 == 10
+        RETURN "华蓝洞窟"
+    ELIF $遭遇地点 == 11
+        RETURN "肚脐岩"
+    ELIF $遭遇地点 == 12
+        RETURN "诞生之岛"
+    ELIF $遭遇地点 == 13
+        RETURN "关都"
+    ELIF $遭遇地点 == 14
+        RETURN "2号道路"
+    ELIF $遭遇地点 == 15
+        RETURN "24号道路"
+    ELIF $遭遇地点 == 16
+        RETURN "25号道路"
+    ELIF $遭遇地点 == 17
+        RETURN "常青森林"
+    ELIF $遭遇地点 == 18
+        RETURN "标志之林"
+    ELIF $遭遇地点 == 19
+        RETURN "1号道路"
+    ELIF $遭遇地点 == 20
+        RETURN "3号道路"
+    ELIF $遭遇地点 == 21
+        RETURN "5号道路"
+    ELIF $遭遇地点 == 22
+        RETURN "6号道路"
+    ELIF $遭遇地点 == 23
+        RETURN "7号道路"
+    ELIF $遭遇地点 == 24
+        RETURN "8号道路"
+    ELIF $遭遇地点 == 25
+        RETURN "13号道路"
+    ELIF $遭遇地点 == 26
+        RETURN "14号道路"
+    ELIF $遭遇地点 == 27
+        RETURN "15号道路"
+    ELIF $遭遇地点 == 28
+        RETURN "树果森林"
+    ELIF $遭遇地点 == 29
+        RETURN "索桥"
+    ELIF $遭遇地点 == 30
+        RETURN "第5岛空地"
+    ELIF $遭遇地点 == 31
+        RETURN "4号道路"
+    ELIF $遭遇地点 == 32
+        RETURN "9号道路"
+    ELIF $遭遇地点 == 33
+        RETURN "16号道路"
+    ELIF $遭遇地点 == 34
+        RETURN "17号道路"
+    ELIF $遭遇地点 == 35
+        RETURN "18号道路"
+    ELIF $遭遇地点 == 36
+        RETURN "22号道路"
+    ELIF $遭遇地点 == 37
+        RETURN "宝可梦屋1F-3F"
+    ELIF $遭遇地点 == 38
+        RETURN "宝可梦屋1F-3F"
+    ELIF $遭遇地点 == 39
+        RETURN "宝可梦屋1F-3F"
+    ELIF $遭遇地点 == 40
+        RETURN "宝可梦屋B1F"
+    ELIF $遭遇地点 == 41
+        RETURN "10号道路"
+    ELIF $遭遇地点 == 42
+        RETURN "11号道路"
+    ELIF $遭遇地点 == 43
+        RETURN "23号道路"
+    ELIF $遭遇地点 == 44
+        RETURN "热气之路"
+    ELIF $遭遇地点 == 45
+        RETURN "宝物海滩"
+    ELIF $遭遇地点 == 46
+        RETURN "边缘海岬"
+    ELIF $遭遇地点 == 47
+        RETURN "水之步道"
+    ELIF $遭遇地点 == 48
+        RETURN "遗迹山谷"
+    ELIF $遭遇地点 == 49
+        RETURN "溪谷入口"
+    ELIF $遭遇地点 == 50
+        RETURN "七宝溪谷"
+    ELIF $遭遇地点 == 51
+        RETURN "冠军之路1F/3F"
+    ELIF $遭遇地点 == 52
+        RETURN "冠军之路2F"
+    ELIF $遭遇地点 == 53
+        RETURN "冠军之路1F/3F"
+    ELIF $遭遇地点 == 54
+        RETURN "狩猎地带（入口）"
+    ELIF $遭遇地点 == 55
+        RETURN "狩猎地带东区（第1区）"
+    ELIF $遭遇地点 == 56
+        RETURN "狩猎地带北区（第2区）"
+    ELIF $遭遇地点 == 57
+        RETURN "狩猎地带西区（第3区）"
+    ELIF $遭遇地点 == 58
+        RETURN "月见山1F"
+    ELIF $遭遇地点 == 59
+        RETURN "月见山B2F"
+    ELIF $遭遇地点 == 60
+        RETURN "双子岛1F"
+    ELIF $遭遇地点 == 61
+        RETURN "双子岛B1F"
+    ELIF $遭遇地点 == 62
+        RETURN "双子岛B2F"
+    ELIF $遭遇地点 == 63
+        RETURN "双子岛B3F"
+    ELIF $遭遇地点 == 64
+        RETURN "岩山隧道1F"
+    ELIF $遭遇地点 == 65
+        RETURN "岩山隧道B1F"
+    ELIF $遭遇地点 == 66
+        RETURN "冻瀑洞窟"
+    ELIF $遭遇地点 == 67
+        RETURN "冻瀑洞窟1F/B1F"
+    ELIF $遭遇地点 == 68
+        RETURN "冻瀑洞窟1F/B1F"
+    ELIF $遭遇地点 == 69
+        RETURN "冻瀑洞窟（最深处）"
+    ELIF $遭遇地点 == 70
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 71
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 72
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 73
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 74
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 75
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 76
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 77
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 78
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 79
+        RETURN "不归之穴"
+    ELIF $遭遇地点 == 80
+        RETURN "不归之穴（有物品的房间）"
+    ELIF $遭遇地点 == 81
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 82
+        RETURN "双子岛B4F"
+    ELIF $遭遇地点 == 83
+        RETURN "华蓝洞窟1F"
+    ELIF $遭遇地点 == 84
+        RETURN "华蓝洞窟2F"
+    ELIF $遭遇地点 == 85
+        RETURN "华蓝洞窟B1F"
+    ELIF $遭遇地点 == 86
+        RETURN "月见山B1F"
+    ELIF $遭遇地点 == 87
+        RETURN "地鼠洞穴B1F"
+    ELIF $遭遇地点 == 88
+        RETURN "19号道路"
+    ELIF $遭遇地点 == 89
+        RETURN "20号道路"
+    ELIF $遭遇地点 == 90
+        RETURN "红莲镇"
+    ELIF $遭遇地点 == 91
+        RETURN "常青市"
+    ELIF $遭遇地点 == 92
+        RETURN "华蓝市"
+    ELIF $遭遇地点 == 93
+        RETURN "枯叶市"
+    ELIF $遭遇地点 == 94
+        RETURN "玉虹市"
+    ELIF $遭遇地点 == 95
+        RETURN "浅红市"
+    ELIF $遭遇地点 == 96
+        RETURN "21号道路"
+    ELIF $遭遇地点 == 97
+        RETURN "圣特安努号"
+    ELIF $遭遇地点 == 98
+        RETURN "豪华度假区"
+    ELIF $遭遇地点 == 99
+        RETURN "水之迷宫"
+    ELIF $遭遇地点 == 100
+        RETURN "回忆之塔"
+    ELIF $遭遇地点 == 101
+        RETURN "外岛"
+    ELIF $遭遇地点 == 102
+        RETURN "绿之步道"
+    ELIF $遭遇地点 == 103
+        RETURN "训练家塔"
+    ELIF $遭遇地点 == 104
+        RETURN "阿斯卡纳遗迹"
+    ELIF $遭遇地点 == 105
+        RETURN "第1岛"
+    ELIF $遭遇地点 == 106
+        RETURN "第4岛"
+    ELIF $遭遇地点 == 107
+        RETURN "第5岛"
+    ELIF $遭遇地点 == 108
+        RETURN "灯火山（山腰洞窟）1F/3F"
+    ELIF $遭遇地点 == 109
+        RETURN "灯火山（山腰洞窟）2F"
+    ELIF $遭遇地点 == 110
+        RETURN "灯火山（红宝石之路）1F"
+    ELIF $遭遇地点 == 111
+        RETURN "灯火山（红宝石之路）B1F楼梯"
+    ELIF $遭遇地点 == 112
+        RETURN "灯火山（红宝石之路）B2F楼梯"
+    ELIF $遭遇地点 == 113
+        RETURN "灯火山 山顶"
+    ELIF $遭遇地点 == 114
+        RETURN "宝可梦塔3F"
+    ELIF $遭遇地点 == 115
+        RETURN "宝可梦塔4F-5F"
+    ELIF $遭遇地点 == 116
+        RETURN "宝可梦塔4F-5F"
+    ELIF $遭遇地点 == 117
+        RETURN "宝可梦塔6F"
+    ELIF $遭遇地点 == 118
+        RETURN "宝可梦塔7F"
+    ELIF $遭遇地点 == 119
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 120
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 121
+        RETURN "伊莱斯石室"
+    ELIF $遭遇地点 == 122
+        RETURN "那藏石室"
+    ELIF $遭遇地点 == 123
+        RETURN "由格石室"
+    ELIF $遭遇地点 == 124
+        RETURN "阿利波卡石室"
+    ELIF $遭遇地点 == 125
+        RETURN "科斗石室"
+    ELIF $遭遇地点 == 126
+        RETURN "阿努泽石室"
+    ELIF $遭遇地点 == 127
+        RETURN "澳利弗石室"
+    ELIF $遭遇地点 == 128
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 129
+        RETURN "第3岛码头"
+    ELIF $遭遇地点 == 130
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 131
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 132
+        RETURN "灯火山（红宝石之路）B3F"
+    ELIF $遭遇地点 == 133
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 134
+        RETURN "变幻洞窟"
+    ELIF $遭遇地点 == 135
+        RETURN "变幻洞窟"
+    ENDIF
+
+    RETURN "未知地点"
+ENDFUNC
+
+# ==================================================
+# 地点来源记录
+# ==================================================
+# 1: 真新镇 | key=pallet town | slug=pallet-town | aliases=pallet town, 真新镇
+# 2: 格斗道场 | key=fighting dojo | slug=fighting-dojo | aliases=fighting dojo, 格斗道场
+# 3: 西尔佛公司 | key=silph co | slug=silph-co | aliases=silph co, 西尔佛公司
+# 4: 玉虹公寓 | key=celadon mansion | slug=celadon-mansion | aliases=celadon mansion, 玉虹公寓
+# 5: 宝可梦研究所 | key=pokemon lab | slug=pokemon-lab | aliases=pokemon lab, 宝可梦研究所
+# 6: 12号道路 | key=kanto route 12 | slug=kanto-route-12 | aliases=12号道路, kanto route 12
+# 7: 双子岛 | key=seafoam islands | slug=seafoam-islands | aliases=seafoam islands, 双子岛
+# 8: 无人发电厂 | key=power plant | slug=power-plant | aliases=power plant, 无人发电厂
+# 9: 灯火山（底部） | key=mt ember | slug=mt-ember | aliases=mt ember, 灯火山
+# 10: 华蓝洞窟 | key=cerulean cave | slug=cerulean-cave | aliases=cerulean cave, 华蓝洞窟
+# 11: 肚脐岩 | key=navel rock | slug=navel-rock | aliases=navel rock, 肚脐岩
+# 12: 诞生之岛 | key=birth island | slug=birth-island | aliases=birth island, 诞生之岛
+# 13: 关都 | key=kanto | slug=kanto | aliases=kanto, 关都
+# 14: 2号道路 | key=kanto route 2 south towards viridian city | slug=kanto-route-2-south-towards-viridian-city | aliases=2号道路, kanto route 2 south towards viridian city
+# 15: 24号道路 | key=kanto route 24 | slug=kanto-route-24 | aliases=24号道路, kanto route 24, kanto route 24 area
+# 16: 25号道路 | key=kanto route 25 | slug=kanto-route-25 | aliases=25号道路, kanto route 25, kanto route 25 area
+# 17: 常青森林 | key=viridian forest | slug=viridian-forest | aliases=viridian forest, viridian forest area, 常磐森林
+# 18: 标志之林 | key=pattern bush | slug=pattern-bush | aliases=pattern bush, pattern bush area, 图案草丛
+# 19: 1号道路 | key=kanto route 1 | slug=kanto-route-1 | aliases=1号道路, kanto route 1, kanto route 1 area
+# 20: 3号道路 | key=kanto route 3 | slug=kanto-route-3 | aliases=3号道路, kanto route 3, kanto route 3 area
+# 21: 5号道路 | key=kanto route 5 | slug=kanto-route-5 | aliases=5号道路, kanto route 5, kanto route 5 area
+# 22: 6号道路 | key=kanto route 6 | slug=kanto-route-6 | aliases=6号道路, kanto route 6, kanto route 6 area
+# 23: 7号道路 | key=kanto route 7 | slug=kanto-route-7 | aliases=7号道路, kanto route 7, kanto route 7 area
+# 24: 8号道路 | key=kanto route 8 | slug=kanto-route-8 | aliases=8号道路, kanto route 8, kanto route 8 area
+# 25: 13号道路 | key=kanto route 13 | slug=kanto-route-13 | aliases=13号道路, kanto route 13, kanto route 13 area
+# 26: 14号道路 | key=kanto route 14 | slug=kanto-route-14 | aliases=14号道路, kanto route 14, kanto route 14 area
+# 27: 15号道路 | key=kanto route 15 | slug=kanto-route-15 | aliases=15号道路, kanto route 15, kanto route 15 area
+# 28: 树果森林 | key=berry forest | slug=berry-forest | aliases=berry forest, berry forest area, 果实森林
+# 29: 索桥 | key=bond bridge | slug=bond-bridge | aliases=bond bridge, bond bridge area, 羁绊桥
+# 30: 第5岛空地 | key=five isle meadow | slug=five-isle-meadow | aliases=five isle meadow, five isle meadow area, 五之岛空地
+# 31: 4号道路 | key=kanto route 4 | slug=kanto-route-4 | aliases=4号道路, kanto route 4, kanto route 4 area
+# 32: 9号道路 | key=kanto route 9 | slug=kanto-route-9 | aliases=9号道路, kanto route 9, kanto route 9 area
+# 33: 16号道路 | key=kanto route 16 | slug=kanto-route-16 | aliases=16号道路, kanto route 16, kanto route 16 area
+# 34: 17号道路 | key=kanto route 17 | slug=kanto-route-17 | aliases=17号道路, kanto route 17, kanto route 17 area
+# 35: 18号道路 | key=kanto route 18 | slug=kanto-route-18 | aliases=18号道路, kanto route 18, kanto route 18 area
+# 36: 22号道路 | key=kanto route 22 | slug=kanto-route-22 | aliases=22号道路, kanto route 22, kanto route 22 area
+# 37: 宝可梦屋1F-3F | key=pokemon mansion 1f | slug=pokemon-mansion-1f | aliases=pokemon mansion 1f, 宝可梦屋 1f
+# 38: 宝可梦屋1F-3F | key=pokemon mansion 2f | slug=pokemon-mansion-2f | aliases=pokemon mansion 2f, 宝可梦屋 2f
+# 39: 宝可梦屋1F-3F | key=pokemon mansion 3f | slug=pokemon-mansion-3f | aliases=pokemon mansion 3f, 宝可梦屋 3f
+# 40: 宝可梦屋B1F | key=pokemon mansion b1f | slug=pokemon-mansion-b1f | aliases=pokemon mansion b1f, 宝可梦屋 b1f
+# 41: 10号道路 | key=kanto route 10 | slug=kanto-route-10 | aliases=10号道路, kanto route 10, kanto route 10 area
+# 42: 11号道路 | key=kanto route 11 | slug=kanto-route-11 | aliases=11号道路, kanto route 11, kanto route 11 area
+# 43: 23号道路 | key=kanto route 23 | slug=kanto-route-23 | aliases=23号道路, kanto route 23, kanto route 23 area
+# 44: 热气之路 | key=kindle road | slug=kindle-road | aliases=kindle road, kindle road area, 灯火山道
+# 45: 宝物海滩 | key=treasure beach | slug=treasure-beach | aliases=treasure beach, treasure beach area, 宝物海滩
+# 46: 边缘海岬 | key=cape brink | slug=cape-brink | aliases=cape brink, cape brink area, 歧波海角
+# 47: 水之步道 | key=water path | slug=water-path | aliases=water path, water path area, 水之步道
+# 48: 遗迹山谷 | key=ruin valley | slug=ruin-valley | aliases=ruin valley, ruin valley area, 遗迹山谷
+# 49: 溪谷入口 | key=canyon entrance | slug=canyon-entrance | aliases=canyon entrance, canyon entrance area, 溪谷入口
+# 50: 七宝溪谷 | key=sevault canyon | slug=sevault-canyon | aliases=sevault canyon, sevault canyon area, 七宝溪谷
+# 51: 冠军之路1F/3F | key=kanto victory road 2 1f | slug=kanto-victory-road-2-1f | aliases=kanto victory road 2 1f, 冠军之路 1f
+# 52: 冠军之路2F | key=kanto victory road 2 2f | slug=kanto-victory-road-2-2f | aliases=kanto victory road 2 2f, 冠军之路 2f
+# 53: 冠军之路1F/3F | key=kanto victory road 2 3f | slug=kanto-victory-road-2-3f | aliases=kanto victory road 2 3f, 冠军之路 3f
+# 54: 狩猎地带（入口） | key=kanto safari zone middle | slug=kanto-safari-zone-middle | aliases=kanto safari zone middle, 狩猎地带 中央区
+# 55: 狩猎地带东区（第1区） | key=kanto safari zone area 1 east | slug=kanto-safari-zone-area-1-east | aliases=kanto safari zone area 1 east, 狩猎地带 第1区东部
+# 56: 狩猎地带北区（第2区） | key=kanto safari zone area 2 north | slug=kanto-safari-zone-area-2-north | aliases=kanto safari zone area 2 north, 狩猎地带 第2区北部
+# 57: 狩猎地带西区（第3区） | key=kanto safari zone area 3 west | slug=kanto-safari-zone-area-3-west | aliases=kanto safari zone area 3 west, 狩猎地带 第3区西部
+# 58: 月见山1F | key=mt moon 1f | slug=mt-moon-1f | aliases=mt moon 1f, 月见山 1f
+# 59: 月见山B2F | key=mt moon b2f | slug=mt-moon-b2f | aliases=mt moon b2f, 月见山 b2f
+# 60: 双子岛1F | key=seafoam islands 1f | slug=seafoam-islands-1f | aliases=seafoam islands 1f, 双子岛 1f
+# 61: 双子岛B1F | key=seafoam islands b1f | slug=seafoam-islands-b1f | aliases=seafoam islands b1f, 双子岛 b1f
+# 62: 双子岛B2F | key=seafoam islands b2f | slug=seafoam-islands-b2f | aliases=seafoam islands b2f, 双子岛 b2f
+# 63: 双子岛B3F | key=seafoam islands b3f | slug=seafoam-islands-b3f | aliases=seafoam islands b3f, 双子岛 b3f
+# 64: 岩山隧道1F | key=rock tunnel 1f | slug=rock-tunnel-1f | aliases=rock tunnel 1f, 岩山隧道 1f
+# 65: 岩山隧道B1F | key=rock tunnel b1f | slug=rock-tunnel-b1f | aliases=rock tunnel b1f, 岩山隧道 b1f
+# 66: 冻瀑洞窟 | key=icefall cave entrance | slug=icefall-cave-entrance | aliases=icefall cave entrance, 冻瀑洞窟 入口
+# 67: 冻瀑洞窟1F/B1F | key=icefall cave 1f | slug=icefall-cave-1f | aliases=icefall cave 1f, 冻瀑洞窟 1f
+# 68: 冻瀑洞窟1F/B1F | key=icefall cave b1f | slug=icefall-cave-b1f | aliases=icefall cave b1f, 冻瀑洞窟 b1f
+# 69: 冻瀑洞窟（最深处） | key=icefall cave waterfall | slug=icefall-cave-waterfall | aliases=icefall cave waterfall, 冻瀑洞窟 瀑布
+# 70: 不归之穴 | key=lost cave room 1 | slug=lost-cave-room-1 | aliases=lost cave room 1, 遗失洞窟 房间1
+# 71: 不归之穴 | key=lost cave room 2 | slug=lost-cave-room-2 | aliases=lost cave room 2, 遗失洞窟 房间2
+# 72: 不归之穴 | key=lost cave room 3 | slug=lost-cave-room-3 | aliases=lost cave room 3, 遗失洞窟 房间3
+# 73: 不归之穴 | key=lost cave room 4 | slug=lost-cave-room-4 | aliases=lost cave room 4, 遗失洞窟 房间4
+# 74: 不归之穴 | key=lost cave room 5 | slug=lost-cave-room-5 | aliases=lost cave room 5, 遗失洞窟 房间5
+# 75: 不归之穴 | key=lost cave room 6 | slug=lost-cave-room-6 | aliases=lost cave room 6, 遗失洞窟 房间6
+# 76: 不归之穴 | key=lost cave room 7 | slug=lost-cave-room-7 | aliases=lost cave room 7, 遗失洞窟 房间7
+# 77: 不归之穴 | key=lost cave room 8 | slug=lost-cave-room-8 | aliases=lost cave room 8, 遗失洞窟 房间8
+# 78: 不归之穴 | key=lost cave room 9 | slug=lost-cave-room-9 | aliases=lost cave room 9, 遗失洞窟 房间9
+# 79: 不归之穴 | key=lost cave room 10 | slug=lost-cave-room-10 | aliases=lost cave room 10, 遗失洞窟 房间10
+# 80: 不归之穴（有物品的房间） | key=lost cave item rooms | slug=lost-cave-item-rooms | aliases=lost cave item rooms, 遗失洞窟 道具房间
+# 81: 变幻洞窟 | key=kanto altering cave a | slug=kanto-altering-cave-a | aliases=kanto altering cave a, 变化洞窟 a
+# 82: 双子岛B4F | key=seafoam islands b4f | slug=seafoam-islands-b4f | aliases=seafoam islands b4f, 双子岛 b4f
+# 83: 华蓝洞窟1F | key=cerulean cave 1f | slug=cerulean-cave-1f | aliases=cerulean cave 1f, 华蓝洞窟 1f
+# 84: 华蓝洞窟2F | key=cerulean cave 2f | slug=cerulean-cave-2f | aliases=cerulean cave 2f, 华蓝洞窟 2f
+# 85: 华蓝洞窟B1F | key=cerulean cave b1f | slug=cerulean-cave-b1f | aliases=cerulean cave b1f, 华蓝洞窟 b1f
+# 86: 月见山B1F | key=mt moon b1f | slug=mt-moon-b1f | aliases=mt moon b1f, 月见山 b1f
+# 87: 地鼠洞穴B1F | key=digletts cave | slug=digletts-cave | aliases=digletts cave, digletts cave area, 地鼠洞穴
+# 88: 19号道路 | key=kanto sea route 19 | slug=kanto-sea-route-19 | aliases=19号水路, kanto sea route 19, kanto sea route 19 area
+# 89: 20号道路 | key=kanto sea route 20 | slug=kanto-sea-route-20 | aliases=20号水路, kanto sea route 20, kanto sea route 20 area
+# 90: 红莲镇 | key=cinnabar island | slug=cinnabar-island | aliases=cinnabar island, cinnabar island area, 红莲岛
+# 91: 常青市 | key=viridian city | slug=viridian-city | aliases=viridian city, viridian city area, 常磐市
+# 92: 华蓝市 | key=cerulean city | slug=cerulean-city | aliases=cerulean city, cerulean city area, 华蓝市
+# 93: 枯叶市 | key=vermilion city | slug=vermilion-city | aliases=vermilion city, vermilion city area, 枯叶市
+# 94: 玉虹市 | key=celadon city | slug=celadon-city | aliases=celadon city, celadon city area, 玉虹市
+# 95: 浅红市 | key=fuchsia city | slug=fuchsia-city | aliases=fuchsia city, fuchsia city area, 浅红市
+# 96: 21号道路 | key=kanto sea route 21 | slug=kanto-sea-route-21 | aliases=21号水路, kanto sea route 21, kanto sea route 21 area
+# 97: 圣特安努号 | key=ss anne | slug=ss-anne | aliases=ss anne, ss anne area, 圣安奴号
+# 98: 豪华度假区 | key=resort gorgeous | slug=resort-gorgeous | aliases=resort gorgeous, resort gorgeous area, 豪华度假村
+# 99: 水之迷宫 | key=water labyrinth | slug=water-labyrinth | aliases=water labyrinth, water labyrinth area, 水之迷宫
+# 100: 回忆之塔 | key=memorial pillar | slug=memorial-pillar | aliases=memorial pillar, memorial pillar area, 回忆之塔
+# 101: 外岛 | key=outcast island | slug=outcast-island | aliases=outcast island, outcast island area, 外岛
+# 102: 绿之步道 | key=green path | slug=green-path | aliases=green path, green path area, 绿之散步道
+# 103: 训练家塔 | key=trainer tower | slug=trainer-tower | aliases=trainer tower, trainer tower area, 训练家之塔
+# 104: 阿斯卡纳遗迹 | key=tanoby ruins | slug=tanoby-ruins | aliases=tanoby ruins, tanoby ruins area, 阿斯卡纳遗迹
+# 105: 第1岛 | key=one island | slug=one-island | aliases=one island, one island area, 一之岛
+# 106: 第4岛 | key=four island | slug=four-island | aliases=four island, four island area, 四之岛
+# 107: 第5岛 | key=five island | slug=five-island | aliases=five island, five island area, 五之岛
+# 108: 灯火山（山腰洞窟）1F/3F | key=mt ember cave | slug=mt-ember-cave | aliases=mt ember cave, 灯火山 洞窟
+# 109: 灯火山（山腰洞窟）2F | key=mt ember inside | slug=mt-ember-inside | aliases=mt ember inside, 灯火山 内部
+# 110: 灯火山（红宝石之路）1F | key=mt ember 1f cave behind team rocket | slug=mt-ember-1f-cave-behind-team-rocket | aliases=mt ember 1f cave behind team rocket, 灯火山 1f 火箭队后方洞窟
+# 111: 灯火山（红宝石之路）B1F楼梯 | key=mt ember b1f | slug=mt-ember-b1f | aliases=mt ember b1f, 灯火山 b1f
+# 112: 灯火山（红宝石之路）B2F楼梯 | key=mt ember b2f | slug=mt-ember-b2f | aliases=mt ember b2f, 灯火山 b2f
+# 113: 灯火山 山顶 | key=mt ember summit | slug=mt-ember-summit | aliases=mt ember summit, 灯火山 山顶
+# 114: 宝可梦塔3F | key=pokemon tower 3f | slug=pokemon-tower-3f | aliases=pokemon tower 3f, 宝可梦塔 3f
+# 115: 宝可梦塔4F-5F | key=pokemon tower 4f | slug=pokemon-tower-4f | aliases=pokemon tower 4f, 宝可梦塔 4f
+# 116: 宝可梦塔4F-5F | key=pokemon tower 5f | slug=pokemon-tower-5f | aliases=pokemon tower 5f, 宝可梦塔 5f
+# 117: 宝可梦塔6F | key=pokemon tower 6f | slug=pokemon-tower-6f | aliases=pokemon tower 6f, 宝可梦塔 6f
+# 118: 宝可梦塔7F | key=pokemon tower 7f | slug=pokemon-tower-7f | aliases=pokemon tower 7f, 宝可梦塔 7f
+# 119: 变幻洞窟 | key=kanto altering cave b | slug=kanto-altering-cave-b | aliases=kanto altering cave b, 变化洞窟 b
+# 120: 变幻洞窟 | key=kanto altering cave f | slug=kanto-altering-cave-f | aliases=kanto altering cave f, 变化洞窟 f
+# 121: 伊莱斯石室 | key=monean chamber | slug=monean-chamber | aliases=monean chamber, monean chamber area, 阿斯卡纳遗迹 monean 石室
+# 122: 那藏石室 | key=liptoo chamber | slug=liptoo-chamber | aliases=liptoo chamber, liptoo chamber area, 阿斯卡纳遗迹 liptoo 石室
+# 123: 由格石室 | key=weepth chamber | slug=weepth-chamber | aliases=weepth chamber, weepth chamber area, 阿斯卡纳遗迹 weepth 石室
+# 124: 阿利波卡石室 | key=dilford chamber | slug=dilford-chamber | aliases=dilford chamber, dilford chamber area, 阿斯卡纳遗迹 dilford 石室
+# 125: 科斗石室 | key=scufib chamber | slug=scufib-chamber | aliases=scufib chamber, scufib chamber area, 阿斯卡纳遗迹 scufib 石室
+# 126: 阿努泽石室 | key=rixy chamber | slug=rixy-chamber | aliases=rixy chamber, rixy chamber area, 阿斯卡纳遗迹 rixy 石室
+# 127: 澳利弗石室 | key=viapos chamber | slug=viapos-chamber | aliases=viapos chamber, viapos chamber area, 阿斯卡纳遗迹 viapos 石室
+# 128: 变幻洞窟 | key=kanto altering cave c | slug=kanto-altering-cave-c | aliases=kanto altering cave c, 变化洞窟 c
+# 129: 第3岛码头 | key=three isle port | slug=three-isle-port | aliases=three isle port, three isle port area, 三之岛港口
+# 130: 变幻洞窟 | key=kanto altering cave g | slug=kanto-altering-cave-g | aliases=kanto altering cave g, 变化洞窟 g
+# 131: 变幻洞窟 | key=kanto altering cave e | slug=kanto-altering-cave-e | aliases=kanto altering cave e, 变化洞窟 e
+# 132: 灯火山（红宝石之路）B3F | key=mt ember b3f | slug=mt-ember-b3f | aliases=mt ember b3f, 灯火山 b3f
+# 133: 变幻洞窟 | key=kanto altering cave d | slug=kanto-altering-cave-d | aliases=kanto altering cave d, 变化洞窟 d
+# 134: 变幻洞窟 | key=kanto altering cave h | slug=kanto-altering-cave-h | aliases=kanto altering cave h, 变化洞窟 h
+# 135: 变幻洞窟 | key=kanto altering cave i | slug=kanto-altering-cave-i | aliases=kanto altering cave i, 变化洞窟 i

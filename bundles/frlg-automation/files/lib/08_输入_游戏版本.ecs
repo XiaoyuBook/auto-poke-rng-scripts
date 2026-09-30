@@ -1,0 +1,54 @@
+﻿# ==================================================
+# lib/08_输入_游戏版本.ecs
+#
+# 自动生成。
+# 负责：
+#   1. 游戏版本文本规范化
+#   2. 游戏版本名称显示
+#   3. 遭遇方法文本规范化
+#   4. 遭遇方法名称显示
+# ==================================================
+
+FUNC 规范化游戏版本($游戏版本文本: STRING): INT
+    IF $游戏版本文本 == "火红"
+        RETURN 1
+    ELIF $游戏版本文本 == "fire red"
+        RETURN 1
+    ELIF $游戏版本文本 == "fire red"
+        RETURN 1
+    ELIF $游戏版本文本 == "firered"
+        RETURN 1
+    ELIF $游戏版本文本 == "fr"
+        RETURN 1
+    ELIF $游戏版本文本 == "fr nx"
+        RETURN 1
+    ELIF $游戏版本文本 == "fr nx"
+        RETURN 1
+    ELIF $游戏版本文本 == "叶绿"
+        RETURN 2
+    ELIF $游戏版本文本 == "leaf green"
+        RETURN 2
+    ELIF $游戏版本文本 == "leaf green"
+        RETURN 2
+    ELIF $游戏版本文本 == "leafgreen"
+        RETURN 2
+    ELIF $游戏版本文本 == "lg"
+        RETURN 2
+    ELIF $游戏版本文本 == "lg nx"
+        RETURN 2
+    ELIF $游戏版本文本 == "lg nx"
+        RETURN 2
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+FUNC 游戏版本名称($游戏版本: INT): STRING
+    IF $游戏版本 == 1
+        RETURN "火红"
+    ELIF $游戏版本 == 2
+        RETURN "叶绿"
+    ENDIF
+
+    RETURN "未知版本"
+ENDFUNC

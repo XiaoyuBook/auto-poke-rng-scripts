@@ -1,0 +1,1 @@
+{"searchMethod":1,"ImgBase64":"iVBORw0KGgoAAAANSUhEUgAAAAkAAAAICAIAAACkr0LiAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA0SURBVBhXY1j6imHpWyBigSFWEPmaYfs3DoZpjximPWeY9owVgqaCyRlPGNZ\u002BYBsach/YAE20bX7Airf7AAAAAElFTkSuQmCC","RangeX":1302,"RangeY":983,"RangeWidth":63,"RangeHeight":19,"TargetX":1308,"TargetY":988,"TargetWidth":9,"TargetHeight":8}

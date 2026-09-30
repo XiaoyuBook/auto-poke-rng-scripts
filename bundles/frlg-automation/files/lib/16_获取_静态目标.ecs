@@ -1,0 +1,603 @@
+# ==================================================
+# lib/16_获取_静态目标.ecs
+# ==================================================
+$计数 = 0
+$time_F2 = -1
+$静态目标时间轴模式 = 0
+$静态目标时间轴截止 = 0
+$静态目标时间轴尾段MS = 50
+$静态目标时间轴当前 = 0
+$静态目标时间轴剩余 = 0
+$静态目标时间轴超时 = 0
+
+FUNC 设置静态目标时间轴($模式: INT, $截止: INT, $尾段MS: INT): INT
+    $静态目标时间轴模式 = $模式
+    $静态目标时间轴截止 = $截止
+    $静态目标时间轴尾段MS = $尾段MS
+    RETURN 1
+ENDFUNC
+
+FUNC 静态目标等待F2($普通等待MS: INT): INT
+    IF $静态目标时间轴模式 == 0
+        WAIT $普通等待MS
+        RETURN 0
+    ENDIF
+
+    $静态目标时间轴当前 = TIME()
+    $静态目标时间轴剩余 = $静态目标时间轴截止 - $静态目标时间轴当前
+    IF $静态目标时间轴剩余 > $静态目标时间轴尾段MS
+        $静态目标时间轴剩余 = $静态目标时间轴剩余 - $静态目标时间轴尾段MS
+        WAIT $静态目标时间轴剩余
+    ENDIF
+
+    FOR
+        $静态目标时间轴当前 = TIME()
+        IF $静态目标时间轴当前 >= $静态目标时间轴截止
+            BREAK
+        ENDIF
+    NEXT
+
+    $静态目标时间轴超时 = $静态目标时间轴当前 - $静态目标时间轴截止
+    PRINT F2绝对时间轴(静态): 超时 & $静态目标时间轴超时 & " ms"
+    RETURN $静态目标时间轴超时
+ENDFUNC
+# 1: 妙蛙种子 / Bulbasaur
+# 4: 小火龙 / Charmander
+# 7: 杰尼龟 / Squirtle
+FUNC 获取御三家($F2: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1500
+    A
+    WAIT 1500
+    A
+    WAIT 1000
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 5000
+    B
+    WAIT 3000
+    A
+    WAIT 4000# 劲敌收到宝可梦
+    RETURN 1
+ENDFUNC
+
+# 106: 飞腿郎 / Hitmonlee
+# 107: 快拳郎 / Hitmonchan
+FUNC 获取格斗道场($F2: INT, $目标全国图鉴编号: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1500
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 3000
+    B
+    500
+
+    RETURN 1
+ENDFUNC
+
+# 游戏角奖品
+FUNC 获取游戏角($F2: INT, $目标全国图鉴编号: INT, $游戏版本: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1500
+    A
+    WAIT 1500
+
+    IF $目标全国图鉴编号 == 63
+        # 凯西 / Abra
+    ELIF $目标全国图鉴编号 == 35
+        # 皮皮 / Clefairy
+        DOWN
+        WAIT 500
+    ELIF ($目标全国图鉴编号 == 147 and $游戏版本 == 1) or (($目标全国图鉴编号 == 123 or $目标全国图鉴编号 == 127) and $游戏版本 == 2)
+        # 迷你龙 / Dratini
+        DOWN
+        WAIT 500
+        DOWN
+        WAIT 500
+    ELIF (($目标全国图鉴编号 == 123 or $目标全国图鉴编号 == 127) and $游戏版本 == 1) or ($目标全国图鉴编号 == 147 and $游戏版本 == 2)
+        # 飞天螳螂 / Scyther
+        # 凯罗斯 / Pinsir
+        DOWN
+        WAIT 500
+        DOWN
+        WAIT 500
+        DOWN
+        WAIT 500
+    ELIF $目标全国图鉴编号 == 137
+        # 多边兽 / Porygon
+        UP
+        WAIT 500
+        UP
+        WAIT 500
+    ENDIF
+
+    A
+    WAIT 1500
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 3000
+    B
+    WAIT 500
+    RETURN 1
+ENDFUNC
+
+# 97: 引梦貘人 / Hypno
+# 101: 顽皮雷弹 / Electrode
+# 143: 卡比兽 / Snorlax
+FUNC 获取定点($F2: INT, $目标全国图鉴编号: INT, $识图阈值: INT, $出闪后继续抓捕: INT): INT
+    $F2执行 = $F2
+    IF $目标全国图鉴编号 == 97
+        A
+        WAIT 1000
+        B
+        WAIT 1500
+        B
+        WAIT 1000
+        B
+        WAIT 1500
+        B
+        WAIT 2000
+        B
+        WAIT 1000
+        IF $计数 == 0
+            $计数 = 1
+            $time_F2 = TIME()
+            RETURN $time_F2
+        ENDIF
+        $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+        A# 获取POKEMON RNG流程结束
+        WAIT 7000
+        B
+        4500
+    ELIF $目标全国图鉴编号 == 101
+        IF $计数 == 0
+            $计数 = 1
+            $time_F2 = TIME()
+            RETURN $time_F2
+        ENDIF
+        $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+        A# 获取POKEMON RNG流程结束
+        WAIT 7000
+        B
+        WAIT 3500
+    ELIF $目标全国图鉴编号 == 143
+        A
+        1000
+        A
+        9000
+        B
+        1000
+        IF $计数 == 0
+            $计数 = 1
+            $time_F2 = TIME()
+            RETURN $time_F2
+        ENDIF
+        $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+        A# 获取POKEMON RNG流程结束
+        6500
+        B
+        4500
+    ENDIF
+
+    $出闪检测结果 = CheckCaptureShiny($目标全国图鉴编号, $识图阈值)
+    IF $出闪检测结果 == 1 and $出闪后继续抓捕 == 0
+        RETURN -1
+    ENDIF
+    $抓捕结果 = 扔球抓捕($目标全国图鉴编号, $出闪后继续抓捕, $出闪检测结果)
+
+    IF $目标全国图鉴编号 == 97
+        B
+        WAIT 1000
+        B
+        WAIT 1000
+        B
+        WAIT 1500
+        B
+        WAIT 1500
+        B
+        WAIT 1000
+        B
+        WAIT 1500
+        B
+        WAIT 1000
+        B
+        WAIT 2500
+        B
+        WAIT 1500
+        B
+        WAIT 1500
+        B
+        WAIT 1500
+        B
+        WAIT 1500
+        B
+        WAIT 1500
+        FOR
+            IF @引梦游戏厅 > 95
+                BREAK
+            ENDIF
+            B
+            1500
+        NEXT
+    ENDIF
+
+    RETURN $抓捕结果
+ENDFUNC
+
+# 129: 鲤鱼王 / Magikarp
+FUNC 获取鲤鱼王($F2: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1500
+    A
+    WAIT 1500
+    A
+    WAIT 1000
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 3000
+    B
+    500
+    RETURN 1
+ENDFUNC
+
+# 131: 拉普拉斯 / Lapras
+FUNC 获取拉普拉斯($F2: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1300
+    A
+    WAIT 1000
+    A
+    WAIT 1000
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 3000
+    DOWN
+    WAIT 500
+    A
+    WAIT 1500
+    A
+    WAIT 1500
+    A
+    WAIT 1500
+    A
+    WAIT 2000
+    B
+    500
+    RETURN 1
+ENDFUNC
+
+# 133: 伊布 / Eevee
+FUNC 获取伊布($F2: INT): INT
+    $F2执行 = $F2
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    3000
+    B
+    500
+    RETURN 1
+ENDFUNC
+
+# 138: 菊石兽 / Omanyte
+# 140: 化石盔 / Kabuto
+# 142: 化石翼龙 / Aerodactyl
+FUNC 获取化石琥珀($F2: INT, $目标全国图鉴编号: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1000
+    A
+    WAIT 1500
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 3000
+    B
+    500
+    RETURN 1
+ENDFUNC
+
+# 144: 急冻鸟 / Articuno
+# 145: 闪电鸟 / Zapdos
+# 146: 火焰鸟 / Moltres
+FUNC 获取三圣鸟($F2: INT, $目标全国图鉴编号: INT, $识图阈值: INT, $出闪后继续抓捕: INT): INT
+    $F2执行 = $F2
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 2500
+    A
+    WAIT 5000
+    B
+    WAIT 3000
+
+    $出闪检测结果 = CheckCaptureShiny($目标全国图鉴编号, $识图阈值)
+    IF $出闪检测结果 == 1 and $出闪后继续抓捕 == 0
+        RETURN -1
+    ENDIF
+
+    $抓捕结果 = 扔球抓捕($目标全国图鉴编号, $出闪后继续抓捕, $出闪检测结果)
+
+    RETURN $抓捕结果
+ENDFUNC
+
+# 150: 超梦 / Mewtwo
+FUNC 获取超梦($F2: INT, $目标全国图鉴编号: INT, $识图阈值: INT, $出闪后继续抓捕: INT): INT
+    $F2执行 = $F2
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 3000
+    B
+    WAIT 6000
+    B
+    WAIT 4500
+
+    $出闪检测结果 = CheckCaptureShiny($目标全国图鉴编号, $识图阈值)
+    IF $出闪检测结果 == 1 and $出闪后继续抓捕 == 0
+        RETURN -1
+    ENDIF
+
+    $抓捕结果 = 扔球抓捕($目标全国图鉴编号, $出闪后继续抓捕, $出闪检测结果)
+
+    RETURN $抓捕结果
+ENDFUNC
+
+# 1.6.4-a 波克比专用孵化执行：按14步循环骑车，不再读取蛋孵化标签。
+# 本文件由 Python 替换到 2.0 的 lib/16_获取_静态目标.ecs，不单独执行。
+
+# 仅供定点波克比使用；共享孵蛋流程仍使用 lib/27 的38步循环。
+$波克比专用孵化循环数 = 0
+$波克比专用孵化循环索引 = 0
+
+FUNC 获取波克比_执行专用骑车($目标全国图鉴编号: INT): INT
+    # 波克比属于10孵化周期；第三世代额外周期和1轮安全余量沿用既有计算。
+    $波克比专用孵化循环数 = 孵蛋测试_计算孵化循环数($目标全国图鉴编号, 0, 14, 1)
+    IF $波克比专用孵化循环数 <= 0
+        PRINT 波克比专用骑车循环参数无效
+        RETURN 0
+    ENDIF
+
+    PRINT 【波克比】按14步循环开始骑车
+    FOR $波克比专用孵化循环索引 = 1 TO $波克比专用孵化循环数
+        IF $波克比专用孵化循环索引 == 1 or $波克比专用孵化循环索引 % 10 == 0 or $波克比专用孵化循环索引 == $波克比专用孵化循环数
+            PRINT 波克比骑车进度: & $波克比专用孵化循环索引 & "/" & $波克比专用孵化循环数
+        ENDIF
+        LS UP
+        1300
+        LS RESET
+        WAIT 300
+        LS DOWN
+        1300
+        LS RESET
+    NEXT
+
+    # 保留原定点波克比的固定收尾，不依赖蛋孵化标签。
+    WAIT 500
+    B
+    WAIT 12000
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    RETURN 1
+ENDFUNC
+
+FUNC 获取波克比_领取后前往水之迷宫抓捕($识图阈值: INT, $出闪后继续抓捕: INT): INT
+    # 领取波克比蛋后，从赠蛋老人处直走到水边。路线只使用摇杆，避免长按十字键走路。
+    PRINT 【波克比Seed验证】领取完成，向下前往水之迷宫水边
+    LS DOWN
+    WAIT 1500
+    LS RESET
+    WAIT 300
+    RETURN 孵蛋测试_池塘冲浪甜甜香气抓捕($识图阈值, $出闪后继续抓捕)
+ENDFUNC
+
+FUNC 获取波克比_Seed复核后执行专用骑车($目标全国图鉴编号: INT, $进入TV: INT): INT
+    # 野生能力页位于第6槽；逐层退出后从水面回到岸上，再使用快捷键自行车。
+    PRINT 【波克比】目标Seed已确认，退出野生能力页并开始孵化
+    FOR $波克比专用孵化循环索引 = 1 TO 5
+        B
+        WAIT 1500
+    NEXT
+    LS UP
+    WAIT 200
+    LS RESET
+    WAIT 850
+    IF $进入TV == 0
+        Y
+        WAIT 1000
+    ELSE
+        # Teachy TV占用快捷键时，沿用原波克比流程从背包第二页第四格使用自行车。
+        X
+        WAIT 500
+        DOWN
+        WAIT 500
+        DOWN
+        WAIT 500
+        A
+        WAIT 1500
+        RIGHT
+        WAIT 1500
+        FOR 3
+            DOWN
+            WAIT 500
+        NEXT
+        A
+        WAIT 500
+        A
+        WAIT 1500
+    ENDIF
+    RETURN 获取波克比_执行专用骑车($目标全国图鉴编号)
+ENDFUNC
+
+# 175: 波克比 / Togepi
+FUNC 获取波克比($F2: INT, $目标全国图鉴编号: INT, $进入TV: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 1500
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A
+    WAIT 3000
+    B
+    WAIT 1500
+    B
+    WAIT 1000
+    # 4 = 已领取波克比蛋，交还主脚本执行水之迷宫野生Seed复核。
+    # 只有确认目标Seed后，主脚本才调用专用骑车孵化。
+    RETURN 4
+ENDFUNC
+
+# 243: 雷公 / Raikou
+# 244: 炎帝 / Entei
+# 245: 水君 / Suicune
+FUNC 获取游走($F2: INT, $目标全国图鉴编号: INT, $进入TV: INT, $出闪后继续抓捕: INT, $识图阈值: INT): INT
+    $F2执行 = $F2
+    A
+    WAIT 5000
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    B
+    WAIT 1000
+    B
+    WAIT 1500
+    B
+    WAIT 2000
+    B
+    WAIT 5000
+    B
+    WAIT 1000
+    B
+    WAIT 1500
+    B
+    WAIT 1500
+    B
+    WAIT 1000
+    B
+    WAIT 2000
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    500
+    $抓捕结果 = 移动到三圣兽遭遇地点($进入TV, $目标全国图鉴编号, $出闪后继续抓捕, $识图阈值)
+    RETURN $抓捕结果
+ENDFUNC
+
+# 249: 洛奇亚 / Lugia
+# 250: 凤王 / Ho Oh
+FUNC 获取凤王洛奇亚($F2: INT, $目标全国图鉴编号: INT, $识图阈值: INT, $出闪后继续抓捕: INT): INT
+    $F2执行 = $F2
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    IF $目标全国图鉴编号 == 249
+        A# 获取POKEMON RNG流程结束
+    ELIF $目标全国图鉴编号 == 250
+        UP# 获取POKEMON RNG流程结束
+    ENDIF
+    WAIT 12000
+    B
+    WAIT 4500
+
+    $出闪检测结果 = CheckCaptureShiny($目标全国图鉴编号, $识图阈值)
+    IF $出闪检测结果 == 1 and $出闪后继续抓捕 == 0
+        RETURN -1
+    ENDIF
+
+    $抓捕结果 = 扔球抓捕($目标全国图鉴编号, $出闪后继续抓捕, $出闪检测结果)
+
+    RETURN $抓捕结果
+ENDFUNC
+
+# 386: 代欧奇希斯 / Deoxys Normal
+FUNC 获取代欧奇希斯($F2: INT, $目标全国图鉴编号: INT, $识图阈值: INT, $出闪后继续抓捕: INT): INT
+    $F2执行 = $F2
+    IF $计数 == 0
+        $计数 = 1
+        $time_F2 = TIME()
+        RETURN $time_F2
+    ENDIF
+    $静态目标时间轴超时 = 静态目标等待F2($F2执行)
+    A# 获取POKEMON RNG流程结束
+    WAIT 14000
+    B
+    WAIT 3200
+
+    $出闪检测结果 = CheckCaptureShiny($目标全国图鉴编号, $识图阈值)
+    IF $出闪检测结果 == 1 and $出闪后继续抓捕 == 0
+        RETURN -1
+    ENDIF
+
+    $抓捕结果 = 扔球抓捕($目标全国图鉴编号, $出闪后继续抓捕, $出闪检测结果)
+
+    RETURN $抓捕结果
+ENDFUNC

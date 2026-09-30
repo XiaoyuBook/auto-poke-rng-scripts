@@ -1,0 +1,53 @@
+﻿# ==================================================
+# lib/00_Seed表_入口.ecs
+# 由 convert_seed.py 生成
+# 转换时间：2026-05-07 12:19:26
+#
+# 依赖：
+#   02_Seed表_火红_NX.ecs
+#   03_Seed表_叶绿_NX.ecs
+#
+# 游戏版本：
+#   1 = 火红
+#   2 = 叶绿
+# ==================================================
+
+FUNC 取Seed最大索引($游戏版本: INT): INT
+    IF $游戏版本 == 1
+        RETURN 取Seed最大索引_火红()
+    ELIF $游戏版本 == 2
+        RETURN 取Seed最大索引_叶绿()
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+FUNC 取MS($游戏版本: INT, $idx: INT): INT
+    IF $游戏版本 == 1
+        RETURN 取MS_火红($idx)
+    ELIF $游戏版本 == 2
+        RETURN 取MS_叶绿($idx)
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+FUNC 取RawTime($游戏版本: INT, $idx: INT): INT
+    IF $游戏版本 == 1
+        RETURN 取RawTime_火红($idx)
+    ELIF $游戏版本 == 2
+        RETURN 取RawTime_叶绿($idx)
+    ENDIF
+
+    RETURN -1
+ENDFUNC
+
+FUNC 取SeedHEX($游戏版本: INT, $idx: INT, $mode: INT): STRING
+    IF $游戏版本 == 1
+        RETURN 取SeedHEX_火红($idx, $mode)
+    ELIF $游戏版本 == 2
+        RETURN 取SeedHEX_叶绿($idx, $mode)
+    ENDIF
+
+    RETURN ""
+ENDFUNC

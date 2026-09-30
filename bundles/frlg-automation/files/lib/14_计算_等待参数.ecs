@@ -1,0 +1,38 @@
+FUNC 帧转60FPS毫秒($帧: INT): INT
+    RETURN $帧 * 100 / 6
+ENDFUNC
+
+FUNC 帧转120FPS毫秒($帧: INT): INT
+    RETURN $帧 * 100 / 12
+ENDFUNC
+
+
+
+FUNC 计算普通F2帧($目标消耗帧: INT, $消耗帧实际执行修正量: INT, $F1阶段脚本固定帧: INT, $F2阶段脚本固定帧: INT, $总消耗帧基础补偿: INT): INT
+    RETURN $目标消耗帧 - $消耗帧实际执行修正量 - $F1阶段脚本固定帧 - $F2阶段脚本固定帧 + $总消耗帧基础补偿
+ENDFUNC
+
+FUNC 计算TV帧($目标消耗帧: INT, $消耗帧实际执行修正量: INT, $F1阶段脚本固定帧: INT, $F2阶段脚本固定帧: INT, $总消耗帧基础补偿: INT, $TV单次消耗帧: INT): INT
+    RETURN ($目标消耗帧 - $消耗帧实际执行修正量 - $F1阶段脚本固定帧 - $F2阶段脚本固定帧 + $总消耗帧基础补偿) / $TV单次消耗帧
+ENDFUNC
+
+FUNC 计算TV模式F2帧($目标消耗帧: INT, $消耗帧实际执行修正量: INT, $F1阶段脚本固定帧: INT, $F2阶段脚本固定帧: INT, $总消耗帧基础补偿: INT, $TV单次消耗帧: INT): INT
+    RETURN ($目标消耗帧 - $消耗帧实际执行修正量 - $F1阶段脚本固定帧 - $F2阶段脚本固定帧 + $总消耗帧基础补偿) % $TV单次消耗帧
+ENDFUNC
+
+
+FUNC 奇偶修正后F1帧($F1帧: INT, $F2帧: INT): INT
+    IF $F2帧 % 2 != 0
+        RETURN $F1帧 + 1
+    ELSE
+        RETURN $F1帧
+    ENDIF
+ENDFUNC
+
+FUNC 奇偶修正后F2帧($F2帧: INT): INT
+    IF $F2帧 % 2 != 0
+        RETURN $F2帧 - 1
+    ELSE
+        RETURN $F2帧
+    ENDIF
+ENDFUNC

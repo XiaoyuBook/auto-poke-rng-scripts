@@ -5,6 +5,18 @@ const os = require('node:os');
 const path = require('node:path');
 const { unzipSync } = require('fflate');
 const { build } = require('../tools/build.cjs');
+const { auditFrlg } = require('../tools/audit-frlg.cjs');
+
+test('FRLG preserves both upstream entries, every label and both models; rejects corruption', t => {
+  const source = path.resolve(__dirname, '../bundles/frlg-automation/files');
+  assert.deepEqual(auditFrlg(source), { scripts: 33, labels: 1154, models: 2 });
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'frlg-corpus-'));
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.cpSync(source, root, { recursive: true });
+  const label = fs.readdirSync(path.join(root, 'ImgLabel'))[0];
+  fs.appendFileSync(path.join(root, 'ImgLabel', label), ' ');
+  assert.throws(() => auditFrlg(root), /标签指纹不匹配/);
+});
 function fixture(t) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'rng-pack-build-'));
   const folder = path.join(root, 'bundles/demo'); fs.mkdirSync(path.join(folder, 'files'), { recursive: true });
@@ -107,7 +119,7 @@ test('the 0.0.4 categorized catalog retains original scripts and required labels
   const root = path.resolve(__dirname, '..');
   const original = unzipSync(fs.readFileSync(path.join(root, 'packages/bdsp-official/0.0.1.zip')));
   const seen = new Set();
-  for (const id of fs.readdirSync(path.join(root, 'bundles'))) {
+  for (const id of fs.readdirSync(path.join(root, 'bundles')).filter(id => id.startsWith('bdsp-'))) {
     const folder = path.join(root, 'bundles', id), manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json')));
     assert.equal(manifest.version, '0.0.4');
     const scripts = fs.readdirSync(path.join(folder, 'files')).filter(file => /\.txt$/i.test(file));
@@ -122,7 +134,7 @@ test('the 0.0.4 categorized catalog retains original scripts and required labels
   }
   assert.equal(seen.size, 22);
   assert.equal(fs.readdirSync(path.join(root, 'categories')).length, 6);
-  const categories = Object.fromEntries(fs.readdirSync(path.join(root, 'bundles')).map(id => {
+  const categories = Object.fromEntries(fs.readdirSync(path.join(root, 'bundles')).filter(id => id.startsWith('bdsp-')).map(id => {
     const manifest = JSON.parse(fs.readFileSync(path.join(root, 'bundles', id, 'manifest.json')));
     return [id, manifest.categories.find(group => group.files.some(file => file.endsWith('.txt')))?.name];
   }));

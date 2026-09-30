@@ -1,0 +1,271 @@
+# OCR后处理测试
+# traineddata 只能保存 OCR 模型和 Tesseract 词典，不能保存下面这种候选重排逻辑。
+# 这里用完整 Levenshtein 编辑距离 + 少量 FRLG 名称识别修正规则。
+
+$OCR最佳名称 = ""
+$OCR最佳分 = 2147483647
+
+# GUI 运行时覆盖：OCR 不可用时直接回到单字识别
+FUNC OCR识别抓捕对象名称(): STRING
+
+    $name = OCR(310, 141, 360, 53, "frlg_battle")
+    IF $name == "OCR NOT SUPPORT"
+        PRINT ""
+        PRINT 【OCR名称识别】
+        PRINT "OCR原文:" & $name
+        PRINT OCR运行时不可用，跳过名称后处理
+        RETURN ""
+    ENDIF
+    IF $name == "OCR ARGS ERR!"
+        PRINT ""
+        PRINT 【OCR名称识别】
+        PRINT "OCR原文:" & $name
+        PRINT OCR区域参数无效，跳过名称后处理
+        RETURN ""
+    ENDIF
+
+    $fixedName = OCR名称V2后处理($name)
+
+    PRINT ""
+    PRINT 【OCR名称识别】
+    PRINT "OCR原文:" & $name
+    PRINT "后处理:" & $fixedName
+
+    RETURN $fixedName
+ENDFUNC
+
+FUNC OCR最小3($OCR最小A: INT, $OCR最小B: INT, $OCR最小C: INT): INT
+    $OCR最小结果 = $OCR最小A
+    IF $OCR最小B < $OCR最小结果
+        $OCR最小结果 = $OCR最小B
+    ENDIF
+    IF $OCR最小C < $OCR最小结果
+        $OCR最小结果 = $OCR最小C
+    ENDIF
+    RETURN $OCR最小结果
+ENDFUNC
+
+FUNC OCR编辑距离($OCR文本A: STRING, $OCR文本B: STRING): INT
+    $OCR长度A = LEN($OCR文本A)
+    $OCR长度B = LEN($OCR文本B)
+    IF $OCR长度A == 0
+        RETURN $OCR长度B
+    ENDIF
+    IF $OCR长度B == 0
+        RETURN $OCR长度A
+    ENDIF
+
+    $OCR上一行 = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+    # 1.70a 1aed001 会错误合并函数内两个完全相同的数组字面量，并让第二个 StoreIndex 引用已删除的 SSA 值。
+    # 第 0 格进入每一行前都会被 $OCR行 覆盖，初值改为 1 不改变编辑距离，只阻止该错误优化。
+    $OCR当前行 = [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+    FOR $OCR列 = 0 TO $OCR长度B
+        $OCR上一行[$OCR列] = $OCR列
+    NEXT
+
+    FOR $OCR行 = 1 TO $OCR长度A
+        $OCR当前行[0] = $OCR行
+        FOR $OCR列 = 1 TO $OCR长度B
+            $OCR下标A = $OCR行 - 1
+            $OCR下标B = $OCR列 - 1
+            $OCR替换代价 = 1
+            IF $OCR文本A[$OCR下标A] == $OCR文本B[$OCR下标B]
+                $OCR替换代价 = 0
+            ENDIF
+
+            $OCR前一列 = $OCR列 - 1
+            $OCR上一行同列 = $OCR上一行[$OCR列]
+            $OCR当前行前列 = $OCR当前行[$OCR前一列]
+            $OCR上一行前列 = $OCR上一行[$OCR前一列]
+            $OCR删除值 = $OCR上一行同列 + 1
+            $OCR插入值 = $OCR当前行前列 + 1
+            $OCR替换值 = $OCR上一行前列 + $OCR替换代价
+            $OCR格子值 = OCR最小3($OCR删除值, $OCR插入值, $OCR替换值)
+            $OCR当前行[$OCR列] = $OCR格子值
+        NEXT
+
+        FOR $OCR列 = 0 TO $OCR长度B
+            $OCR格子值 = $OCR当前行[$OCR列]
+            $OCR上一行[$OCR列] = $OCR格子值
+        NEXT
+    NEXT
+
+    $OCR编辑距离结果 = $OCR上一行[$OCR长度B]
+    RETURN $OCR编辑距离结果
+ENDFUNC
+
+FUNC OCR公共前缀长度($OCR文本A: STRING, $OCR文本B: STRING): INT
+    $OCR长度A = LEN($OCR文本A)
+    $OCR长度B = LEN($OCR文本B)
+    $OCR前缀上限 = 0
+    IF $OCR长度A < $OCR长度B
+        $OCR前缀上限 = $OCR长度A
+    ELSE
+        $OCR前缀上限 = $OCR长度B
+    ENDIF
+
+    $OCR前缀数量 = 0
+    IF $OCR前缀上限 > 0
+        $OCR前缀末尾 = $OCR前缀上限 - 1
+        FOR $OCR前缀下标 = 0 TO $OCR前缀末尾
+            IF $OCR文本A[$OCR前缀下标] == $OCR文本B[$OCR前缀下标]
+                $OCR前缀数量 = $OCR前缀数量 + 1
+            ELSE
+                RETURN $OCR前缀数量
+            ENDIF
+        NEXT
+    ENDIF
+    RETURN $OCR前缀数量
+ENDFUNC
+
+FUNC OCR去首字符($OCR文本: STRING): STRING
+    $OCR长度 = LEN($OCR文本)
+    $OCR结果 = ""
+    IF $OCR长度 > 1
+        $OCR末尾 = $OCR长度 - 1
+        FOR $OCR下标 = 1 TO $OCR末尾
+            $OCR结果 = $OCR结果 & $OCR文本[$OCR下标]
+        NEXT
+    ENDIF
+    RETURN $OCR结果
+ENDFUNC
+
+FUNC OCR清理比较文本($OCR文本: STRING): STRING
+    $OCR长度 = LEN($OCR文本)
+    $OCR结果 = ""
+    IF $OCR长度 > 0
+        $OCR末尾 = $OCR长度 - 1
+        FOR $OCR下标 = 0 TO $OCR末尾
+            $OCR字符 = $OCR文本[$OCR下标]
+            IF $OCR字符 != "-"
+                IF $OCR字符 != "."
+                    IF $OCR字符 != "'"
+                        IF $OCR字符 != " "
+                            IF $OCR字符 != "W"
+                                IF $OCR字符 != "Z"
+                                    $OCR结果 = $OCR结果 & $OCR字符
+                                ENDIF
+                            ENDIF
+                        ENDIF
+                    ENDIF
+                ENDIF
+            ENDIF
+        NEXT
+    ENDIF
+    RETURN $OCR结果
+ENDFUNC
+
+FUNC OCR名称候选得分($OCR原文: STRING, $OCR候选: STRING): INT
+    $OCR原文长度 = LEN($OCR原文)
+    $OCR候选长度 = LEN($OCR候选)
+    $OCR距离 = OCR编辑距离($OCR原文, $OCR候选)
+    $OCR前缀 = OCR公共前缀长度($OCR原文, $OCR候选)
+    $OCR长度差 = 0
+
+    IF $OCR原文长度 > $OCR候选长度
+        $OCR长度差 = $OCR原文长度 - $OCR候选长度
+    ELSE
+        $OCR长度差 = $OCR候选长度 - $OCR原文长度
+    ENDIF
+
+    $OCR得分 = $OCR距离 * 1000
+    $OCR得分 = $OCR得分 + $OCR长度差 * 60
+
+    IF $OCR原文长度 > 0
+        IF $OCR候选长度 > 0
+            IF $OCR原文[0] == $OCR候选[0]
+                $OCR得分 = $OCR得分 - 80
+            ELSE
+                $OCR得分 = $OCR得分 + 80
+            ENDIF
+        ENDIF
+    ENDIF
+
+    IF $OCR前缀 >= 2
+        $OCR得分 = $OCR得分 - 90
+    ENDIF
+    IF $OCR前缀 >= 3
+        $OCR得分 = $OCR得分 - 60
+    ENDIF
+    IF $OCR前缀 > 0
+        $OCR得分 = $OCR得分 - $OCR前缀 * 70
+    ENDIF
+
+    IF $OCR前缀 == $OCR候选长度
+        $OCR得分 = $OCR得分 - 180
+        IF $OCR候选长度 <= 4
+            $OCR得分 = $OCR得分 - 120
+        ENDIF
+    ENDIF
+
+    IF $OCR候选 IN ($OCR原文)
+        $OCR得分 = $OCR得分 - 140
+    ENDIF
+
+    IF $OCR原文长度 > 1
+        IF $OCR候选长度 > 1
+            $OCR原文尾 = OCR去首字符($OCR原文)
+            $OCR候选尾 = OCR去首字符($OCR候选)
+            $OCR尾部距离 = OCR编辑距离($OCR原文尾, $OCR候选尾)
+            IF $OCR尾部距离 <= 1
+                $OCR得分 = $OCR得分 - 180
+            ELIF $OCR尾部距离 <= 2
+                $OCR得分 = $OCR得分 - 90
+            ENDIF
+        ENDIF
+    ENDIF
+
+    $OCR原文清理 = OCR清理比较文本($OCR原文)
+    $OCR候选清理 = OCR清理比较文本($OCR候选)
+    IF $OCR候选清理 IN ($OCR原文清理)
+        $OCR得分 = $OCR得分 - 420
+    ENDIF
+
+    RETURN $OCR得分
+ENDFUNC
+
+FUNC OCR尝试候选($OCR原文: STRING, $OCR候选: STRING)
+    $OCR候选得分 = OCR名称候选得分($OCR原文, $OCR候选)
+
+    IF $OCR候选得分 < $OCR最佳分
+        $OCR最佳分 = $OCR候选得分
+        $OCR最佳名称 = $OCR候选
+    ENDIF
+ENDFUNC
+
+FUNC OCR名称V2后处理($OCR原文: STRING): STRING
+    $OCR键 = "|" & $OCR原文 & "|"
+
+    # NIDORAN实际只会出现带符号版本。
+    IF $OCR键 IN ("|NIDORANXR|NIDORANL|NIDORANO|NIDORANA|NIDORANQ|NIDORAN♀|")
+        RETURN "NIDORAN♀"
+    ELIF $OCR键 IN ("|NIDORAN|NIDORANZ|NIDORANWA|NIDORANX|NIDORAN♂|")
+        RETURN "NIDORAN♂"
+    ENDIF
+
+    IF $OCR原文 == "|SATUQ|HATU|HNATUY|"
+        RETURN "XATU"
+    ENDIF
+
+    $OCR候选词表 = ["ABRA","ABSOL","AERODACTYL","AGGRON","AIPOM","ALAKAZAM","ALTARIA","AMPHAROS","ANORITH","ARBOK","ARCANINE","ARIADOS","ARMALDO","ARON","ARTICUNO","AZUMARILL","AZURILL","BAGON","BALTOY","BANETTE","BARBOACH","BAYLEEF","BEAUTIFLY","BEEDRILL","BELDUM","BELLOSSOM","BELLSPROUT","BLASTOISE","BLAZIKEN","BLISSEY","BRELOOM","BULBASAUR","BUTTERFREE","CACNEA","CACTURNE","CAMERUPT","CARVANHA","CASCOON","CASTFORM","CATERPIE","CELEBI","CHANSEY","CHARIZARD","CHARMANDER","CHARMELEON","CHIKORITA","CHIMECHO","CHINCHOU","CLAMPERL","CLAYDOL","CLEFABLE","CLEFAIRY","CLEFFA","CLOYSTER","COMBUSKEN","CORPHISH","CORSOLA","CRADILY","CRAWDAUNT","CROBAT","CROCONAW","CUBONE","CYNDAQUIL","DELCATTY","DELIBIRD","DEOXYS","DEWGONG","DIGLETT","DITTO","DODRIO","DODUO","DONPHAN","DRAGONAIR","DRAGONITE","DRATINI","DROWZEE","DUGTRIO","DUNSPARCE","DUSCLOPS","DUSKULL","DUSTOX","EEVEE","EKANS","ELECTABUZZ","ELECTRIKE","ELECTRODE","ELEKID","ENTEI","ESPEON","EXEGGCUTE","EXEGGUTOR","EXPLOUD","FEAROW","FEEBAS","FERALIGATR","FLAAFFY","FLAREON","FLYGON","FORRETRESS","FURRET","GARDEVOIR","GASTLY","GENGAR","GEODUDE","GIRAFARIG","GLALIE","GLIGAR","GLOOM","GOLBAT","GOLDEEN","GOLDUCK","GOLEM","GOREBYSS","GRANBULL","GRAVELER","GRIMER","GROUDON","GROVYLE","GROWLITHE","GRUMPIG","GULPIN","GYARADOS","HARIYAMA","HAUNTER","HERACROSS","HITMONCHAN","HITMONLEE","HITMONTOP","HO-OH","HOOTHOOT","HOPPIP","HORSEA","HOUNDOOM","HOUNDOUR","HUNTAIL","HYPNO","IGGLYBUFF","ILLUMISE","IVYSAUR","JIGGLYPUFF","JIRACHI","JOLTEON","JUMPLUFF","JYNX","KABUTO","KABUTOPS","KADABRA","KAKUNA","KANGASKHAN","KECLEON","KINGDRA","KINGLER","KIRLIA","KOFFING","KRABBY","KYOGRE","LAIRON","LANTURN","LAPRAS","LARVITAR","LATIAS","LATIOS","LEDIAN","LEDYBA","LICKITUNG","LILEEP","LINOONE","LOMBRE","LOTAD","LOUDRED","LUDICOLO","LUGIA","LUNATONE","LUVDISC","MACHAMP","MACHOKE","MACHOP","MAGBY","MAGCARGO","MAGIKARP","MAGMAR","MAGNEMITE","MAGNETON","MAKUHITA","MANECTRIC","MANKEY","MANTINE","MAREEP","MARILL","MAROWAK","MARSHTOMP","MASQUERAIN","MAWILE","MEDICHAM","MEDITITE","MEGANIUM","MEOWTH","METAGROSS","METANG","METAPOD","MEW","MEWTWO","MIGHTYENA","MILOTIC","MILTANK","MINUN","MISDREAVUS","MOLTRES","MUDKIP","MUK","MURKROW","NATU","NIDOKING","NIDOQUEEN","NIDORAN♀","NIDORAN♂","NIDORINA","NIDORINO","NINCADA","NINETALES","NINJASK","NOCTOWL","NOSEPASS","NUMEL","NUZLEAF","OCTILLERY","ODDISH","OMANYTE","OMASTAR","ONIX","PARAS","PARASECT","PELIPPER","PERSIAN","PHANPY","PICHU","PIDGEOT","PIDGEOTTO","PIDGEY","PIKACHU","PILOSWINE","PINECO","PINSIR","PLUSLE","POLITOED","POLIWAG","POLIWHIRL","POLIWRATH","PONYTA","POOCHYENA","PORYGON","PRIMEAPE","PSYDUCK","PUPITAR","QUAGSIRE","QUILAVA","QWILFISH","RAICHU","RAIKOU","RALTS","RAPIDASH","RATICATE","RATTATA","RAYQUAZA","REGICE","REGIROCK","REGISTEEL","RELICANTH","REMORAID","RHYDON","RHYHORN","ROSELIA","SABLEYE","SALAMENCE","SANDSHREW","SANDSLASH","SCEPTILE","SCIZOR","SCYTHER","SEADRA","SEAKING","SEALEO","SEEDOT","SEEL","SENTRET","SEVIPER","SHARPEDO","SHEDINJA","SHELGON","SHELLDER","SHIFTRY","SHROOMISH","SHUCKLE","SHUPPET","SILCOON","SKARMORY","SKIPLOOM","SKITTY","SLAKING","SLAKOTH","SLOWBRO","SLOWKING","SLOWPOKE","SLUGMA","SMEARGLE","SMOOCHUM","SNEASEL","SNORLAX","SNORUNT","SNUBBULL","SOLROCK","SPEAROW","SPHEAL","SPINARAK","SPINDA","SPOINK","SQUIRTLE","STANTLER","STARMIE","STARYU","STEELIX","SUDOWOODO","SUICUNE","SUNFLORA","SUNKERN","SURSKIT","SWABLU","SWALOT","SWAMPERT","SWELLOW","SWINUB","TAILLOW","TANGELA","TAUROS","TEDDIURSA","TENTACOOL","TENTACRUEL","TOGEPI","TOGETIC","TORCHIC","TORKOAL","TOTODILE","TRAPINCH","TREECKO","TROPIUS","TYPHLOSION","TYRANITAR","TYROGUE","UMBREON","UNOWN","URSARING","VAPOREON","VENOMOTH","VENONAT","VENUSAUR","VIBRAVA","VICTREEBEL","VIGOROTH","VILEPLUME","VOLBEAT","VOLTORB","VULPIX","WAILMER","WAILORD","WALREIN","WARTORTLE","WEEDLE","WEEPINBELL","WEEZING","WHISCASH","WHISMUR","WIGGLYTUFF","WINGULL","WOBBUFFET","WOOPER","WURMPLE","WYNAUT","XATU","YANMA","ZANGOOSE","ZAPDOS","ZIGZAGOON","ZUBAT"]
+
+    IF $OCR原文 IN $OCR候选词表
+        RETURN $OCR原文
+    ENDIF
+
+    $OCR最佳名称 = $OCR原文
+    $OCR最佳分 = 2147483647
+    $OCR候选数量 = LEN($OCR候选词表)
+    $OCR候选末尾 = $OCR候选数量 - 1
+    FOR $OCR候选下标 = 0 TO $OCR候选末尾
+        $OCR当前候选 = $OCR候选词表[$OCR候选下标]
+        $OCR当前候选得分 = OCR名称候选得分($OCR原文, $OCR当前候选)
+        IF $OCR当前候选得分 < $OCR最佳分
+            $OCR最佳分 = $OCR当前候选得分
+            $OCR最佳名称 = $OCR当前候选
+        ENDIF
+    NEXT
+
+    RETURN $OCR最佳名称
+ENDFUNC

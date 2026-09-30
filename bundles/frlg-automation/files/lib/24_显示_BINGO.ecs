@@ -1,0 +1,1217 @@
+﻿# ==================================================
+# lib/21_显示_BINGO.ecs
+# ==================================================
+
+$BINGO负4负4 = 0
+$BINGO负4负3 = 0
+$BINGO负4负2 = 0
+$BINGO负4负1 = 0
+$BINGO负4零 = 0
+$BINGO负4正1 = 0
+$BINGO负4正2 = 0
+$BINGO负4正3 = 0
+$BINGO负4正4 = 0
+$BINGO负3负4 = 0
+$BINGO负3负3 = 0
+$BINGO负3负2 = 0
+$BINGO负3负1 = 0
+$BINGO负3零 = 0
+$BINGO负3正1 = 0
+$BINGO负3正2 = 0
+$BINGO负3正3 = 0
+$BINGO负3正4 = 0
+$BINGO负2负4 = 0
+$BINGO负2负3 = 0
+$BINGO负2负2 = 0
+$BINGO负2负1 = 0
+$BINGO负2零 = 0
+$BINGO负2正1 = 0
+$BINGO负2正2 = 0
+$BINGO负2正3 = 0
+$BINGO负2正4 = 0
+$BINGO负1负4 = 0
+$BINGO负1负3 = 0
+$BINGO负1负2 = 0
+$BINGO负1负1 = 0
+$BINGO负1零 = 0
+$BINGO负1正1 = 0
+$BINGO负1正2 = 0
+$BINGO负1正3 = 0
+$BINGO负1正4 = 0
+$BINGO零负4 = 0
+$BINGO零负3 = 0
+$BINGO零负2 = 0
+$BINGO零负1 = 0
+$BINGO零零 = 0
+$BINGO零正1 = 0
+$BINGO零正2 = 0
+$BINGO零正3 = 0
+$BINGO零正4 = 0
+$BINGO正1负4 = 0
+$BINGO正1负3 = 0
+$BINGO正1负2 = 0
+$BINGO正1负1 = 0
+$BINGO正1零 = 0
+$BINGO正1正1 = 0
+$BINGO正1正2 = 0
+$BINGO正1正3 = 0
+$BINGO正1正4 = 0
+$BINGO正2负4 = 0
+$BINGO正2负3 = 0
+$BINGO正2负2 = 0
+$BINGO正2负1 = 0
+$BINGO正2零 = 0
+$BINGO正2正1 = 0
+$BINGO正2正2 = 0
+$BINGO正2正3 = 0
+$BINGO正2正4 = 0
+$BINGO正3负4 = 0
+$BINGO正3负3 = 0
+$BINGO正3负2 = 0
+$BINGO正3负1 = 0
+$BINGO正3零 = 0
+$BINGO正3正1 = 0
+$BINGO正3正2 = 0
+$BINGO正3正3 = 0
+$BINGO正3正4 = 0
+$BINGO正4负4 = 0
+$BINGO正4负3 = 0
+$BINGO正4负2 = 0
+$BINGO正4负1 = 0
+$BINGO正4零 = 0
+$BINGO正4正1 = 0
+$BINGO正4正2 = 0
+$BINGO正4正3 = 0
+$BINGO正4正4 = 0
+
+$BINGOSeed差 = 0
+$BINGO帧差 = 0
+$BINGO次数 = 0
+$BINGO行偏移 = 0
+$BINGOSeed索引 = 0
+$BINGOSeed = ""
+$BINGOSeed负4文本 = ""
+$BINGOSeed负3文本 = ""
+$BINGOSeed负2文本 = ""
+$BINGOSeed负1文本 = ""
+$BINGOSeed零文本 = ""
+$BINGOSeed正1文本 = ""
+$BINGOSeed正2文本 = ""
+$BINGOSeed正3文本 = ""
+$BINGOSeed正4文本 = ""
+$BINGO行差文本 = ""
+$BINGO格子 = ""
+$BINGO格负4 = ""
+$BINGO格负3 = ""
+$BINGO格负2 = ""
+$BINGO格负1 = ""
+$BINGO格零 = ""
+$BINGO格正1 = ""
+$BINGO格正2 = ""
+$BINGO格正3 = ""
+$BINGO格正4 = ""
+$BINGO命中差索引 = 0
+$BINGO本轮消耗帧误差 = 0
+$BINGO消耗帧校准死区 = 0
+$BINGO消耗帧负向死区 = 0
+$BINGO消耗帧正向死区 = 0
+$BINGOSeed容差 = 0
+$BINGOSeed死区 = 0
+$BINGOSeed负向死区 = 0
+$BINGOSeed正向死区 = 0
+$BINGO目标索引 = 0
+$BINGOSeed最大索引 = 0
+$BINGO游戏版本 = 0
+$BINGOSeed模式 = 0
+$BINGO进入TV = 0
+$BINGOTV单次消耗帧 = 0
+$BINGO已新增正向TV倍数 = 0
+$BINGO已新增负向TV倍数 = 0
+$BINGOk上界 = 0
+$BINGOk下界 = 0
+$BINGOk = 0
+$BINGOk中心 = 0
+$BINGO本轮在范围内 = 0
+$BINGO稳定阈值 = 5
+$BINGO稳定簇类型 = 0
+$BINGO稳定簇Seed差 = 0
+$BINGO稳定簇帧差 = 0
+$BINGO稳定簇次数 = 0
+$BINGO稳定簇结果 = 0
+# 下轮命中预测(2D)：ｏ标出 Seed预测中心±Seed半径(纵) × 剩余帧下轮命中预测中心±半径(横) 区域；半径=各轴动态窗(自适应)。由 设置BINGO簇() 注入
+$BINGO簇Seed中心 = 0
+$BINGO簇Seed半径 = 0
+$BINGO簇中心 = 0
+$BINGO簇半径 = 0
+$BINGOTV帧启用 = 0
+$BINGOTV帧当前 = 0
+$BINGOTV帧预测 = 0
+$BINGOTV帧预测半径 = 0
+$BINGOTV帧本轮在范围内 = 0
+$BINGOTV帧负4 = 0
+$BINGOTV帧负3 = 0
+$BINGOTV帧负2 = 0
+$BINGOTV帧负1 = 0
+$BINGOTV帧零 = 0
+$BINGOTV帧正1 = 0
+$BINGOTV帧正2 = 0
+$BINGOTV帧正3 = 0
+$BINGOTV帧正4 = 0
+$BINGOTV帧列 = 0
+$BINGOTV帧次数 = 0
+$BINGOTV帧格负4 = ""
+$BINGOTV帧格负3 = ""
+$BINGOTV帧格负2 = ""
+$BINGOTV帧格负1 = ""
+$BINGOTV帧格零 = ""
+$BINGOTV帧格正1 = ""
+$BINGOTV帧格正2 = ""
+$BINGOTV帧格正3 = ""
+$BINGOTV帧格正4 = ""
+$BINGOTV帧格子 = ""
+
+FUNC 设置BINGO上下文($输入命中差索引: INT, $输入本轮消耗帧误差: INT, $输入消耗帧校准死区: INT, $输入消耗帧负向死区: INT, $输入消耗帧正向死区: INT, $输入Seed容差: INT, $输入目标索引: INT, $输入Seed最大索引: INT, $输入游戏版本: INT, $输入Seed模式: INT, $输入进入TV: INT, $输入TV单次消耗帧: INT, $输入已新增正向TV倍数: INT, $输入已新增负向TV倍数: INT): INT
+    $BINGO命中差索引 = $输入命中差索引
+    $BINGO本轮消耗帧误差 = $输入本轮消耗帧误差
+    $BINGO消耗帧校准死区 = $输入消耗帧校准死区
+    $BINGO消耗帧负向死区 = $输入消耗帧负向死区
+    $BINGO消耗帧正向死区 = $输入消耗帧正向死区
+    $BINGOSeed容差 = $输入Seed容差
+    $BINGO目标索引 = $输入目标索引
+    $BINGOSeed最大索引 = $输入Seed最大索引
+    $BINGO游戏版本 = $输入游戏版本
+    $BINGOSeed模式 = $输入Seed模式
+    $BINGO进入TV = $输入进入TV
+    $BINGOTV单次消耗帧 = $输入TV单次消耗帧
+    $BINGO已新增正向TV倍数 = $输入已新增正向TV倍数
+    $BINGO已新增负向TV倍数 = $输入已新增负向TV倍数
+    $BINGO本轮在范围内 = 0
+    RETURN 1
+ENDFUNC
+
+# 注入下轮命中预测(2D)：ｏ标出 Seed下轮命中预测中心±Seed半径 × 剩余帧下轮命中预测中心±帧半径；半径传各轴动态窗
+FUNC 设置BINGO簇($输入Seed中心: INT, $输入Seed半径: INT, $输入簇中心: INT, $输入簇半径: INT): INT
+    $BINGO簇Seed中心 = $输入Seed中心
+    $BINGO簇Seed半径 = $输入Seed半径
+    $BINGO簇中心 = $输入簇中心
+    $BINGO簇半径 = $输入簇半径
+    RETURN 1
+ENDFUNC
+
+FUNC 设置BINGOTV帧轴($输入启用: INT, $输入当前TV帧: INT, $输入TV帧预测: INT, $输入TV帧预测半径: INT): INT
+    $BINGOTV帧启用 = $输入启用
+    $BINGOTV帧当前 = $输入当前TV帧
+    $BINGOTV帧预测 = $输入TV帧预测
+    $BINGOTV帧预测半径 = $输入TV帧预测半径
+    $BINGOTV帧本轮在范围内 = 0
+    RETURN 1
+ENDFUNC
+
+FUNC 设置BINGOSeed文本($输入Seed负4: STRING, $输入Seed负3: STRING, $输入Seed负2: STRING, $输入Seed负1: STRING, $输入Seed零: STRING, $输入Seed正1: STRING, $输入Seed正2: STRING, $输入Seed正3: STRING, $输入Seed正4: STRING): INT
+    $BINGOSeed负4文本 = $输入Seed负4
+    $BINGOSeed负3文本 = $输入Seed负3
+    $BINGOSeed负2文本 = $输入Seed负2
+    $BINGOSeed负1文本 = $输入Seed负1
+    $BINGOSeed零文本 = $输入Seed零
+    $BINGOSeed正1文本 = $输入Seed正1
+    $BINGOSeed正2文本 = $输入Seed正2
+    $BINGOSeed正3文本 = $输入Seed正3
+    $BINGOSeed正4文本 = $输入Seed正4
+    RETURN 1
+ENDFUNC
+
+FUNC 记录BINGO命中
+    IF $BINGO命中差索引 < -4 or $BINGO命中差索引 > 4
+        RETURN
+    ENDIF
+
+    $BINGOSeed差 = $BINGO命中差索引
+    $BINGO帧差 = BINGO归一化帧差($BINGO本轮消耗帧误差)
+
+    IF $BINGO帧差 < -4 or $BINGO帧差 > 4
+        RETURN
+    ENDIF
+
+    IF $BINGO进入TV == 1 and $BINGO本轮消耗帧误差 != $BINGO帧差
+        PRINT ""
+        PRINT 【BINGO TV归一化】
+        PRINT 原始帧误差: & $BINGO本轮消耗帧误差 & 帧
+        PRINT 归一化帧偏移: & $BINGO帧差 & 帧
+    ENDIF
+
+    CALL 增加BINGO次数
+    $BINGO本轮在范围内 = 1
+ENDFUNC
+
+FUNC 记录BINGOTV帧命中
+    IF $BINGOTV帧启用 == 0
+        RETURN
+    ENDIF
+    IF $BINGOTV帧当前 < -4 or $BINGOTV帧当前 > 4
+        $BINGOTV帧本轮在范围内 = 0
+        RETURN
+    ENDIF
+    IF $BINGOTV帧当前 == -4
+        $BINGOTV帧负4 = $BINGOTV帧负4 + 1
+    ELIF $BINGOTV帧当前 == -3
+        $BINGOTV帧负3 = $BINGOTV帧负3 + 1
+    ELIF $BINGOTV帧当前 == -2
+        $BINGOTV帧负2 = $BINGOTV帧负2 + 1
+    ELIF $BINGOTV帧当前 == -1
+        $BINGOTV帧负1 = $BINGOTV帧负1 + 1
+    ELIF $BINGOTV帧当前 == 0
+        $BINGOTV帧零 = $BINGOTV帧零 + 1
+    ELIF $BINGOTV帧当前 == 1
+        $BINGOTV帧正1 = $BINGOTV帧正1 + 1
+    ELIF $BINGOTV帧当前 == 2
+        $BINGOTV帧正2 = $BINGOTV帧正2 + 1
+    ELIF $BINGOTV帧当前 == 3
+        $BINGOTV帧正3 = $BINGOTV帧正3 + 1
+    ELIF $BINGOTV帧当前 == 4
+        $BINGOTV帧正4 = $BINGOTV帧正4 + 1
+    ENDIF
+    $BINGOTV帧本轮在范围内 = 1
+ENDFUNC
+
+FUNC 输出BINGO
+    PRINT ""
+    PRINT 【BINGO】
+
+    IF $BINGO本轮在范围内 == 0
+        PRINT ""
+        PRINT 命中未进入BINGO范围
+    ENDIF
+
+    PRINT ""
+    PRINT 横轴: 消耗帧偏移，表格范围 ±4
+    IF $BINGO进入TV == 1
+        PRINT TV模式: 横轴为距最近死区中心(0/± & $BINGOTV单次消耗帧 & 帧)的偏移
+    ENDIF
+    PRINT 纵轴: Seed 距离差，表格范围 ±4
+    PRINT ""
+    PRINT 图例: ＋目标中心 ＠命中中心 ①本轮命中 ２累计命中 ｘ本轮命中未计入 ｏ剩余帧/TV帧下轮命中预测 ．簇外
+    PRINT ""
+    PRINT 消耗帧　－４－３－２－１　０＋１＋２＋３＋４
+    PRINT Seed
+    $BINGO行偏移 = -4
+    CALL 输出BINGO行
+    $BINGO行偏移 = -3
+    CALL 输出BINGO行
+    $BINGO行偏移 = -2
+    CALL 输出BINGO行
+    $BINGO行偏移 = -1
+    CALL 输出BINGO行
+    $BINGO行偏移 = 0
+    CALL 输出BINGO行
+    $BINGO行偏移 = 1
+    CALL 输出BINGO行
+    $BINGO行偏移 = 2
+    CALL 输出BINGO行
+    $BINGO行偏移 = 3
+    CALL 输出BINGO行
+    $BINGO行偏移 = 4
+    CALL 输出BINGO行
+    PRINT ""
+    CALL 输出BINGOTV帧轴
+ENDFUNC
+
+FUNC 输出BINGOTV帧轴
+    IF $BINGOTV帧启用 == 0
+        RETURN
+    ENDIF
+    PRINT TV帧　　－４－３－２－１　０＋１＋２＋３＋４
+    $BINGOTV帧列 = -4
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格负4 = $BINGOTV帧格子
+    $BINGOTV帧列 = -3
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格负3 = $BINGOTV帧格子
+    $BINGOTV帧列 = -2
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格负2 = $BINGOTV帧格子
+    $BINGOTV帧列 = -1
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格负1 = $BINGOTV帧格子
+    $BINGOTV帧列 = 0
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格零 = $BINGOTV帧格子
+    $BINGOTV帧列 = 1
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格正1 = $BINGOTV帧格子
+    $BINGOTV帧列 = 2
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格正2 = $BINGOTV帧格子
+    $BINGOTV帧列 = 3
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格正3 = $BINGOTV帧格子
+    $BINGOTV帧列 = 4
+    CALL 更新BINGOTV帧格子
+    $BINGOTV帧格正4 = $BINGOTV帧格子
+    PRINT "TV帧　　"& $BINGOTV帧格负4 & "" & $BINGOTV帧格负3 & "" & $BINGOTV帧格负2 & "" & $BINGOTV帧格负1 & "" & $BINGOTV帧格零 & "" & $BINGOTV帧格正1 & "" & $BINGOTV帧格正2 & "" & $BINGOTV帧格正3 & "" & $BINGOTV帧格正4
+
+ENDFUNC
+
+FUNC 输出BINGO行
+    CALL 更新BINGO行Seed文本
+    CALL 更新BINGO行差文本
+
+    $BINGOSeed差 = $BINGO行偏移
+    $BINGO帧差 = -4
+    CALL 更新BINGO格子文本
+    $BINGO格负4 = $BINGO格子
+
+    $BINGO帧差 = -3
+    CALL 更新BINGO格子文本
+    $BINGO格负3 = $BINGO格子
+
+    $BINGO帧差 = -2
+    CALL 更新BINGO格子文本
+    $BINGO格负2 = $BINGO格子
+
+    $BINGO帧差 = -1
+    CALL 更新BINGO格子文本
+    $BINGO格负1 = $BINGO格子
+
+    $BINGO帧差 = 0
+    CALL 更新BINGO格子文本
+    $BINGO格零 = $BINGO格子
+
+    $BINGO帧差 = 1
+    CALL 更新BINGO格子文本
+    $BINGO格正1 = $BINGO格子
+
+    $BINGO帧差 = 2
+    CALL 更新BINGO格子文本
+    $BINGO格正2 = $BINGO格子
+
+    $BINGO帧差 = 3
+    CALL 更新BINGO格子文本
+    $BINGO格正3 = $BINGO格子
+
+    $BINGO帧差 = 4
+    CALL 更新BINGO格子文本
+    $BINGO格正4 = $BINGO格子
+
+    PRINT "" & $BINGO行差文本 & "　　" & $BINGO格负4 & "" & $BINGO格负3 & "" & $BINGO格负2 & "" & $BINGO格负1 & "" & $BINGO格零 & "" & $BINGO格正1 & "" & $BINGO格正2 & "" & $BINGO格正3 & "" & $BINGO格正4
+ENDFUNC
+
+FUNC 更新BINGO行Seed文本
+    IF $BINGO行偏移 == -4
+        $BINGOSeed = $BINGOSeed负4文本
+    ELIF $BINGO行偏移 == -3
+        $BINGOSeed = $BINGOSeed负3文本
+    ELIF $BINGO行偏移 == -2
+        $BINGOSeed = $BINGOSeed负2文本
+    ELIF $BINGO行偏移 == -1
+        $BINGOSeed = $BINGOSeed负1文本
+    ELIF $BINGO行偏移 == 0
+        $BINGOSeed = $BINGOSeed零文本
+    ELIF $BINGO行偏移 == 1
+        $BINGOSeed = $BINGOSeed正1文本
+    ELIF $BINGO行偏移 == 2
+        $BINGOSeed = $BINGOSeed正2文本
+    ELIF $BINGO行偏移 == 3
+        $BINGOSeed = $BINGOSeed正3文本
+    ELIF $BINGO行偏移 == 4
+        $BINGOSeed = $BINGOSeed正4文本
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGO行差文本
+    IF $BINGO行偏移 == -4
+        $BINGO行差文本 = "－４"
+    ELIF $BINGO行偏移 == -3
+        $BINGO行差文本 = "－３"
+    ELIF $BINGO行偏移 == -2
+        $BINGO行差文本 = "－２"
+    ELIF $BINGO行偏移 == -1
+        $BINGO行差文本 = "－１"
+    ELIF $BINGO行偏移 == 0
+        $BINGO行差文本 = "　０"
+    ELIF $BINGO行偏移 == 1
+        $BINGO行差文本 = "＋１"
+    ELIF $BINGO行偏移 == 2
+        $BINGO行差文本 = "＋２"
+    ELIF $BINGO行偏移 == 3
+        $BINGO行差文本 = "＋３"
+    ELIF $BINGO行偏移 == 4
+        $BINGO行差文本 = "＋４"
+    ELSE
+        $BINGO行差文本 = " ?"
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGO格子文本
+    CALL 读取BINGO次数
+
+    IF $BINGOSeed差 == 0 and $BINGO帧差 == 0
+        IF $BINGO命中差索引 == 0 and $BINGO本轮消耗帧误差 == 0
+            $BINGO格子 = "　＠"
+        ELSE
+            $BINGO格子 = "　＋"
+        ENDIF
+        RETURN
+    ENDIF
+
+    $BINGO显示帧差 = BINGO归一化帧差($BINGO本轮消耗帧误差)
+    IF $BINGOSeed差 == $BINGO命中差索引 and $BINGO帧差 == $BINGO显示帧差
+        IF $BINGO本轮在范围内 == 1
+            CALL 更新BINGO带圈次数文本
+        ELSE
+            $BINGO格子 = "　ｘ"
+        ENDIF
+        RETURN
+    ENDIF
+
+    IF $BINGO次数 > 0
+        CALL 更新BINGO次数文本
+        RETURN
+    ENDIF
+
+    CALL 更新BINGO未命中格子文本
+ENDFUNC
+
+FUNC 获取Seed死区($Seed帧死区: INT): INT
+    $BINGOSeed死区 = $Seed帧死区
+    $BINGOSeed负向死区 = $Seed帧死区
+    $BINGOSeed正向死区 = $Seed帧死区
+    RETURN 0
+ENDFUNC
+
+FUNC 获取Seed单边死区($Seed负向死区: INT, $Seed正向死区: INT): INT
+    IF $Seed负向死区 >= $Seed正向死区
+        $BINGOSeed死区 = $Seed负向死区
+    ELSE
+        $BINGOSeed死区 = $Seed正向死区
+    ENDIF
+    $BINGOSeed负向死区 = $Seed负向死区
+    $BINGOSeed正向死区 = $Seed正向死区
+    RETURN 0
+ENDFUNC
+
+FUNC BINGO归一化帧差($原始帧差: INT): INT
+    IF $BINGO进入TV == 1
+        $BINGOk上界 = 1 + $BINGO已新增正向TV倍数
+        $BINGOk下界 = 0 - 1 - $BINGO已新增负向TV倍数
+        FOR $BINGOk = $BINGOk下界 TO $BINGOk上界
+            IF $BINGOk != 0
+                $BINGOk中心 = $BINGOk * $BINGOTV单次消耗帧
+                IF $原始帧差 >= ($BINGOk中心 - 4) and $原始帧差 <= ($BINGOk中心 + 4)
+                    RETURN $原始帧差 - $BINGOk中心
+                ENDIF
+            ENDIF
+        NEXT
+    ENDIF
+    RETURN $原始帧差
+ENDFUNC
+
+FUNC 更新BINGO未命中格子文本
+    IF $BINGOSeed差 >= ($BINGO簇Seed中心 - $BINGO簇Seed半径) and $BINGOSeed差 <= ($BINGO簇Seed中心 + $BINGO簇Seed半径) and $BINGO帧差 >= ($BINGO簇中心 - $BINGO簇半径) and $BINGO帧差 <= ($BINGO簇中心 + $BINGO簇半径)
+        $BINGO格子 = "　ｏ"
+    ELSE
+        $BINGO格子 = "　．"
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGO次数文本
+    IF $BINGO次数 <= 0
+        CALL 更新BINGO未命中格子文本
+    ELIF $BINGO次数 == 1
+        $BINGO格子 = "　１"
+    ELIF $BINGO次数 == 2
+        $BINGO格子 = "　２"
+    ELIF $BINGO次数 == 3
+        $BINGO格子 = "　３"
+    ELIF $BINGO次数 == 4
+        $BINGO格子 = "　４"
+    ELIF $BINGO次数 == 5
+        $BINGO格子 = "　５"
+    ELIF $BINGO次数 == 6
+        $BINGO格子 = "　６"
+    ELIF $BINGO次数 == 7
+        $BINGO格子 = "　７"
+    ELIF $BINGO次数 == 8
+        $BINGO格子 = "　８"
+    ELSE
+        $BINGO格子 = "　９"
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGO带圈次数文本
+    IF $BINGO次数 <= 1
+        $BINGO格子 = "　①"
+    ELIF $BINGO次数 == 2
+        $BINGO格子 = "　②"
+    ELIF $BINGO次数 == 3
+        $BINGO格子 = "　③"
+    ELIF $BINGO次数 == 4
+        $BINGO格子 = "　④"
+    ELIF $BINGO次数 == 5
+        $BINGO格子 = "　⑤"
+    ELIF $BINGO次数 == 6
+        $BINGO格子 = "　⑥"
+    ELIF $BINGO次数 == 7
+        $BINGO格子 = "　⑦"
+    ELIF $BINGO次数 == 8
+        $BINGO格子 = "　⑧"
+    ELSE
+        $BINGO格子 = "　⑨"
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGOTV帧格子
+    CALL 读取BINGOTV帧次数
+    $BINGOTV帧格子 = "　．"
+    IF $BINGOTV帧列 == 0
+        $BINGOTV帧格子 = "　＋"
+    ENDIF
+    IF $BINGOTV帧列 >= ($BINGOTV帧预测 - $BINGOTV帧预测半径) and $BINGOTV帧列 <= ($BINGOTV帧预测 + $BINGOTV帧预测半径)
+        $BINGOTV帧格子 = "　ｏ"
+    ENDIF
+    IF $BINGOTV帧次数 > 0
+        CALL 更新BINGOTV帧次数文本
+    ENDIF
+    IF $BINGOTV帧列 == $BINGOTV帧当前
+        IF $BINGOTV帧本轮在范围内 == 1
+            CALL 更新BINGOTV帧带圈次数文本
+        ELSE
+            $BINGOTV帧格子 = "　ｘ"
+        ENDIF
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGOTV帧次数文本
+    IF $BINGOTV帧次数 == 1
+        $BINGOTV帧格子 = "　１"
+    ELIF $BINGOTV帧次数 == 2
+        $BINGOTV帧格子 = "　２"
+    ELIF $BINGOTV帧次数 == 3
+        $BINGOTV帧格子 = "　３"
+    ELIF $BINGOTV帧次数 == 4
+        $BINGOTV帧格子 = "　４"
+    ELIF $BINGOTV帧次数 == 5
+        $BINGOTV帧格子 = "　５"
+    ELIF $BINGOTV帧次数 == 6
+        $BINGOTV帧格子 = "　６"
+    ELIF $BINGOTV帧次数 == 7
+        $BINGOTV帧格子 = "　７"
+    ELIF $BINGOTV帧次数 == 8
+        $BINGOTV帧格子 = "　８"
+    ELSE
+        $BINGOTV帧格子 = "　９"
+    ENDIF
+ENDFUNC
+
+FUNC 更新BINGOTV帧带圈次数文本
+    IF $BINGOTV帧次数 <= 1
+        $BINGOTV帧格子 = "　①"
+    ELIF $BINGOTV帧次数 == 2
+        $BINGOTV帧格子 = "　②"
+    ELIF $BINGOTV帧次数 == 3
+        $BINGOTV帧格子 = "　③"
+    ELIF $BINGOTV帧次数 == 4
+        $BINGOTV帧格子 = "　④"
+    ELIF $BINGOTV帧次数 == 5
+        $BINGOTV帧格子 = "　⑤"
+    ELIF $BINGOTV帧次数 == 6
+        $BINGOTV帧格子 = "　⑥"
+    ELIF $BINGOTV帧次数 == 7
+        $BINGOTV帧格子 = "　⑦"
+    ELIF $BINGOTV帧次数 == 8
+        $BINGOTV帧格子 = "　⑧"
+    ELSE
+        $BINGOTV帧格子 = "　⑨"
+    ENDIF
+ENDFUNC
+
+FUNC BINGO当前命中是否在表格(): INT
+    RETURN $BINGO本轮在范围内
+ENDFUNC
+
+FUNC BINGO当前命中是否在死区(): INT
+    IF $BINGO本轮在范围内 == 0
+        RETURN 0
+    ENDIF
+    IF $BINGO命中差索引 < (0 - $BINGOSeed负向死区) or $BINGO命中差索引 > $BINGOSeed正向死区
+        RETURN 0
+    ENDIF
+    IF $BINGO本轮消耗帧误差 >= (0 - $BINGO消耗帧负向死区) and $BINGO本轮消耗帧误差 <= $BINGO消耗帧正向死区
+        RETURN 1
+    ENDIF
+    IF $BINGO进入TV == 1
+        $BINGOk上界 = 1 + $BINGO已新增正向TV倍数
+        $BINGOk下界 = 0 - 1 - $BINGO已新增负向TV倍数
+        FOR $BINGOk = $BINGOk下界 TO $BINGOk上界
+            IF $BINGOk != 0
+                $BINGOk中心 = $BINGOk * $BINGOTV单次消耗帧
+                IF $BINGO本轮消耗帧误差 >= ($BINGOk中心 - $BINGO消耗帧负向死区) and $BINGO本轮消耗帧误差 <= ($BINGOk中心 + $BINGO消耗帧正向死区)
+                    RETURN 1
+                ENDIF
+            ENDIF
+        NEXT
+    ENDIF
+    RETURN 0
+ENDFUNC
+
+FUNC 累加BINGO死区格次数
+    IF $BINGOSeed差 < (0 - $BINGOSeed负向死区) or $BINGOSeed差 > $BINGOSeed正向死区
+        RETURN
+    ENDIF
+    IF $BINGO帧差 < (0 - $BINGO消耗帧负向死区) or $BINGO帧差 > $BINGO消耗帧正向死区
+        RETURN
+    ENDIF
+
+    CALL 读取BINGO次数
+    $BINGO稳定簇次数 += $BINGO次数
+ENDFUNC
+
+FUNC 读取BINGOTV帧次数
+    $BINGOTV帧次数 = 0
+    IF $BINGOTV帧列 == -4
+        $BINGOTV帧次数 = $BINGOTV帧负4
+    ELIF $BINGOTV帧列 == -3
+        $BINGOTV帧次数 = $BINGOTV帧负3
+    ELIF $BINGOTV帧列 == -2
+        $BINGOTV帧次数 = $BINGOTV帧负2
+    ELIF $BINGOTV帧列 == -1
+        $BINGOTV帧次数 = $BINGOTV帧负1
+    ELIF $BINGOTV帧列 == 0
+        $BINGOTV帧次数 = $BINGOTV帧零
+    ELIF $BINGOTV帧列 == 1
+        $BINGOTV帧次数 = $BINGOTV帧正1
+    ELIF $BINGOTV帧列 == 2
+        $BINGOTV帧次数 = $BINGOTV帧正2
+    ELIF $BINGOTV帧列 == 3
+        $BINGOTV帧次数 = $BINGOTV帧正3
+    ELIF $BINGOTV帧列 == 4
+        $BINGOTV帧次数 = $BINGOTV帧正4
+    ENDIF
+ENDFUNC
+
+FUNC 统计BINGO当前Seed行死区次数
+    $BINGO稳定簇次数 = 0
+    $BINGOSeed差 = $BINGO命中差索引
+
+    $BINGO帧差 = -4
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = -3
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = -2
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = -1
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = 0
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = 1
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = 2
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = 3
+    CALL 累加BINGO死区格次数
+    $BINGO帧差 = 4
+    CALL 累加BINGO死区格次数
+ENDFUNC
+
+FUNC 统计BINGO当前帧列死区次数
+    $BINGO稳定簇次数 = 0
+    $BINGO帧差 = BINGO归一化帧差($BINGO本轮消耗帧误差)
+
+    $BINGOSeed差 = -4
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = -3
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = -2
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = -1
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = 0
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = 1
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = 2
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = 3
+    CALL 累加BINGO死区格次数
+    $BINGOSeed差 = 4
+    CALL 累加BINGO死区格次数
+ENDFUNC
+
+FUNC 检查BINGO稳定簇(): INT
+    $BINGO稳定簇类型 = 0
+    $BINGO稳定簇Seed差 = $BINGO命中差索引
+    $BINGO稳定簇帧差 = $BINGO本轮消耗帧误差
+    $BINGO稳定簇次数 = 0
+
+    $BINGO稳定簇结果 = BINGO当前命中是否在死区()
+    IF $BINGO稳定簇结果 == 0
+        RETURN 0
+    ENDIF
+
+    IF $BINGO命中差索引 != 0
+        CALL 统计BINGO当前Seed行死区次数
+        IF $BINGO稳定簇次数 >= $BINGO稳定阈值
+            $BINGO稳定簇类型 = 1
+            RETURN 1
+        ENDIF
+    ENDIF
+
+    IF $BINGO本轮消耗帧误差 != 0
+        CALL 统计BINGO当前帧列死区次数
+        IF $BINGO稳定簇次数 >= $BINGO稳定阈值
+            $BINGO稳定簇类型 = 2
+            RETURN 2
+        ENDIF
+    ENDIF
+
+    RETURN 0
+ENDFUNC
+
+FUNC 输出BINGO稳定簇触发原因
+    PRINT ""
+    PRINT 【BINGO稳定校准】
+    IF $BINGO稳定簇类型 == 1
+        PRINT 条件: 同Seed行在死区内累计达到 & $BINGO稳定阈值 & 次
+        PRINT Seed距离: & $BINGO稳定簇Seed差
+    ELIF $BINGO稳定簇类型 == 2
+        PRINT 条件: 同消耗帧列在死区内累计达到 & $BINGO稳定阈值 & 次
+        PRINT 消耗帧偏移: & $BINGO稳定簇帧差 & 帧
+        IF $BINGO进入TV == 1
+            $BINGOk上界 = 1 + $BINGO已新增正向TV倍数
+            $BINGOk下界 = 0 - 1 - $BINGO已新增负向TV倍数
+            FOR $BINGOk = $BINGOk下界 TO $BINGOk上界
+                $BINGOk中心 = $BINGOk * $BINGOTV单次消耗帧
+                IF $BINGO稳定簇帧差 >= ($BINGOk中心 - $BINGO消耗帧负向死区) and $BINGO稳定簇帧差 <= ($BINGOk中心 + $BINGO消耗帧正向死区)
+                    PRINT 死区中心: & $BINGOk中心 & 帧 (k= & $BINGOk & )
+                ENDIF
+            NEXT
+        ENDIF
+    ENDIF
+    PRINT 累计命中: & $BINGO稳定簇次数
+ENDFUNC
+
+FUNC 清空BINGO记录
+    $BINGOTV帧负4 = 0
+    $BINGOTV帧负3 = 0
+    $BINGOTV帧负2 = 0
+    $BINGOTV帧负1 = 0
+    $BINGOTV帧零 = 0
+    $BINGOTV帧正1 = 0
+    $BINGOTV帧正2 = 0
+    $BINGOTV帧正3 = 0
+    $BINGOTV帧正4 = 0
+    $BINGOTV帧本轮在范围内 = 0
+    $BINGO负4负4 = 0
+    $BINGO负4负3 = 0
+    $BINGO负4负2 = 0
+    $BINGO负4负1 = 0
+    $BINGO负4零 = 0
+    $BINGO负4正1 = 0
+    $BINGO负4正2 = 0
+    $BINGO负4正3 = 0
+    $BINGO负4正4 = 0
+    $BINGO负3负4 = 0
+    $BINGO负3负3 = 0
+    $BINGO负3负2 = 0
+    $BINGO负3负1 = 0
+    $BINGO负3零 = 0
+    $BINGO负3正1 = 0
+    $BINGO负3正2 = 0
+    $BINGO负3正3 = 0
+    $BINGO负3正4 = 0
+    $BINGO负2负4 = 0
+    $BINGO负2负3 = 0
+    $BINGO负2负2 = 0
+    $BINGO负2负1 = 0
+    $BINGO负2零 = 0
+    $BINGO负2正1 = 0
+    $BINGO负2正2 = 0
+    $BINGO负2正3 = 0
+    $BINGO负2正4 = 0
+    $BINGO负1负4 = 0
+    $BINGO负1负3 = 0
+    $BINGO负1负2 = 0
+    $BINGO负1负1 = 0
+    $BINGO负1零 = 0
+    $BINGO负1正1 = 0
+    $BINGO负1正2 = 0
+    $BINGO负1正3 = 0
+    $BINGO负1正4 = 0
+    $BINGO零负4 = 0
+    $BINGO零负3 = 0
+    $BINGO零负2 = 0
+    $BINGO零负1 = 0
+    $BINGO零零 = 0
+    $BINGO零正1 = 0
+    $BINGO零正2 = 0
+    $BINGO零正3 = 0
+    $BINGO零正4 = 0
+    $BINGO正1负4 = 0
+    $BINGO正1负3 = 0
+    $BINGO正1负2 = 0
+    $BINGO正1负1 = 0
+    $BINGO正1零 = 0
+    $BINGO正1正1 = 0
+    $BINGO正1正2 = 0
+    $BINGO正1正3 = 0
+    $BINGO正1正4 = 0
+    $BINGO正2负4 = 0
+    $BINGO正2负3 = 0
+    $BINGO正2负2 = 0
+    $BINGO正2负1 = 0
+    $BINGO正2零 = 0
+    $BINGO正2正1 = 0
+    $BINGO正2正2 = 0
+    $BINGO正2正3 = 0
+    $BINGO正2正4 = 0
+    $BINGO正3负4 = 0
+    $BINGO正3负3 = 0
+    $BINGO正3负2 = 0
+    $BINGO正3负1 = 0
+    $BINGO正3零 = 0
+    $BINGO正3正1 = 0
+    $BINGO正3正2 = 0
+    $BINGO正3正3 = 0
+    $BINGO正3正4 = 0
+    $BINGO正4负4 = 0
+    $BINGO正4负3 = 0
+    $BINGO正4负2 = 0
+    $BINGO正4负1 = 0
+    $BINGO正4零 = 0
+    $BINGO正4正1 = 0
+    $BINGO正4正2 = 0
+    $BINGO正4正3 = 0
+    $BINGO正4正4 = 0
+ENDFUNC
+
+FUNC 读取BINGO次数
+    $BINGO次数 = 0
+    IF $BINGOSeed差 == -4 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO负4负4
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO负4负3
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO负4负2
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO负4负1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO负4零
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO负4正1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO负4正2
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO负4正3
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO负4正4
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO负3负4
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO负3负3
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO负3负2
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO负3负1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO负3零
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO负3正1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO负3正2
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO负3正3
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO负3正4
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO负2负4
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO负2负3
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO负2负2
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO负2负1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO负2零
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO负2正1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO负2正2
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO负2正3
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO负2正4
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO负1负4
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO负1负3
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO负1负2
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO负1负1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO负1零
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO负1正1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO负1正2
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO负1正3
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO负1正4
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO零负4
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO零负3
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO零负2
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO零负1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO零零
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO零正1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO零正2
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO零正3
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO零正4
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO正1负4
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO正1负3
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO正1负2
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO正1负1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO正1零
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO正1正1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO正1正2
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO正1正3
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO正1正4
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO正2负4
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO正2负3
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO正2负2
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO正2负1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO正2零
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO正2正1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO正2正2
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO正2正3
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO正2正4
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO正3负4
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO正3负3
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO正3负2
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO正3负1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO正3零
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO正3正1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO正3正2
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO正3正3
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO正3正4
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -4
+        $BINGO次数 = $BINGO正4负4
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -3
+        $BINGO次数 = $BINGO正4负3
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -2
+        $BINGO次数 = $BINGO正4负2
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -1
+        $BINGO次数 = $BINGO正4负1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 0
+        $BINGO次数 = $BINGO正4零
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 1
+        $BINGO次数 = $BINGO正4正1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 2
+        $BINGO次数 = $BINGO正4正2
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 3
+        $BINGO次数 = $BINGO正4正3
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 4
+        $BINGO次数 = $BINGO正4正4
+    ENDIF
+ENDFUNC
+
+FUNC 增加BINGO次数
+    IF $BINGOSeed差 == -4 and $BINGO帧差 == -4
+        $BINGO负4负4 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == -3
+        $BINGO负4负3 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == -2
+        $BINGO负4负2 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == -1
+        $BINGO负4负1 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 0
+        $BINGO负4零 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 1
+        $BINGO负4正1 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 2
+        $BINGO负4正2 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 3
+        $BINGO负4正3 += 1
+    ELIF $BINGOSeed差 == -4 and $BINGO帧差 == 4
+        $BINGO负4正4 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -4
+        $BINGO负3负4 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -3
+        $BINGO负3负3 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -2
+        $BINGO负3负2 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == -1
+        $BINGO负3负1 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 0
+        $BINGO负3零 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 1
+        $BINGO负3正1 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 2
+        $BINGO负3正2 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 3
+        $BINGO负3正3 += 1
+    ELIF $BINGOSeed差 == -3 and $BINGO帧差 == 4
+        $BINGO负3正4 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -4
+        $BINGO负2负4 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -3
+        $BINGO负2负3 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -2
+        $BINGO负2负2 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == -1
+        $BINGO负2负1 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 0
+        $BINGO负2零 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 1
+        $BINGO负2正1 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 2
+        $BINGO负2正2 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 3
+        $BINGO负2正3 += 1
+    ELIF $BINGOSeed差 == -2 and $BINGO帧差 == 4
+        $BINGO负2正4 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -4
+        $BINGO负1负4 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -3
+        $BINGO负1负3 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -2
+        $BINGO负1负2 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == -1
+        $BINGO负1负1 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 0
+        $BINGO负1零 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 1
+        $BINGO负1正1 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 2
+        $BINGO负1正2 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 3
+        $BINGO负1正3 += 1
+    ELIF $BINGOSeed差 == -1 and $BINGO帧差 == 4
+        $BINGO负1正4 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -4
+        $BINGO零负4 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -3
+        $BINGO零负3 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -2
+        $BINGO零负2 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == -1
+        $BINGO零负1 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 0
+        $BINGO零零 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 1
+        $BINGO零正1 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 2
+        $BINGO零正2 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 3
+        $BINGO零正3 += 1
+    ELIF $BINGOSeed差 == 0 and $BINGO帧差 == 4
+        $BINGO零正4 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -4
+        $BINGO正1负4 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -3
+        $BINGO正1负3 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -2
+        $BINGO正1负2 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == -1
+        $BINGO正1负1 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 0
+        $BINGO正1零 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 1
+        $BINGO正1正1 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 2
+        $BINGO正1正2 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 3
+        $BINGO正1正3 += 1
+    ELIF $BINGOSeed差 == 1 and $BINGO帧差 == 4
+        $BINGO正1正4 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -4
+        $BINGO正2负4 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -3
+        $BINGO正2负3 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -2
+        $BINGO正2负2 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == -1
+        $BINGO正2负1 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 0
+        $BINGO正2零 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 1
+        $BINGO正2正1 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 2
+        $BINGO正2正2 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 3
+        $BINGO正2正3 += 1
+    ELIF $BINGOSeed差 == 2 and $BINGO帧差 == 4
+        $BINGO正2正4 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -4
+        $BINGO正3负4 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -3
+        $BINGO正3负3 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -2
+        $BINGO正3负2 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == -1
+        $BINGO正3负1 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 0
+        $BINGO正3零 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 1
+        $BINGO正3正1 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 2
+        $BINGO正3正2 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 3
+        $BINGO正3正3 += 1
+    ELIF $BINGOSeed差 == 3 and $BINGO帧差 == 4
+        $BINGO正3正4 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -4
+        $BINGO正4负4 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -3
+        $BINGO正4负3 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -2
+        $BINGO正4负2 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == -1
+        $BINGO正4负1 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 0
+        $BINGO正4零 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 1
+        $BINGO正4正1 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 2
+        $BINGO正4正2 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 3
+        $BINGO正4正3 += 1
+    ELIF $BINGOSeed差 == 4 and $BINGO帧差 == 4
+        $BINGO正4正4 += 1
+    ENDIF
+ENDFUNC
