@@ -133,7 +133,9 @@ test('the 0.0.4 categorized catalog retains original scripts and required labels
     } else assert.equal(fs.existsSync(labels), false);
   }
   assert.equal(seen.size, 22);
-  assert.equal(fs.readdirSync(path.join(root, 'categories')).length, 6);
+  for (const category of ['过帧脚本', '过场脚本', '反查脚本', '撞帧脚本', '逃跑脚本', '测种脚本']) {
+    assert.ok(fs.existsSync(path.join(root, 'categories', category, 'README.md')));
+  }
   const categories = Object.fromEntries(fs.readdirSync(path.join(root, 'bundles')).filter(id => id.startsWith('bdsp-')).map(id => {
     const manifest = JSON.parse(fs.readFileSync(path.join(root, 'bundles', id, 'manifest.json')));
     return [id, manifest.categories.find(group => group.files.some(file => file.endsWith('.txt')))?.name];
