@@ -115,17 +115,24 @@ test('labels must be used and sit beside the script that references them', t => 
   assert.throws(() => build(root), /未使用/);
 });
 
-test('the 0.0.4 categorized catalog retains original scripts and required labels', () => {
+test('categorized packages preserve historical originals and publish current bundle bytes with required labels', () => {
   const root = path.resolve(__dirname, '..');
   const original = unzipSync(fs.readFileSync(path.join(root, 'packages/bdsp-official/0.0.1.zip')));
+  const catalog = JSON.parse(fs.readFileSync(path.join(root, 'catalog.json')));
   const seen = new Set();
   for (const id of fs.readdirSync(path.join(root, 'bundles')).filter(id => id.startsWith('bdsp-'))) {
     const folder = path.join(root, 'bundles', id), manifest = JSON.parse(fs.readFileSync(path.join(folder, 'manifest.json')));
-    assert.equal(manifest.version, '0.0.4');
     const scripts = fs.readdirSync(path.join(folder, 'files')).filter(file => /\.txt$/i.test(file));
     assert.equal(scripts.length, 1);
     const script = scripts[0]; assert.ok(!seen.has(script)); seen.add(script);
-    assert.deepEqual(fs.readFileSync(path.join(folder, 'files', script)), Buffer.from(original['files/' + script]));
+    const historical = unzipSync(fs.readFileSync(path.join(root, 'packages', id, '0.0.4.zip')));
+    assert.deepEqual(Buffer.from(historical['files/' + script]), Buffer.from(original['files/' + script]), 'published original packages remain unchanged');
+    const current = fs.readFileSync(path.join(folder, 'files', script));
+    if (manifest.version === '0.0.4') assert.deepEqual(current, Buffer.from(original['files/' + script]));
+    const item = catalog.packages.find(item => item.id === id);
+    assert.equal(item.version, manifest.version);
+    const published = unzipSync(fs.readFileSync(path.join(root, item.archive)));
+    assert.deepEqual(Buffer.from(published['files/' + script]), current, 'current package matches its maintained script');
     const labels = path.join(folder, 'files/ImgLabel');
     if (['bdsp-mesprit', 'bdsp-cresselia'].includes(id)) {
       assert.deepEqual(fs.readdirSync(labels).sort(), ['喷雾消失了.IL', '宝可表.IL', '艾姆利多在水域.IL', '艾姆利多在202路.IL'].sort());

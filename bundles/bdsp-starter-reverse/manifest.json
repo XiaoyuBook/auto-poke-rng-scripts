@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "bdsp-starter-reverse",
   "name": "御三家反查",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "minimumAppVersion": "0.1.0",
   "installFolder": "珍钻复刻/御三家反查",
   "game": "BDSP",
@@ -10,9 +10,9 @@
     "XiaoyuBook",
     "原版项目贡献者"
   ],
-  "description": "测试版：珍钻复刻御三家反查脚本，可单独安装和更新。无需图像标签。",
-  "instructions": "在脚本库中查看已安装文件，并在自动流程中选择对应脚本。使用前请核对游戏版本、画面尺寸、运行起点及按键设置。",
-  "updatedAt": "2026-09-26",
+  "description": "测试版：珍钻复刻御三家反查脚本，更新摘要阶段的方向键与确认按键，可单独安装和更新。无需图像标签。",
+  "instructions": "在脚本库中查看已安装文件，并在自动流程中选择对应脚本。0.0.5 同步 2026-10-08 的本地修订：打开菜单后按 LEFT、等待 500ms，再推进摘要操作，最后按 RIGHT；单次裸按键保持 50ms。使用前请核对游戏版本、画面尺寸、运行起点及按键设置。",
+  "updatedAt": "2026-10-08",
   "categories": [
     {
       "name": "反查脚本",
